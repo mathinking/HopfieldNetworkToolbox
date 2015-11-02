@@ -1,0 +1,24 @@
+NAME : gr17.tour
+COMMENT : Optimum tour for gr17.tsp (Length 2085)
+TYPE : TOUR
+DIMENSION : 17
+TOUR_SECTION
+17
+14
+15
+3
+11
+10
+2
+5
+9
+12
+16
+1
+4
+13
+7
+8
+6
+-1
+EOF

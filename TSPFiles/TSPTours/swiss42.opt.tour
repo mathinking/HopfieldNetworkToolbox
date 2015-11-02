@@ -1,0 +1,49 @@
+NAME : swiss42.tour
+COMMENT : Optimum tour for swiss42.tsp (Length 1273)
+TYPE : TOUR
+DIMENSION : 42
+TOUR_SECTION
+39
+23
+40
+25
+41
+22
+10
+24
+42
+9
+11
+26
+12
+13
+19
+27
+6
+14
+20
+15
+17
+16
+38
+8
+18
+32
+37
+36
+21
+34
+35
+33
+1
+2
+7
+5
+4
+28
+3
+29
+30
+31
+-1
+EOF

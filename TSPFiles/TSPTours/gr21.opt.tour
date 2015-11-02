@@ -1,0 +1,28 @@
+NAME : gr21.tour
+COMMENT : Optimum tour for gr21.tsp (Length 2707)
+TYPE : TOUR
+DIMENSION : 21
+TOUR_SECTION
+11
+4
+12
+1
+7
+8
+6
+16
+5
+9
+3
+2
+21
+15
+14
+13
+18
+10
+17
+19
+20
+-1
+EOF
