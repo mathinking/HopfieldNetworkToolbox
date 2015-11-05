@@ -1,4 +1,4 @@
 function plot(net, varargin)
-    net
+    %# TODO To be decided
 end
 

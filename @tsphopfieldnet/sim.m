@@ -11,7 +11,7 @@ function V = sim(net,V,U)
         error('tsphopfieldnet:NotTrained', 'Training has not taken place yet. Use train(net).');
     end
     
-    if ~isempty(net.cities.fixedCities{1}) %~isempty(net.cities.fixedCities)
+    if ~isempty(net.cities.fixedCities{1})
         net = verifyIfValidSubtours(net);
         aux_d = net.cities.d;
         [net,V,U] = fixedCities(net);
@@ -93,10 +93,6 @@ function [net,V,U,iter] = simEuler(net, V, U)
     dU = zeros(N);
 
     iter = 1;
-    % Showing Network parameters in the command window
-%             if net.setting.showCommandLine
-%                 hopfield.tsp.display.printWhenStarting(net);
-%             end
 
     dt = net.setting.dt;
     net.results.time(iter) = dt;
@@ -181,12 +177,8 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
     dU = zeros(N,N-K);
 
     iter = 1;
-    % Showing Network parameters in the command window
-%             if net.setting.showCommandLine
-%                 hopfield.tsp.display.printWhenStarting(net);
-%             end
 
-    while iter < net.setting.maxIter && (maxDiffV > stopC1 || ...
+    while iter <= net.setting.maxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
 
         dt = 10^100; % Initial value for dt
@@ -216,10 +208,10 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 
         dV = 2./net.setting.u0 .* V .* (1-V) .*dU;
 
-%                 interiorV = V > 0 & V < 1;
+%       interiorV = V > 0 & V < 1;
         interiorV = U > u_e & U < -u_e;
         %(V > stopC1) & (V < 1-stopC1);
-%                 borderV = ~interiorV;
+%       borderV = ~interiorV;
 
         % Computation of dt             
         % In interior states, $\Delta t$ should not make the state get outside the 
@@ -668,148 +660,13 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
             plot(netPhase2,'phase2',fixedChainsFromPhase1,myPlot.myCitiesColorP2,myPlot.myCitiesTextColor,myPlot.myInsideColorP2,myPlot.myTitleP2);
         end
 
-    elseif strcmp(method,'greedy')
-        % Start with existing subtour
-        % Find closest city
-        % If belonging to a subtour, expand the subtour with the
-        % new cities
-        % Iterate
-
-        newTour = chains2{1};
-        remainingCities = 1:net.trainParam.N;
-        for s = 1:noChains
-            citiesAlreadyConnected = chains2{s}(2:end-1);
-            remainingCities = setxor(remainingCities, citiesAlreadyConnected);
-        end
-
-        done = false;
-        startCity = newTour(1);
-        endCity = newTour(end);              
-        remainingCities = setxor(remainingCities,[startCity,endCity]);
-
-        while ~done
-
-            [~, closestCitiesPos] = sort(net.cities.d(endCity,remainingCities));
-            connectingCity = remainingCities(closestCitiesPos(1));
-
-            % Is already extreme in subtour
-            isSolitary = true;
-            for s = 1:noChains
-                if ismember(connectingCity,chainExtremes{s})
-                    isSolitary = false;
-                    break;
-                end
-            end
-            if ~isSolitary
-                if find(chainExtremes{s} == connectingCity) == 1
-                    newTour = [newTour,chains2{s}];
-                elseif find(chainExtremes{s} == connectingCity) == 2
-                    newTour = [newTour,chains2{s}(end:-1:1)];
-                else
-                    error('Something not being well captured here');
-                end
-                endCity = newTour(end);
-                remainingCities = setxor(remainingCities, chainExtremes{s});
-
-            else
-                % Is Solitary
-                newTour = [newTour, connectingCity];
-                endCity = newTour(end);
-                remainingCities = setxor(remainingCities, connectingCity);
-            end
-
-            if isempty(remainingCities)
-                done = true;
-            end
-        end
-
-        newTour = tsphopfieldnet.createChain(city(net,newTour)');
-
-        net.simFcn = 'talavan-yanez';
-        net.cities.startFixedCitiesIn = 1;
-        net.cities.fixedCities = {newTour};
-        V = sim(net,V,U);
-
-        % #TODO Cleaning and showing final result in plot. Bring
-        % data back to results.
-
-    elseif strcmp(method,'distance')
-
-        dU = net.trainParam.dU;
-        D = net.trainParam.D;
-        B = net.trainParam.B;
-        A = net.trainParam.A;
-
-        aux_d = net.cities.d;
-        % Rescaling
-        K = 5;
-        net.cities.d = K .* net.cities.d;
-        net.trainParam.dU = K * net.trainParam.dU;
-        net.trainParam.D = 1/net.trainParam.dU;
-        net.trainParam.B = 3*net.trainParam.dU*net.trainParam.D + net.trainParam.C;
-        net.trainParam.A = net.trainParam.B - net.trainParam.D * net.trainParam.dL;
-
-        % 3 types of cities:
-        % M: Medias -> Se fijan las distancias adyacentes a dL.
-        %              El resto dU.
-        % E: Extremos -> Adyacentes: dL
-        %                Resto: originales
-        % S: Solitarias -> originales
-        for s = 1:numSubtours
-            citiesSubtour = strsplit(chains2{s},'-');
-            citiesSubtourPosition = ...
-                cellfun(@(c) find(strcmp(net.cities.names,c)), citiesSubtour);
-
-            % E: Extremos
-            net.cities.d(citiesSubtourPosition(1),citiesSubtourPosition(2)) = 0;%net.trainParam.dL;
-            net.cities.d(citiesSubtourPosition(2),citiesSubtourPosition(1)) = 0;%net.trainParam.dL;
-            net.cities.d(citiesSubtourPosition(end-1),citiesSubtourPosition(end)) = 0;%net.trainParam.dL;
-            net.cities.d(citiesSubtourPosition(end),citiesSubtourPosition(end-1)) = 0;%net.trainParam.dL;
-
-            % M: Medias
-            if length(citiesSubtour) > 2
-                for m = 2:length(citiesSubtour)-1
-                    net.cities.d(citiesSubtourPosition(m-1),citiesSubtourPosition(m)) = 0;%net.trainParam.dL;
-                    net.cities.d(citiesSubtourPosition(m),citiesSubtourPosition(m-1)) = 0;%net.trainParam.dL;
-                    net.cities.d(citiesSubtourPosition(m),citiesSubtourPosition(m+1)) = 0;%net.trainParam.dL;
-                    net.cities.d(citiesSubtourPosition(m+1),citiesSubtourPosition(m)) = 0;%net.trainParam.dL;
-
-                    further = setxor(1:net.trainParam.N,citiesSubtourPosition([m-1,m,m+1]));
-                    net.cities.d(citiesSubtourPosition(m),further) = net.trainParam.dU;
-                    net.cities.d(further,citiesSubtourPosition(m)) = net.trainParam.dU;                           
-                end
-            end                   
-            % #TODO S: Originales no deberían ir multiplicadas por K?
-        end                                
     end
-
-%         if strcmp(method,'fixing')
-%             % Solve new problem with fixed subtours
-%             net.cities.fixedCities = chains;
-%             net.cities.startFixedCitiesIn = startChainsPos;
-%             net.simFcn = 'talavan-yanez';
-%             sim(net);
-% 
-%         elseif strcmp(method,'distance')
-%             net.simFcn = 'talavan-yanez';
-%             V = saddle3(net) + (rand(net.trainParam.N) - 0.5) * 1e-5;
-%             U = net.setting.invTransferFcn(V);
-%             init(net);
-%             [net,V,U,iter] = simTalavanYanez(net,V,U);
-%             net.cities.d = aux_d;
-%             net.trainParam.dU = dU;
-%             net.trainParam.D = D;
-%             net.trainParam.B = B;
-%             net.trainParam.A = A;
-%             net = computeTour(net,V,iter);
-%         end
-
+    
     net.simFcn = 'divide-conquer';
     net.cities.fixedCities = {''};
     net.cities.startFixedCitiesIn = NaN;
 
 end
-
 
 
 % --- Auxiliar Functions for Simulation Algorithms --- %

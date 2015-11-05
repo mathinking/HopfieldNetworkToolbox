@@ -10,7 +10,7 @@ classdef tsplib < handle
     
     methods %(Sealed = true)       
     	function problem = tsplib(name)
-            if nargin ~= 0 % Allow nargin == 0 syntax
+            if nargin ~= 0 
                 problem(length(name),1) = tsplib;
                 for i = 1:length(name)
 
@@ -94,7 +94,6 @@ classdef tsplib < handle
             end
         end
     end   
-
     % --- Methods definitions --- %    
     methods (Hidden = false, Access = public)
         plot(problem);
@@ -102,7 +101,7 @@ classdef tsplib < handle
     end
     
     methods (Static = true, Hidden = false, Access = public)
-        problemNames = problemNames(hasOptimumTourFile);
+        problemNames = problemNames(hasOptimumTourFile, saveMATfile);
     end
     
     methods (Static = true, Hidden = true, Access = public)

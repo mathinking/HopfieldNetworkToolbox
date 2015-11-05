@@ -12,12 +12,8 @@ if isscalar(tau_or_p)
         end
 
         modifiedDistance = zeros(size(Ng));
-%         modifiedDistance(Ng == 0 & ~logical(eye(size(net.cities.d)))) = net.trainParam.dU; %net.cities.d(Ng == 0 & ~logical(eye(size(net.cities.d))));%Dmax;
-%         modifiedDistance(Ng == 0 & ~logical(eye(size(net.cities.d)))) = net.trainParam.dU - net.trainParam.rho./net.cities.d(Ng == 0 & ~logical(eye(size(net.cities.d))));
         modifiedDistance(Ng == 0 & ~logical(eye(size(net.cities.d)))) = net.trainParam.dU - (net.trainParam.dL./net.cities.d(Ng == 0 & ~logical(eye(size(net.cities.d))))-net.trainParam.rho);
-        modifiedDistance(Ng == 1) = net.cities.d(Ng == 1);%net.trainParam.dL;%net.cities.d(Ng == 1);
-%         modifiedDistance(Ng == 1) = net.trainParam.dL + (net.trainParam.dL./net.cities.d(Ng == 1 & ~logical(eye(size(net.cities.d))))-net.trainParam.rho);
-%         modifiedDistance(Ng == 0) = net.cities.d(Ng == 0);
+        modifiedDistance(Ng == 1) = net.cities.d(Ng == 1);
     else
         p = tau_or_p;
         alpha = p * net.trainParam.dU + (1-p) * net.trainParam.dL;

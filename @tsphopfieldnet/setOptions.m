@@ -30,13 +30,6 @@ function net = setOptions(net,options)
     elseif ~strcmp(options.cities.type,'EXPLICIT') && ~isempty(options.cities.type)
         net.cities.d = tsphopfieldnet.computeDistance(net.cities.coords,net.cities.type);
 
-    %             else % In this case dataCoords are not available. 
-    %                  % Providing problem label so that the matrix distance is
-    %                  % imported directly from its data file. This is not
-    %                  % required any more with tsplib class
-    %                 net.cities.d = ...
-    %                     hopfield.tsp.TSPLIB.problemDistanceMatrix(...
-    %                     net.cities.coords);
     end
     
     net.simFcn = options.simFcn;

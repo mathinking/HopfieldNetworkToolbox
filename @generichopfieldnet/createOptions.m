@@ -1,12 +1,5 @@
 function options = createOptions(varargin)  
 
-%     options.cities.coords = []; 
-%     options.cities.names = {}; 
-%     options.cities.d = [];
-%     options.cities.type = '';
-%     options.cities.fixedCities = [];
-%     options.cities.startFixedCitiesIn = [];
-    
     options.simFcn = '';
     options.trainFcn = '';
     
@@ -40,10 +33,7 @@ function [options,hopfieldnetoptions] = setfield(options,field,value)
 
     hopfieldnetoptions = [];
     switch field
-%         case {'d','coords','names','type','fixedCities','startFixedCitiesIn'}
-%             tsphopfieldnet.isValidSetting(field,value);
-%             options.cities.(field) = value;
-            
+           
         case {'trainFcn'}
             tsphopfieldnet.isValidSetting(field,value);
             options.trainFcn = value;

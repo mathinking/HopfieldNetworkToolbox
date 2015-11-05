@@ -6,7 +6,6 @@ classdef hopfieldnetwork < handle
         trainParam;
         setting;
         simFcn;
-%         id; % If required, do get-set functions
         results;
     end
     

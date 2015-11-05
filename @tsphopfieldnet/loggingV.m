@@ -9,9 +9,9 @@ function loggingV(iter,V,dU)
     if iter == 1
         Vlog = nan([size(V),2000]);
         dUlog = nan([size(dU),2000]);
-        save('test','Vlog','dUlog','-v7.3');
+        save('logFile','Vlog','dUlog','-v7.3');
     end
-    data = matfile('test','Writable',true);
+    data = matfile('logFile','Writable',true);
     data.Vlog(:,:,iter) = V;
     data.dUlog(:,:,iter) = dU;
     

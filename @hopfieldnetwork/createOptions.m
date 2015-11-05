@@ -31,7 +31,9 @@ function options = setfield(options,field,value)
 	hopfieldnetwork.isValidSetting(field,value);
 
     switch field
-        case {'u0','hwResources','maxIter','e','q','R_ITER','dt','showCommandLine','loggingV','viewConvergence','viewConvergenceSpeed'}
+        case {'u0','hwResources','maxIter','e','q','R_ITER','dt',...
+                'showCommandLine','loggingV','viewConvergence',...
+                'viewConvergenceSpeed'}
             options.setting.(field) = value;
 
         case {'transferFcn','invTransferFcn'}

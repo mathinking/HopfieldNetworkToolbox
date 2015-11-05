@@ -1,16 +1,22 @@
-function problems = problemNames(hasOptimumTourFile)
+function problems = problemNames(hasOptimumTourFile, saveMATfile)
 
+filedir = fileparts(which('setup_hopfieldNetwork.m'));
 TSPFilesDir = 'TSPFiles';
 TSPToursDir = 'TSPTours';
 
 if hasOptimumTourFile
-    % TSPFiles = cellstr(ls(fullfile(pwd,TSPFilesDir,'*.tsp')));
-    OptimTourTSPFiles = cellstr(ls(fullfile(pwd,TSPFilesDir,TSPToursDir,'*.tour')));
+    OptimTourTSPFiles = cellstr(ls(fullfile(filedir,TSPFilesDir,TSPToursDir,'*.tour')));
 
-    problems = regexprep(OptimTourTSPFiles,'.opt.tour','');
+    problemsTour = regexprep(OptimTourTSPFiles,'.opt.tour','');
+    TSPFiles = cellstr(ls(fullfile(filedir,TSPFilesDir,'*.tsp')));
+    problems = regexprep(TSPFiles,'.tsp','');
+    problems = intersect(problems,problemsTour);
+    
 else
-    TSPFiles = cellstr(ls(fullfile(pwd,TSPFilesDir,'*.tsp')));
+    TSPFiles = cellstr(ls(fullfile(filedir,TSPFilesDir,'*.tsp')));
     problems = regexprep(TSPFiles,'.tsp','');
 end
 
-% save(fullfile(pwd,TSPFilesDir,'TSPLIBproblems.mat'),'problemNames')
+if saveMATfile
+    save(fullfile(filedir,TSPFilesDir,'TSPLIBproblems.mat'),'problems')
+end
