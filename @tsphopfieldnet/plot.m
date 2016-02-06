@@ -1,4 +1,4 @@
-function h = plot(net, type, chains, ax, varargin)
+function h = plot(net, type, chains, varargin)
 
 	mytext = net.cities.names;
         
@@ -23,11 +23,7 @@ function h = plot(net, type, chains, ax, varargin)
         myTitle = varargin{4};
     end
 
-    if nargin < 3 || isempty(ax)
-        figure;
-        ax = axes;
-    end
-        
+	figure;
     coords = net.cities.coords;
     if isempty(coords) % No data coords available. Just visualizing order
         warning('tsphopfieldnet:NoDataCoords','No data coords available. Visualizing order instead.');
@@ -37,13 +33,13 @@ function h = plot(net, type, chains, ax, varargin)
     % 3 Possible plots: Empty, Total, Partial
 
     if strcmp(type, 'empty') % Simulation has not taken place yet. Ploting data points.
-%         hold(ax,'on');
-        h = plot(ax,coords(:,1),coords(:,2),...
+        hold on;
+        h = plot(coords(:,1),coords(:,2),...
             'color','r','marker','o','markersize',4,...
             'markerfacecolor','r',...
             'markeredgecolor',myCitiesColor,'linestyle','none');
-        text(coords(:,1),coords(:,2),mytext,'fontsize',10,'color',myCitiesTextColor,'margin',20,'Clipping','on','Parent',ax);
-        title(ax,'\bf Problem coordinates');
+        text(coords(:,1),coords(:,2),mytext,'fontsize',10,'color',myCitiesTextColor,'margin',20,'Clipping','on');
+        title('\bf Problem coordinates');
         warning('tsphopfieldnet:NotSimulated','Simulation has not taken place yet. Use ''sim(net)'' to simulate your network.');
         
     else
@@ -52,12 +48,12 @@ function h = plot(net, type, chains, ax, varargin)
                 repmat('_{(',length(mytext),1),num2str((1:net.trainParam.N)'),repmat(')}',...
                 length(mytext),1)]),' ','');
 
-            h = plot(ax,[coords(net.results.visitOrder,1);coords(net.results.visitOrder(1),1)],...
+            h = plot([coords(net.results.visitOrder,1);coords(net.results.visitOrder(1),1)],...
                 [coords(net.results.visitOrder,2);coords(net.results.visitOrder(1),2)],...
                 'color',myCitiesColor,'marker','o','markersize',4,'markerfacecolor',myCitiesColor,...
                 'markeredgecolor',myCitiesColor,'linestyle','-');
 
-            hold(ax,'on');
+            hold on;
             if strcmp(type,'phase2')
                 for c = 1:length(chains)
                     h = plot(coords(chains{c} ,1), coords(chains{c} ,2),...
@@ -66,9 +62,9 @@ function h = plot(net, type, chains, ax, varargin)
                 end               
             end
             text(coords(net.results.visitOrder,1),coords(net.results.visitOrder,2),...
-                dispText,'fontsize',10,'color',myCitiesTextColor,'margin',20,'Clipping','on','Parent',ax);
+                dispText,'fontsize',10,'color',myCitiesTextColor,'margin',20,'Clipping','on');
             
-            hold(ax,'off');
+            hold off;
             
         elseif net.results.validPath && strcmp(type,'phase1') % Partial plot
             
@@ -97,9 +93,9 @@ function h = plot(net, type, chains, ax, varargin)
             error('tsphopfieldnet:UnvalidPath','Unvalid TSP Path');
         end
         if ~isempty(myTitle)
-            title(ax,['\bf', myTitle]);
+            title(['\bf', myTitle]);
         else
-            title(ax,['\bf Tour length: ', num2str(net.results.tourLength)]);
+            title(['\bf Tour length: ', num2str(net.results.tourLength)]);
         end
         
     end

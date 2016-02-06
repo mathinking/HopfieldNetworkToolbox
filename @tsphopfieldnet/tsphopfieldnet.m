@@ -89,7 +89,6 @@ classdef tsphopfieldnet < hopfieldnetwork
         p = modulo(m,n);
         loggingV(iter,V,dU);
         chain = createChain(cities);
-        [modifiedDistance,Ng] = neighbourDistance(net, tau_or_p);
     end
     
     methods (Static = true, Hidden = true, Access = protected)

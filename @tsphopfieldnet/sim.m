@@ -58,11 +58,7 @@ function V = sim(net,V,U)
 
         % Removing unused energy and time elements.
         net.results.energy = net.results.energy(~isnan(net.results.energy));
-        indexRemove = find(diff(net.results.time),1,'last') + 1;
-        if length(net.results.time) > indexRemove
-            net.results.time(indexRemove:end) = [];
-        end
-%         net.results.time = [net.results.time(1),net.results.time(net.results.time(2:end) ~= 0)];
+        net.results.time = [net.results.time(1),net.results.time(net.results.time(2:end) ~= 0)];
     end    
 end
 
@@ -334,7 +330,6 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
         U = gather(U);
         iter = gather(iter);
     end
-     
 end
 
 % Divide and Conquer algorithm
@@ -458,7 +453,7 @@ function [net,V,U,iter] = simDivideConquer(net,V,U)
             iOld = iOld + 1;            
         end
         U = net.setting.invTransferFcn(V);
-        iter = net.results.itersReached + netPhase2.results.itersReached - 1;
+        iter = net.results.itersReached + netPhase2.results.itersReached;
 
         if plotPhases
             if isempty(net.results.tourLength);
@@ -467,15 +462,14 @@ function [net,V,U,iter] = simDivideConquer(net,V,U)
             else
                 [~,net.results.visitOrder] = max(V); % Needed for plot phase1 + phase2 to output correctly
             end
-            plot(net,'phase2',chains,[],myPlot.myCitiesColorP2,myPlot.myCitiesTextColor,myPlot.myInsideColorP1,myPlot.myTitle);
+            plot(net,'phase2',chains,myPlot.myCitiesColorP2,myPlot.myCitiesTextColor,myPlot.myInsideColorP1,myPlot.myTitle);
         end    
 
-        % Removing unused energy and time elements.
-        net.results.energy = net.results.energy(~isnan(net.results.energy));
+        net.results.energy = [net.results.energy(~isnan(net.results.energy)),...
+            netPhase2.results.energy(~isnan(netPhase2.results.energy))];
         net.results.time = [net.results.time(1),net.results.time(net.results.time(2:end) ~= 0)];
-
-        net.results.energy = [net.results.energy, netPhase2.results.energy(2:end)];
-        net.results.time = [net.results.time, net.results.time(end) + netPhase2.results.time(2:end)];
+        net.results.time = [net.results.time,net.results.time(end) + ...
+            [netPhase2.results.time(1),netPhase2.results.time(netPhase2.results.time(2:end) ~= 0)]];
     else
         iter = net.results.itersReached;
     end
@@ -487,7 +481,7 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
 	% Backing up distances
     aux_d = net.cities.d;
 
-    [net.cities.d, neighbours] = tsphopfieldnet.neighbourDistance(net, p_or_tau);
+    [net.cities.d, neighbours] = neighbourDistance(net, p_or_tau);
 
     % Starting point close to saddle point
     if nargin < 2
@@ -585,7 +579,7 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
 
         % Visualize Chains
         if plotPhases
-            plot(net,'phase1',chains,[],myPlot.myCitiesColorP1,myPlot.myCitiesTextColor,myPlot.myInsideColorP1,myPlot.myTitleP1);
+            plot(net,'phase1',chains,myPlot.myCitiesColorP1,myPlot.myCitiesTextColor,myPlot.myInsideColorP1,myPlot.myTitleP1);
         end
     end
 end
@@ -663,7 +657,7 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
             for i = 1:length(fixedChainsFromPhase1)
             	fixedChainsFromPhase1{i} = [2*i-1,2*i];
             end
-            plot(netPhase2,'phase2',fixedChainsFromPhase1,[],myPlot.myCitiesColorP2,myPlot.myCitiesTextColor,myPlot.myInsideColorP2,myPlot.myTitleP2);
+            plot(netPhase2,'phase2',fixedChainsFromPhase1,myPlot.myCitiesColorP2,myPlot.myCitiesTextColor,myPlot.myInsideColorP2,myPlot.myTitleP2);
         end
 
     end
