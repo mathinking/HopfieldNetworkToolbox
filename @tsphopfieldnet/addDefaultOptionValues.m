@@ -36,4 +36,9 @@ function net = addDefaultOptionValues(net, options)
     if isempty(options.cities.tau) && strcmp(options.simFcn,'divide-conquer')
         net.cities.tau = max(3,round(net.trainParam.N/10));
     end
+    
+    if isempty(options.cities.tau) && (isempty(options.simFcn) || strcmp(options.simFcn,'euler') || strcmp(options.simFcn,'talavan-yanez'))
+        net.cities.tau = net.trainParam.N - 1;
+    end    
+    
 end
