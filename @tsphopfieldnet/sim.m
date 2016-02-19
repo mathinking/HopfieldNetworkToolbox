@@ -105,7 +105,6 @@ function [net,V,U,iter] = simEuler(net, V, U)
             (maxDiffV > stopC2 && unstable))
 
         unstable = false;
-        net.results.energy(iter+1) = 0;
         for i = 1:N
             if i == N, deltaPrev = 1; else deltaPrev = i+1; end
             if i == 1, deltaNext = N; else deltaNext = i-1; end
@@ -121,7 +120,7 @@ function [net,V,U,iter] = simEuler(net, V, U)
                     unstable = true;
                 end
                 net.results.energy(iter+1) = ...
-                    net.results.energy(iter+1) + ...
+                    net.results.energy(iter) + ...
                     0.5* V(x,i) * dU(x,i) - ...
                     ib * V(x,i);
             end
@@ -155,7 +154,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
     K = net.trainParam.K;
     if nargin == 1
         U = rand(N,N-K)-.5;   % TODO Different from Pedro's algorithm
-        V = 0.5 + 1e-7*U; % TODO Different from Pedro's algorithm
+        V = 0.5 + 1e-7*U;     % TODO Different from Pedro's algorithm
     end
     if strcmp(net.setting.hwResources,'GPU')
         U = gpuArray(U);
@@ -739,7 +738,12 @@ function net = computeTour(net,V,iter)
         
     V(V > 1 - power(10, -1 * net.setting.e)) = 1; %FIXME to be removed?
     V(V < power(10, -1 * net.setting.e)) = 0;
-
+    
+    if strcmp(net.simFcn,'euler') % More relaxed criteria
+        V(V > 0.99) = 1;
+        V(V < 0.01) = 0;
+    end
+    
     if all(any(V == 1, 1)) && all(any(V == 1,2)) && sum(sum(V)) == net.trainParam.N
         net.results.validPath = true;
         [~,net.results.visitOrder] = max(V);
