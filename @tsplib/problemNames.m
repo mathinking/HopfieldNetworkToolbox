@@ -1,6 +1,6 @@
 function problems = problemNames(hasOptimumTourFile, saveMATfile)
 
-filedir = fileparts(which('setup_hopfieldNetwork.m'));
+filedir = fileparts(fileparts(which('tsphopfieldnet.m')));
 TSPFilesDir = 'TSPFiles';
 TSPToursDir = 'TSPTours';
 
