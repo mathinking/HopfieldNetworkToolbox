@@ -42,7 +42,7 @@ function options = setfield(options,field,value)
                 options.setting.invTransferFcn = 'invsatlin';
             else
                 options.setting.transferFcn = 'tanh';
-                options.setting.invTransferFcn = 'atahn';
+                options.setting.invTransferFcn = 'atanh';
             end
 
         otherwise
