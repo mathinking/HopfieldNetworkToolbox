@@ -23,7 +23,7 @@ However, at this point the Hopfield Network Toolbox is primarily designed to sol
 It is recommended to use the [latest release](https://github.com/mathinking/HopfieldNetworkToolbox/releases/latest). You may download the entire source code or a single installable Toolbox file.
 
 ## Install
-If you have downloaded the source code , simply run
+If you have downloaded the source code, simply run
 ```sh
 >> setup_hopfieldNetwork
 ```
