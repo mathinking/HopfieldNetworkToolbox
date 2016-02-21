@@ -18,12 +18,12 @@ tempFile = 'ALL_tsp.tar.gz';
 TSPFilesDir = fullfile(filesPath,'TSPFiles');
 TSPToursDir = fullfile(TSPFilesDir,'TSPTours');
 untar(fullfile(filesPath,tempFile),TSPFilesDir)
-gunzip([TSPFilesDir,'/*.gz'],TSPFilesDir);
-delete([TSPFilesDir,'/*.gz']);
+gunzip(fullfile(TSPFilesDir,'*.gz'),TSPFilesDir);
+delete(fullfile(TSPFilesDir,'*.gz'));
 delete(fullfile(filesPath,tempFile));
 
 mkdir(TSPToursDir)
-movefile([TSPFilesDir,'\*.tour'],TSPToursDir)
+movefile(fullfile(TSPFilesDir,'*.tour'),TSPToursDir)
 
 % The missing optimum tour are downloaded
 missingTours = 'http://www.akira.ruc.dk/~keld/research/LKH/LKH-1.2/TOURS/';
@@ -134,7 +134,8 @@ for f = 1:length(missingFiles)
     movefile(fullfile(TSPToursDir,[missingFiles{f},'_dupped']),fullfile(TSPToursDir,missingFiles{f}))
 end
 
-tspFiles = cellstr(ls([TSPFilesDir,'\*.tsp']));
+tspFiles = dir(fullfile(TSPFilesDir,'*.tsp'));
+tspFiles = {tspFiles.name}';
 for f = 1:length(tspFiles)
     fid = fopen(fullfile(TSPFilesDir,tspFiles{f}));
     fid2 = fopen(fullfile(TSPFilesDir,[tspFiles{f},'_dupped']),'w');

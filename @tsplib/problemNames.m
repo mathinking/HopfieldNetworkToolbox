@@ -5,15 +5,19 @@ TSPFilesDir = 'TSPFiles';
 TSPToursDir = 'TSPTours';
 
 if hasOptimumTourFile
-    OptimTourTSPFiles = cellstr(ls(fullfile(filedir,TSPFilesDir,TSPToursDir,'*.tour')));
-
+    OptimTourTSPFiles = dir(fullfile(filedir,TSPFilesDir,TSPToursDir,'*.tour'));
+    OptimTourTSPFiles = {OptimTourTSPFiles.name}';
+    
     problemsTour = regexprep(OptimTourTSPFiles,'.opt.tour','');
-    TSPFiles = cellstr(ls(fullfile(filedir,TSPFilesDir,'*.tsp')));
+    TSPFiles = dir(fullfile(filedir,TSPFilesDir,'*.tsp'));
+    TSPFiles = {TSPFiles.name}';
+    
     problems = regexprep(TSPFiles,'.tsp','');
     problems = intersect(problems,problemsTour);
     
 else
-    TSPFiles = cellstr(ls(fullfile(filedir,TSPFilesDir,'*.tsp')));
+    TSPFiles = dir(fullfile(filedir,TSPFilesDir,'*.tsp'));
+    TSPFiles = {TSPFiles.name}';
     problems = regexprep(TSPFiles,'.tsp','');
 end
 

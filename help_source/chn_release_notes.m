@@ -4,6 +4,12 @@
 %
 % The Hopfield Network Toolbox requires the following products: HERE
 % 
+%% Version 1.1.1, 21-Feb-2015
+% Bug fixing for Unix platforms
+%
+% List of <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av1.1.1+is%3Aclosed+label%3Abug
+% Bugs> fixed in this release.
+
 %% Version 1.1, 21-Feb-2015
 % New App, Toolbox Documentation and Examples.
 % 
