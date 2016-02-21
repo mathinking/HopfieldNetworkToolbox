@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="2583364660" file="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Net TSP solver.prj" location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Net TSP solver" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1730626426" file="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Net TSP solver.prj" location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Net TSP solver" target="target.mlapps" target-name="Package App">
     <param.appname>Hopfield Net TSP solver</param.appname>
     <param.authnamewatermark>Lucas García Rodríguez</param.authnamewatermark>
     <param.email>lucasgarciarodriguez@ucm.es</param.email>
@@ -16,7 +16,7 @@
 
 Find more information in the documentation of the toolbox or in the &lt;a href="https://github.com/mathinking/HopfieldNetworkToolbox"&gt;GitHub repository&lt;/a&gt;</param.description>
     <param.screenshot>${PROJECT_ROOT}\help\html\network.png</param.screenshot>
-    <param.version>1.1</param.version>
+    <param.version>1.1.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
       <item>Statistics and Machine Learning Toolbox</item>

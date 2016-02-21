@@ -7,7 +7,7 @@
     <param.summary>A Hopfield Network Toolbox for MATLAB</param.summary>
     <param.description>The Hopfield Network Toolbox can solve combinatorial optimization problems by using Hopfield Neural Networks. The Hopfield Network Toolbox is focused in Continuous Hopfield Networks.</param.description>
     <param.screenshot>${PROJECT_ROOT}\help\html\hopfieldnet.png</param.screenshot>
-    <param.version>1.1</param.version>
+    <param.version>1.1.1</param.version>
     <param.output>${PROJECT_ROOT}\Hopfield Network Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
