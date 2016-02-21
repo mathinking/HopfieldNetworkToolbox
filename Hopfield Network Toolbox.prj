@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="4112423016" file="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Network Toolbox.prj" location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Network Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3872350337" file="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Network Toolbox.prj" location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Network Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hopfield Network Toolbox</param.appname>
     <param.authnamewatermark>Lucas García Rodríguez</param.authnamewatermark>
     <param.email>lucasgarciarodriguez@ucm.es</param.email>
@@ -42,7 +42,7 @@
 % All files matching a pattern in all subfolders of the toolbox folder:
 % **/*.bak
 %
-.git/
+**/.git
 +Test/
 help_source/
 Hopfield Net TSP solver_resources/
