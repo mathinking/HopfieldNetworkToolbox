@@ -5,17 +5,17 @@ The Continuous Hopfield Network (CHN) is a **recurrent neural network** with an 
 As the Lyapunov function is associated with an objective function of the optimization problem (i.e. the mapping process), the equilibrium, or stable point, helps identify a local optimum for the optimization problem.
 The dynamics of the CHN is described by a **differential equation**:
 
-![alt tag](http://mathurl.com/hzhnzj5.png) 
+![\frac{du}{dt} = - \frac{u}{\Lambda} + T v + i^b](http://mathurl.com/hzhnzj5.png) 
 
 and the output function is a hyperbolic tangent:
 
-![alt tag](http://mathurl.com/zdeg52h.png)
+![v_i = g(u_i) = \frac{1}{2} \left( 1 + \tanh \left( \frac{u_i}{u_0} \right) \right), \qquad u_0 > 0](http://mathurl.com/zdeg52h.png)
 
-The existence of an equilibrium point is guaranteed if a Lyapunov or energy function exists. The idea is that the network's Lyapunov function, when ![alt tag](http://mathurl.com/hl2t4by.png), is associated with the cost function to be minimized in the combinatorial problem.
+The existence of an equilibrium point is guaranteed if a Lyapunov or energy function exists. The idea is that the network's Lyapunov function, when ![\Lambda \rightarrow{} \infty](http://mathurl.com/hl2t4by.png), is associated with the cost function to be minimized in the combinatorial problem.
 
 The CHN will solve those combinatorial problems which can be expressed as the constrained minimization of: 
 
-![alt tag](http://mathurl.com/goa77to.png)
+![E(v) = -  \frac{1}{2} v^t T v - (i^b)^t v](http://mathurl.com/goa77to.png)
 
 However, at this point the Hopfield Network Toolbox is primarily designed to solve the Traveling Salesman Proble,.
 
