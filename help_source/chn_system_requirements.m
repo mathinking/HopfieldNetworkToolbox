@@ -1,4 +1,5 @@
 %% Hopfield Network Toolbox System Requirements
-% Hopfield Network Toolbox requires MATLAB(R) and Statistics and Machine
-% Learning Toolbox(TM)
+% Hopfield Network Toolbox requires <mathworks.com/products/matlab MATLAB®> 
+% and <http://www.mathworks.com/products/statistics/ Statistics and Machine 
+% Learning Toolbox™>
 %

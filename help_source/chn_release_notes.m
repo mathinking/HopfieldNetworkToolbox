@@ -2,7 +2,9 @@
 % This toolbox is solves combinatorial optimization problems by using
 % Continuous Hopfield Networks (CHN). 
 %
-% The Hopfield Network Toolbox requires the following products: HERE
+% The Hopfield Network Toolbox requires the following products: 
+% <mathworks.com/products/matlab MATLAB®> and <http://www.mathworks.com/products/statistics/
+% Statistics and Machine Learning Toolbox™>
 % 
 %% Version 1.1.1, 21-Feb-2015
 % Bug fixing for Unix platforms
