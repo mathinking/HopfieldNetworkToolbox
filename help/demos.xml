@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<demos>
+    <name>Hopfield Network</name>
+    <type>toolbox</type>
+    <icon>HelpIcon.DEMOS</icon>
+    <description>Examples available in Hopfield Network Toolbox</description>
+    <website><a href="https://github.com/mathinking/HopfieldNetworkToolbox">GitHub Repository</a></website>
+
+    <demosection>
+        <label>Solving the Traveling Salesman Problem using Hopfield Networks</label>
+        <demoitem>
+            <label>Solving the TSP with cities in Polygon Vertices</label>
+            <type>M-file</type>
+            <source>Example_tspUsingRegularPolygons</source>
+            <file>html/Example_tspUsingRegularPolygons.html</file>
+        </demoitem>
+        <demoitem>
+            <label>Solving the TSP with TSPLIB cities</label>
+            <type>M-file</type>
+            <source>Example_tspUsingTSPLIB</source>
+            <file>html/Example_tspUsingTSPLIB.html</file>
+        </demoitem>        
+        <demoitem>
+            <label>Solving the TSP provided the problem's coordinates</label>
+            <type>M-file</type>
+            <source>Example_tspUsingCoords</source>
+            <file>html/Example_tspUsingCoords.html</file>            
+        </demoitem>        
+        <demoitem>
+            <label>Solving the TSP provided the distance matrix</label>
+            <type>M-file</type>
+            <source>Example_tspUsingDistance</source>
+            <file>html/Example_tspUsingDistance.html</file>            
+        </demoitem>        
+    </demosection>
+
+    <demosection>
+        <label>Improving Hopfield Network performance when applied to the TSP</label>
+        <demoitem>
+            <label>Reduce the free parameter C</label>
+            <type>M-file</type>
+            <source>Example_tspReducingC</source>
+            <file>html/Example_tspReducingC.html</file>                        
+        </demoitem>
+        <demoitem>
+            <label>Appropriate starting point</label>
+            <type>M-file</type>
+            <source>Example_tspSaddlePoint</source>
+            <file>html/Example_tspSaddlePoint.html</file>                                    
+        </demoitem>        
+        <demoitem>
+            <label>A Divide-and-Conquer Scheme</label>
+            <type>M-file</type>
+            <source>Example_tspDivideConquer</source>
+            <file>html/Example_tspDivideConquer.html</file>                                                
+        </demoitem>
+    </demosection>
+</demos>

@@ -3,7 +3,7 @@
 % http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/
 
 webFile = 'http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp/ALL_tsp.tar.gz';
-filesPath = fileparts(which('setup_hopfieldNetwork.m'));
+filesPath = fileparts(fileparts(which('tsphopfieldnet.m')));
 fprintf(1,'\nDownloading TSPLIB library...\n');
 
 try

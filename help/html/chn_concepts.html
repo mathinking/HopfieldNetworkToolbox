@@ -1,0 +1,192 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Concepts</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-20"><meta name="DC.source" content="chn_concepts.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Concepts</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">What is a Neural Network?</a></li><li><a href="#2">What is a Hopfield Neural Network?</a></li><li><a href="#7">The Traveling Salesman Problem</a></li><li><a href="#10">The Mapping Process</a></li><li><a href="#13">The Hopfield Network applied to the TSP</a></li></ul></div><h2>What is a Neural Network?<a name="1"></a></h2><p>Artificial Neural Networks (ANN), or commonly Neural Networks, are a family of Machine Learning models, inspired by biological neural networks. ANNs were defined by Dr. Robert Hecht-Nielsen as:</p><p><i>"A computing system made up of a number of simple, highly interconnected processing elements, which process information by their dynamic state response to external inputs."</i></p><p>You can find more information about Neural Networks online. One great introductory book is Neural Network Design, by <i>Martin T. Hagan, Howard B. Demuth and Mark H. Beale</i> (original authors of Neural Network Toolbox). An ebook version is available from Martin T. Hagan's <a href="http://hagan.okstate.edu/nnd.html">site</a>.</p><h2>What is a Hopfield Neural Network?<a name="2"></a></h2><p>The Continuous Hopfield Network (CHN) is a <b>recurrent neural network</b> with an associated differential equation, whose state evolves from an initial condition to an equilibrium point by minimizing a Lyapunov function. As the Lyapunov function is associated with an objective function of the optimization problem (i.e. the mapping process), the equilibrium, or stable point, helps identify a local optimum for the optimization problem.</p><p>The dynamics of the CHN is described by a <b>differential equation</b>:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq00035331718864276242.png" alt="$$\frac{du}{dt} = - \frac{u}{\Lambda} + T v + i^b$$"></span><script type="math/tex">\frac{du}{dt} = - \frac{u}{\Lambda} + T v + i^b</script></p><p>and the output function <span class="MathJax_Preview"><img src="chn_concepts_eq15939250488939458085.png" alt="$v_i = g(u_i)$"></span><script type="math/tex">v_i = g(u_i)</script> is a hyperbolic tangent:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq14490205257796055869.png" alt="$$g(u_i) = \frac{1}{2} \left( 1 + \tanh \left( \frac{u_i}{u_0} \right) \right), \qquad u_0 &gt; 0$$"></span><script type="math/tex">g(u_i) = \frac{1}{2} \left( 1 + \tanh \left( \frac{u_i}{u_0} \right) \right), \qquad u_0 > 0</script></p><p>The existence of an equilibrium point (<span class="MathJax_Preview"><img src="chn_concepts_eq06007227082040990150.png" alt="$u^e$"></span><script type="math/tex">u^e</script> such that <span class="MathJax_Preview"><img src="chn_concepts_eq03694016953854672339.png" alt="$u(t)=u^e \ \forall t \geq t_e$"></span><script type="math/tex">u(t)=u^e \ \forall t \geq t_e</script> for some <span class="MathJax_Preview"><img src="chn_concepts_eq10347305303334382098.png" alt="$t_e \geq 0$"></span><script type="math/tex">t_e \geq 0</script>) is guaranteed if a Lyapunov or energy function exists. The idea is that the network's Lyapunov function, when <span class="MathJax_Preview"><img src="chn_concepts_eq05939848919228197810.png" alt="$\Lambda \rightarrow{} \infty$"></span><script type="math/tex">\Lambda \rightarrow{} \infty</script>, is associated with the cost function to be minimized in the combinatorial problem.</p><p>The CHN will solve those combinatorial problems which can be expressed as the constrained minimization of:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq06674439432875387839.png" alt="$$E(v) = -  \frac{1}{2} v^t T v - (i^b)^t v$$"></span><script type="math/tex">E(v) = -  \frac{1}{2} v^t T v - (i^b)^t v</script></p><h2>The Traveling Salesman Problem<a name="7"></a></h2><p>Let <span class="MathJax_Preview"><img src="chn_concepts_eq03672095713503266041.png" alt="$N$"></span><script type="math/tex">N</script> be the number of cities in the TSP, and let <span class="MathJax_Preview"><img src="chn_concepts_eq17240263628519000366.png" alt="$d_{xy}$"></span><script type="math/tex">d_{xy}</script> be the distance between cities <span class="MathJax_Preview"><img src="chn_concepts_eq18156557156166787701.png" alt="$x,y \in \{ 1,2,\ldots, N \}$"></span><script type="math/tex">x,y \in \{ 1,2,\ldots, N \}</script>.  Next, let <span class="MathJax_Preview"><img src="chn_concepts_eq02739270504201626537.png" alt="$V$"></span><script type="math/tex">V</script> be the <span class="MathJax_Preview"><img src="chn_concepts_eq10759771773545505961.png" alt="$N \times N$"></span><script type="math/tex">N \times N</script> matrix of the state variable:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq18433945771838969647.png" alt="$$v_{x,i} = \{ 1 \, \mbox{if the city} \, x \, \mbox{is visited in the&#xA;order} \, i \mbox{,} \, 0 \, \mbox{otherwise} \} $$"></span><script type="math/tex">v_{x,i} = \{ 1 \, \mbox{if the city} \, x \, \mbox{is visited in the
+order} \, i \mbox{,} \, 0 \, \mbox{otherwise} \} </script></p><p><span class="MathJax_Preview"><img src="chn_concepts_eq02739270504201626537.png" alt="$V$"></span><script type="math/tex">V</script> identifies a valid tour for the <span class="MathJax_Preview"><img src="chn_concepts_eq10155270228256689344.png" alt="$TSP$"></span><script type="math/tex">TSP</script> if the following constraints are satisfied:</p><div><ul><li>Every city must be visited only once: <span class="MathJax_Preview"><img src="chn_concepts_eq14676443675592190138.png" alt="$S_x = \sum_{i=1}^N v_{x,i} = 1, \quad \forall x \in \{1,2,\ldots,N \}$"></span><script type="math/tex">S_x = \sum_{i=1}^N v_{x,i} = 1, \quad \forall x \in \{1,2,\ldots,N \}</script></li><li>Every position is associated with a unique city: <span class="MathJax_Preview"><img src="chn_concepts_eq18394799583538535278.png" alt="$S_i = \sum_{x=1}^N v_{x,i} = 1, \quad \forall i \in \{ 1,2,\ldots,N \}$"></span><script type="math/tex">S_i = \sum_{x=1}^N v_{x,i} = 1, \quad \forall i \in \{ 1,2,\ldots,N \}</script></li></ul></div><p>The <b>objective function</b> is:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq03260997904780748274.png" alt="$$ \min  \{ \frac{1}{2} \sum_{x=1}^N \sum_{y \neq x} \sum_{i=1}^N&#xA;d_{xy} v_{xi}(v_{y(i+1)} + v_{y(i-1)}) \}, \mbox{(the $i+1$&#xA;and $i-1$ subscripts are given modulo $N$)} $$"></span><script type="math/tex"> \min  \{ \frac{1}{2} \sum_{x=1}^N \sum_{y \neq x} \sum_{i=1}^N
+d_{xy} v_{xi}(v_{y(i+1)} + v_{y(i-1)}) \}, \mbox{(the $i+1$
+and $i-1$ subscripts are given modulo $N$)} </script></p><h2>The Mapping Process<a name="10"></a></h2><p>Given the state variable is <span class="MathJax_Preview"><img src="chn_concepts_eq17482029290233443952.png" alt="$V\in [0,1]^{N\times N}$"></span><script type="math/tex">V\in [0,1]^{N\times N}</script> for the TSP, the energy function of the CHN is:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq06411826079441952994.png" alt="$$ E(V) = \frac{A}{2} \sum_x^N \sum_i^{N} \sum_{j \neq i}^{N} v_{x,i}&#xA;v_{x,j} + \frac{B}{2} \sum_i^{N} \sum_x^N \sum_{y \neq x}^N v_{x,i}&#xA;v_{y,i} + \frac{C}{2} ( \sum_x^N \sum_i^N v_{x,i} - N )^2 + \frac{D}{2}&#xA;\sum_x^N \sum_{y \neq x}^N \sum_i^N d_{x,y} v_{x,i} (v_{y,i-1} +&#xA;v_{y,i+1}) $$"></span><script type="math/tex"> E(V) = \frac{A}{2} \sum_x^N \sum_i^{N} \sum_{j \neq i}^{N} v_{x,i}
+v_{x,j} + \frac{B}{2} \sum_i^{N} \sum_x^N \sum_{y \neq x}^N v_{x,i}
+v_{y,i} + \frac{C}{2} ( \sum_x^N \sum_i^N v_{x,i} - N )^2 + \frac{D}{2}
+\sum_x^N \sum_{y \neq x}^N \sum_i^N d_{x,y} v_{x,i} (v_{y,i-1} +
+v_{y,i+1}) </script></p><p>By developing the four terms in this energy function, and comparing them with the general form of the energy function, the weight of the arc linking the neuron <span class="MathJax_Preview"><img src="chn_concepts_eq05756920877916743434.png" alt="$(y,j)$"></span><script type="math/tex">(y,j)</script> to <span class="MathJax_Preview"><img src="chn_concepts_eq05038726520905991903.png" alt="$(x,i)$"></span><script type="math/tex">(x,i)</script> and the incoming bias to neuron <span class="MathJax_Preview"><img src="chn_concepts_eq05038726520905991903.png" alt="$(x,i)$"></span><script type="math/tex">(x,i)</script> are:</p><p><span class="MathJax_Preview"><img src="chn_concepts_eq14955172828257682424.png" alt="$$ T_{xi,yj} = -( A \delta_{x,y} (1-\delta_{i,j}) + B (1 - \delta_{x,y})&#xA;\delta_{i,j} + C + D  d_{x,y} (\delta_{i,j-1} + \delta_{i,j+1}) ) $$"></span><script type="math/tex"> T_{xi,yj} = -( A \delta_{x,y} (1-\delta_{i,j}) + B (1 - \delta_{x,y})
+\delta_{i,j} + C + D  d_{x,y} (\delta_{i,j-1} + \delta_{i,j+1}) ) </script></p><p><span class="MathJax_Preview"><img src="chn_concepts_eq15971122355140947654.png" alt="$$i^b_{x,i} = C N $$"></span><script type="math/tex">i^b_{x,i} = C N </script></p><p>with <span class="MathJax_Preview"><img src="chn_concepts_eq03677014770554883288.png" alt="$x,y \in \{1,2,\ldots, N \}$"></span><script type="math/tex">x,y \in \{1,2,\ldots, N \}</script> and <span class="MathJax_Preview"><img src="chn_concepts_eq12232331728053037104.png" alt="$i,j \in \{1,2,\ldots, N \}$"></span><script type="math/tex">i,j \in \{1,2,\ldots, N \}</script>.</p><h2>The Hopfield Network applied to the TSP<a name="13"></a></h2><p>The Hopfield Network detailed in the previous section can be explained by using the following graph:</p><p><img vspace="5" hspace="5" src="network.png" alt=""> </p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Concepts
+%
+%% What is a Neural Network?
+%
+% Artificial Neural Networks (ANN), or commonly Neural Networks, are a
+% family of Machine Learning models, inspired by biological neural
+% networks. ANNs were defined by Dr. Robert Hecht-Nielsen as:
+%
+% _"A computing system made up of a number of simple, highly interconnected   
+% processing elements, which process information by their dynamic state
+% response to external inputs."_
+%
+% You can find more information about Neural Networks online. One great
+% introductory book is Neural Network Design, by _Martin T. Hagan, 
+% Howard B. Demuth and Mark H. Beale_ (original authors of Neural Network 
+% Toolbox). An ebook version is available from Martin T. Hagan's 
+% <http://hagan.okstate.edu/nnd.html site>.
+%
+%% What is a Hopfield Neural Network?
+%
+% The Continuous Hopfield Network (CHN) is a *recurrent neural network* 
+% with an associated differential equation, whose state evolves from an 
+% initial condition to an equilibrium point by minimizing a Lyapunov 
+% function. 
+% As the Lyapunov function is associated with an objective function of the 
+% optimization problem (i.e. the mapping process), the equilibrium, or 
+% stable point, helps identify a local optimum for the optimization 
+% problem.
+%
+% The dynamics of the CHN is described by a *differential equation*:
+%%
+% 
+% $$\frac{du}{dt} = - \frac{u}{\Lambda} + T v + i^b$$
+% 
+% and the output function $v_i = g(u_i)$ is a hyperbolic tangent:
+%%
+% 
+% $$g(u_i) = \frac{1}{2} \left( 1 + \tanh \left( \frac{u_i}{u_0} \right) \right), \qquad u_0 > 0$$
+% 
+%%
+% The existence of an equilibrium point ($u^e$ such that 
+% $u(t)=u^e \ \forall t \geq t_e$ for some $t_e \geq 0$) is guaranteed if a
+% Lyapunov or energy function exists. The idea is that the network's 
+% Lyapunov function, when $\Lambda \rightarrow{} \infty$, is associated 
+% with the cost function to be minimized in the combinatorial problem.
+%
+% The CHN will solve those combinatorial problems which can be expressed as
+% the constrained minimization of:
+%%
+%
+% $$E(v) = -  \frac{1}{2} v^t T v - (i^b)^t v$$
+%
+%
+%% The Traveling Salesman Problem
+% Let $N$ be the number of cities in the TSP, and let $d_{xy}$ be the 
+% distance between cities $x,y \in \{ 1,2,\ldots, N \}$.  Next, let $V$ be
+% the $N \times N$ matrix of the state variable:
+%
+%%
+% 
+% $$v_{x,i} = \{ 1 \, \mbox{if the city} \, x \, \mbox{is visited in the 
+% order} \, i \mbox{,} \, 0 \, \mbox{otherwise} \} $$
+% 
+% $V$ identifies a valid tour for the $TSP$ if the following constraints 
+% are satisfied:
+%
+%%
+% 
+% * Every city must be visited only once: $S_x = \sum_{i=1}^N v_{x,i} = 1, 
+% \quad \forall x \in \{1,2,\ldots,N \}$
+% * Every position is associated with a unique city: $S_i = \sum_{x=1}^N 
+% v_{x,i} = 1, \quad \forall i \in \{ 1,2,\ldots,N \}$
+% 
+% The *objective function* is: 
+%
+% $$ \min  \{ \frac{1}{2} \sum_{x=1}^N \sum_{y \neq x} \sum_{i=1}^N
+% d_{xy} v_{xi}(v_{y(i+1)} + v_{y(i-1)}) \}, \mbox{(the $i+1$ 
+% and $i-1$ subscripts are given modulo $N$)} $$ 
+%
+%% The Mapping Process
+% 
+% Given the state variable is $V\in [0,1]^{N\times N}$ for the TSP, the 
+% energy function of the CHN is:
+%%
+%
+% $$ E(V) = \frac{A}{2} \sum_x^N \sum_i^{N} \sum_{j \neq i}^{N} v_{x,i} 
+% v_{x,j} + \frac{B}{2} \sum_i^{N} \sum_x^N \sum_{y \neq x}^N v_{x,i} 
+% v_{y,i} + \frac{C}{2} ( \sum_x^N \sum_i^N v_{x,i} - N )^2 + \frac{D}{2} 
+% \sum_x^N \sum_{y \neq x}^N \sum_i^N d_{x,y} v_{x,i} (v_{y,i-1} + 
+% v_{y,i+1}) $$
+% 
+% By developing the four terms in this energy function, and comparing them 
+% with the general form of the energy function, the weight of the arc 
+% linking the neuron $(y,j)$ to $(x,i)$ and the incoming bias to neuron 
+% $(x,i)$ are:
+%%
+%
+% $$ T_{xi,yj} = -( A \delta_{x,y} (1-\delta_{i,j}) + B (1 - \delta_{x,y}) 
+% \delta_{i,j} + C + D  d_{x,y} (\delta_{i,j-1} + \delta_{i,j+1}) ) $$
+%
+% $$i^b_{x,i} = C N $$
+%
+% with $x,y \in \{1,2,\ldots, N \}$ and $i,j \in \{1,2,\ldots, N \}$.
+%
+%% The Hopfield Network applied to the TSP
+%%
+% The Hopfield Network detailed in the previous section can be explained by
+% using the following graph:
+%
+% <<network.png>>
+% 
+
+##### SOURCE END #####
+--></body></html>

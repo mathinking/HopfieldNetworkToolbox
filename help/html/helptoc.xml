@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding="utf-8"?>
+
+<toc version="2.0">
+<!-- First tocitem specifies top level in Help browser Contents pane -->
+<!-- This can be a roadmap page, as shown below, or a content page -->
+    <tocitem target="chn_product_page.html">Hopfield Network Toolbox
+        <!-- Nest tocitems to create hierarchical entries in  Contents-->
+        <!-- To include icons, use the following syntax for tocitems: -->
+        <!-- <tocitem target="foo.html" image="HelpIcon.NAME"> -->
+        <!-- Title-of-Section </tocitem> -->
+        <!-- where NAME is one of the following (use capital letters): -->
+        <!-- FUNCTION, USER_GUIDE, EXAMPLES, BLOCK, GETTING_STARTED, -->
+        <!-- DEMOS, RELEASE_NOTES --> 
+        <!-- Icon images used for these entries are also stored in -->
+        <!-- matlabroot/toolbox/matlab/icons -->
+        <!-- A Getting Started Guide usually comes first -->
+        <tocitem target="chn_about.html" image="HelpIcon.GETTING_STARTED">
+            About Hopfield Network Toolbox
+            <tocitem target="chn_system_requirements.html">System Requirements</tocitem>
+        </tocitem>
+     <!-- Concepts comes next -->
+        <tocitem target="chn_concepts.html" 
+            image="HelpIcon.USER_GUIDE">Concepts
+        </tocitem>    
+	 <!-- User Guide comes next -->
+        <tocitem target="chn_users_guide.html" 
+            image="HelpIcon.USER_GUIDE">User's Guide
+            <!-- List category with link to anchor in above page -->
+            <tocitem target="chn_users_guide_hopfieldnet.html">What is hopfieldnet?</tocitem>
+            <tocitem target="chn_users_guide_tsplib.html">TSPLIB - A library for Traveling Salesman Problems</tocitem>           
+            <tocitem target="chn_users_guide_howToUseCreateOptions.html">How to use tsphopfieldnet and createOptions</tocitem>           
+            <tocitem target="chn_users_guide_TSP.html">How to solve the Traveling Salesman Problem using Hopfield Networks
+                <tocitem target="Example_tspUsingRegularPolygons.html">Using regular polygons</tocitem>
+                <tocitem target="Example_tspUsingTSPLIB.html">Using the TSPLIB library</tocitem>
+                <tocitem target="Example_tspUsingCoords.html">Providing the problem's coordinates</tocitem>                
+                <tocitem target="Example_tspUsingDistance.html">Providing the problem's distance matrix</tocitem>                                
+            </tocitem>
+            <tocitem target="chn_users_guide_improve.html">Improving the Hopfield Network performance applied to the TSP
+                <tocitem target="Example_tspReducingC.html">Reducing the parameter C</tocitem>
+                <tocitem target="Example_tspSaddlePoint.html">Choosing an appropriate initial point</tocitem>
+            </tocitem>           
+            <tocitem target="chn_users_guide_improveHybrid.html">Improving the Hopfield Network performance applied to the TSP using Hybrid methods
+                <tocitem target="Example_tspDivideConquer.html">Improving Hopfield Network performance using a Divide-and-Conquer scheme</tocitem>                
+            </tocitem>
+
+        </tocitem>   
+     <!-- Function reference next -->
+     <!-- First item is page describing function categories, if any -->
+     <!--   <tocitem target="chn_functions_by_cat.html" 
+                 image="HelpIcon.FUNCTION">Function Reference
+            <tocitem target="hopfieldnetwork_help.html">hopfieldnetwork</tocitem>
+            <tocitem target="generichopfieldnet_help.html">generichopfieldnet</tocitem>
+            <tocitem target="tsphopfieldnet_help.html">tsphopfieldnet</tocitem>
+            <tocitem target="tsplib_help.html">tsplib</tocitem>           
+        </tocitem> -->
+        <!-- Optional List of Examples, with hyperlinks to examples in other files -->
+        <tocitem target="chn_TSP_APP.html" 
+                 image="HelpIcon.DEMOS">Hopfield Network TSP Solver App
+        </tocitem> 
+        <!-- Optional Release Notes file -->
+        <tocitem target="chn_release_notes.html" 
+            image="HelpIcon.RELEASE_NOTES">Release Notes
+        </tocitem>      
+        <!-- Optional Function Reference by category comes next -->
+        <tocreference target="helpfuncbycat.xml" 
+                      image="HelpIcon.FUNCTION">
+        </tocreference>
+            
+    </tocitem>
+</toc>
