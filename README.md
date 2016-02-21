@@ -23,12 +23,13 @@ However, at this point the Hopfield Network Toolbox is primarily designed to sol
 It is recommended to use the [latest release](https://github.com/mathinking/HopfieldNetworkToolbox/releases/latest). You may download the entire source code or a single installable Toolbox file.
 
 ## Install
-To install the Toolbox, simply run
-
+If you have downloaded the source code , simply run
 ```sh
 >> setup_hopfieldNetwork
 ```
-in MATLAB's Command Window.
+in MATLAB's Command Window to add all the right paths.
+
+If you have downloaded the `.mltbx` file, double click it from within MATLAB to install the Toolbox.
 
 ## Development
 Want to contribute? Great! Feel free to fork the repository and contact us for instructions and suggestions. 
