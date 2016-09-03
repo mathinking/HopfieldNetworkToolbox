@@ -7,7 +7,7 @@ classdef tsphopfieldnet < hopfieldnetwork
     end
     
     methods (Sealed = true)
-        function net = tsphopfieldnet(networkSize, networkParameters, options)
+        function net = tsphopfieldnet(networkSize, networkParameter, options)
 
             if nargin < 2 || nargin > 3
                 error('tsphopfieldnet:IncorrectInputArguments','Please provide proper input arguments to tsphopfieldnet: networkSize, C (and options)');
@@ -15,19 +15,13 @@ classdef tsphopfieldnet < hopfieldnetwork
                 % networkSize assertion done in hopfieldnetwork constructor
                 assert(networkSize > 1, 'tsphopfieldnet:invalid_value', '''networkSize'' must be greater than 2.');
                 
-                assert(numel(networkParameters) > 0 & numel(networkParameters) <= 2, 'networkParameters must be 1 or 2: ''C'' or ''C and F''.')
+                assert(numel(networkParameter) == 1, 'networkParameters must be 1: ''C''.')
                 
-                C = networkParameters(1);
+                C = networkParameter(1);
                 assert(isa(C,'double'), 'tsphopfieldnet:invalid_datatype', '''C'' must be double.');
                 assert(C > 0, 'tsphopfieldnet:invalid_value', '''C'' must be greater than 0.');
                 
-                % If using parameter F in the model
-                if numel(networkParameters) > 1
-                    F = networkParameters(2);
-                    assert(isa(F,'double'), 'tsphopfieldnet:invalid_datatype', [F, ' must be double.']);
-                    assert(F >= 0, 'tsphopfieldnet:invalid_value', '''F'' must be greater than or equal to 0.');
-                end
-            end           
+            end
                         
             if nargin < 3
                 options = tsphopfieldnet.createOptions();
@@ -53,13 +47,10 @@ classdef tsphopfieldnet < hopfieldnetwork
             net.cities = orderfields(net.cities);
             
             net.trainParam.C = C;
-            if exist('F','var')
-                net.trainParam.F = F;
-            end
             
-%             if size(net.cities.coords,1) ~= net.trainParam.N
-%                 error('Mismatch between number of coordinates, distance matrix and neurons');
-%             end
+            if size(net.cities.coords,1) ~= net.trainParam.N
+                error('Mismatch between number of coordinates, distance matrix and neurons');
+            end
                 
             % Initialize results;
             net = init(net);
@@ -75,6 +66,7 @@ classdef tsphopfieldnet < hopfieldnetwork
         net = verifyIfValidSubtours(net);
         [net,V,U] = fixedCities(net);
         thisCity = city(net,cityPosition);
+        [modifiedDistance,Ng] = neighbourDistance(net, tau_or_p);
     end
 
 	methods (Hidden = true, Access = protected)
@@ -89,7 +81,6 @@ classdef tsphopfieldnet < hopfieldnetwork
         p = modulo(m,n);
         loggingV(iter,V,dU);
         chain = createChain(cities);
-        [modifiedDistance,Ng] = neighbourDistance(net, tau_or_p);
     end
     
     methods (Static = true, Hidden = true, Access = protected)

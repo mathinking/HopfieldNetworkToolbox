@@ -49,7 +49,7 @@
      <!--   <tocitem target="chn_functions_by_cat.html" 
                  image="HelpIcon.FUNCTION">Function Reference
             <tocitem target="hopfieldnetwork_help.html">hopfieldnetwork</tocitem>
-            <tocitem target="generichopfieldnet_help.html">generichopfieldnet</tocitem>
+            <tocitem target="hopfieldnet_help.html">hopfieldnet</tocitem>
             <tocitem target="tsphopfieldnet_help.html">tsphopfieldnet</tocitem>
             <tocitem target="tsplib_help.html">tsplib</tocitem>           
         </tocitem> -->

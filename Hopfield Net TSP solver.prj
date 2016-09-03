@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="1730626426" file="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Net TSP solver.prj" location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Net TSP solver" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1730626426" file="E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code\Hopfield Net TSP solver.prj" location="E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code" name="Hopfield Net TSP solver" target="target.mlapps" target-name="Package App">
     <param.appname>Hopfield Net TSP solver</param.appname>
     <param.authnamewatermark>Lucas García Rodríguez</param.authnamewatermark>
     <param.email>lucasgarciarodriguez@ucm.es</param.email>
@@ -26,11 +26,11 @@ Find more information in the documentation of the toolbox or in the &lt;a href="
       <item>19</item>
     </param.products.id>
     <param.products.version>
-      <item>8.6</item>
-      <item>10.1</item>
+      <item>9.0</item>
+      <item>10.2</item>
     </param.products.version>
     <param.platforms />
-    <param.output>E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox</param.output>
+    <param.output>E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code</param.output>
     <param.guid>d605def3-3010-4890-ac40-cf704be9aed1</param.guid>
     <unset>
       <param.platforms />
@@ -338,36 +338,36 @@ Find more information in the documentation of the toolbox or in the &lt;a href="
     </fileset.resources>
     <fileset.package />
     <build-deliverables>
-      <file location="E:\Users\Lucas\Documents\GitHub" name="HopfieldNetworkToolbox" optional="false">E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox</file>
+      <file location="E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk" name="code" optional="false">E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2015b</root>
+      <root>C:\Program Files\MATLAB\R2016a</root>
       <toolboxes>
-        <toolbox name="matlabhdlcoder" />
         <toolbox name="fixedpoint" />
-        <toolbox name="embeddedcoder" />
         <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="embeddedcoder" />
       </toolboxes>
-      <toolbox>
-        <matlabhdlcoder>
-          <enabled>true</enabled>
-        </matlabhdlcoder>
-      </toolbox>
       <toolbox>
         <fixedpoint>
           <enabled>true</enabled>
         </fixedpoint>
       </toolbox>
       <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
-      </toolbox>
-      <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
       </toolbox>
     </matlab>
     <platform>
@@ -379,7 +379,7 @@ Find more information in the documentation of the toolbox or in the &lt;a href="
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>6.1</osver>
+      <osver>6.2</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>win64</arch>

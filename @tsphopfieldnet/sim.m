@@ -38,13 +38,6 @@ function V = sim(net,V,U)
             [net,V,~,iter] = simDivideConquer(net,V,U);
         end
         
-    elseif strcmp(net.simFcn,'talavan-yanez-n')
-        if nargin < 2
-            [net,V,~,iter] = simTalavanYanezVarN(net);
-        else
-            [net,V,~,iter] = simTalavanYanezVarN(net,V,U);
-        end
-        
     else
         error('tsphopfieldnet:UnknownsimFcn', 'Unknown training algorithm');
     end
@@ -52,6 +45,7 @@ function V = sim(net,V,U)
     if ~isempty(net.cities.fixedCities{1})
         net.cities.d = aux_d;
     end   
+    
     if ~any(strcmp({ST.name},'saddle'))
         net = computeTour(net,V,iter);
         net.results.compTime = toc(timeID);
@@ -460,7 +454,7 @@ function [net,V,U,iter] = simDivideConquer(net,V,U)
         iter = net.results.itersReached + netPhase2.results.itersReached - 1;
 
         if plotPhases
-            if isempty(net.results.tourLength);
+            if isempty(net.results.tourLength); %#ok<UNRCH>
                 init(net);
                 net = computeTour(net,V,iter); % Needed for plot phase1 + phase2 to output correctly
             else
@@ -699,10 +693,7 @@ function TV = weightMatrixTimesVvectorized(net,...
             (net.trainParam.A + net.trainParam.B) * V - ... 
             net.trainParam.C * sumV - ...
             net.trainParam.D * dVpVn;
-            if isfield(net.trainParam,'F')
-                TV = TV + net.trainParam.F * (net.cities.d * bsxfun(@minus, sumVrow, V) - dVpVn);
-                % net.trainParam.F * net.cities.d * (repmat(sumVrow,1,net.trainParam.N) - V - V(:,deltaPrev) - V(:,deltaNext));
-            end
+
     else % HAY QUE TRABAJAR ESTO
         reOrder = reshape(flipud(reshape(1:2*net.trainParam.K,2,net.trainParam.K)),2*net.trainParam.K,1);
     	termA = repmat(sumVrow,1,size(V,2)) - V;

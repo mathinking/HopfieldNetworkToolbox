@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="319819020" file="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Network Toolbox.prj" location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Network Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3794982231" file="E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code\Hopfield Network Toolbox.prj" location="E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code" name="Hopfield Network Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hopfield Network Toolbox</param.appname>
     <param.authnamewatermark>Lucas García Rodríguez</param.authnamewatermark>
     <param.email>lucasgarciarodriguez@ucm.es</param.email>
@@ -7,20 +7,11 @@
     <param.summary>A Hopfield Network Toolbox for MATLAB</param.summary>
     <param.description>The Hopfield Network Toolbox can solve combinatorial optimization problems by using Hopfield Neural Networks. The Hopfield Network Toolbox is focused in Continuous Hopfield Networks.</param.description>
     <param.screenshot>${PROJECT_ROOT}\help\html\hopfieldnet.png</param.screenshot>
-    <param.version>1.1.1</param.version>
+    <param.version>1.1.2</param.version>
     <param.output>${PROJECT_ROOT}\Hopfield Network Toolbox.mltbx</param.output>
-    <param.products.name>
-      <item>MATLAB</item>
-      <item>Statistics and Machine Learning Toolbox</item>
-    </param.products.name>
-    <param.products.id>
-      <item>1</item>
-      <item>19</item>
-    </param.products.id>
-    <param.products.version>
-      <item>8.6</item>
-      <item>10.1</item>
-    </param.products.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
     <param.platforms />
     <param.guid>9468a56e-2dfa-48c1-b681-f168f0815c88</param.guid>
     <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
@@ -54,35 +45,35 @@ BuildInstructions.m</param.exclude.filters>
    &lt;exampleCategory name="Solving the Traveling Salesman Problem using Hopfield Networks"&gt;
       &lt;example name="Solving the TSP with cities in Polygon Vertices" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspUsingRegularPolygons.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspUsingRegularPolygons.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspUsingRegularPolygons.m&lt;/file&gt;
          &lt;file type="thumbnail"&gt;/help/html/Example_tspUsingRegularPolygons.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspUsingRegularPolygons_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspUsingRegularPolygons_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="Solving the TSP with TSPLIB cities" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspUsingTSPLIB.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspUsingTSPLIB.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspUsingTSPLIB.m&lt;/file&gt;
          &lt;file type="thumbnail"&gt;/help/html/Example_tspUsingTSPLIB.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspUsingTSPLIB_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspUsingTSPLIB_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="Solving the TSP provided the problem's coordinates" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspUsingCoords.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspUsingCoords.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspUsingCoords.m&lt;/file&gt;
          &lt;file type="thumbnail"&gt;/help/html/Example_tspUsingCoords.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspUsingCoords_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspUsingCoords_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="Solving the TSP provided the distance matrix" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspUsingDistance.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspUsingDistance.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspUsingDistance.m&lt;/file&gt;
          &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="Improving Hopfield Network performance when applied to the TSP"&gt;
       &lt;example name="Reduce the free parameter C" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspReducingC.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspReducingC.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspReducingC.m&lt;/file&gt;
          &lt;file type="thumbnail"&gt;/help/html/Example_tspReducingC.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspReducingC_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspReducingC_02.png&lt;/file&gt;
@@ -90,12 +81,12 @@ BuildInstructions.m</param.exclude.filters>
       &lt;/example&gt;
       &lt;example name="Appropriate starting point" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspSaddlePoint.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspSaddlePoint.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspSaddlePoint.m&lt;/file&gt;
          &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
       &lt;example name="A Divide-and-Conquer Scheme" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspDivideConquer.html&lt;/file&gt;
-         &lt;file type="main"&gt;/help/Example_tspDivideConquer.m&lt;/file&gt;
+         &lt;file type="main"&gt;E:/Users/Lucas/Documents/MATLAB/Add-Ons/Toolboxes/Hopfield Network Toolbox/code/help/Example_tspDivideConquer.m&lt;/file&gt;
          &lt;file type="thumbnail"&gt;/help/html/Example_tspDivideConquer.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspDivideConquer_01.png&lt;/file&gt;
       &lt;/example&gt;
@@ -106,23 +97,29 @@ BuildInstructions.m</param.exclude.filters>
       <file>${PROJECT_ROOT}\Hopfield Net TSP solver.mlappinstall</file>
     </param.apps>
     <param.docs>${PROJECT_ROOT}\help\info.xml</param.docs>
+    <param.matlabpath.excludes />
     <unset>
       <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
       <param.platforms />
       <param.demosxml />
+      <param.matlabpath.excludes />
     </unset>
     <fileset.rootdir>
-      <file>E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox</file>
+      <file>E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}\@generichopfieldnet</file>
+      <file>${PROJECT_ROOT}\@hopfieldnet</file>
       <file>${PROJECT_ROOT}\@hopfieldnetwork</file>
       <file>${PROJECT_ROOT}\@tsphopfieldnet</file>
       <file>${PROJECT_ROOT}\@tsphopfieldnetApp</file>
       <file>${PROJECT_ROOT}\@tsplib</file>
       <file>${PROJECT_ROOT}\help</file>
       <file>${PROJECT_ROOT}\Hopfield Net TSP solver.mlappinstall</file>
-      <file>${PROJECT_ROOT}\LICENSE</file>
+      <file>${PROJECT_ROOT}\Phase1_PossibleSaddlePoint</file>
+      <file>${PROJECT_ROOT}\ReleaseNotes.txt</file>
       <file>${PROJECT_ROOT}\setup_TSPLIB.m</file>
       <file>${PROJECT_ROOT}\TSPFiles</file>
     </fileset.rootfiles>
@@ -130,36 +127,36 @@ BuildInstructions.m</param.exclude.filters>
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox" name="Hopfield Network Toolbox.mltbx" optional="false">E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox\Hopfield Network Toolbox.mltbx</file>
+      <file location="E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code" name="Hopfield Network Toolbox.mltbx" optional="false">E:\Users\Lucas\Documents\Math\PhD\sandbox\hopfield_network\trunk\code\Hopfield Network Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2015b</root>
+      <root>C:\Program Files\MATLAB\R2016a</root>
       <toolboxes>
-        <toolbox name="matlabhdlcoder" />
         <toolbox name="fixedpoint" />
-        <toolbox name="embeddedcoder" />
         <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="embeddedcoder" />
       </toolboxes>
-      <toolbox>
-        <matlabhdlcoder>
-          <enabled>true</enabled>
-        </matlabhdlcoder>
-      </toolbox>
       <toolbox>
         <fixedpoint>
           <enabled>true</enabled>
         </fixedpoint>
       </toolbox>
       <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
-      </toolbox>
-      <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
       </toolbox>
     </matlab>
     <platform>
@@ -171,7 +168,7 @@ BuildInstructions.m</param.exclude.filters>
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>6.1</osver>
+      <osver>6.2</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>win64</arch>

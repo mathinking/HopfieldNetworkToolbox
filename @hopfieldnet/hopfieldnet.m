@@ -1,5 +1,5 @@
-classdef generichopfieldnet < hopfieldnetwork
-    %GENERICHOFIELDNETWORK Continuous Hopfield Network (CHN)
+classdef hopfieldnet < hopfieldnetwork
+    %HOFIELDNETWORK Continuous Hopfield Network (CHN)
     
     properties (GetAccess = public, SetAccess = public)
         name = 'Continuous Hopfield Network (CHN)';
@@ -8,7 +8,7 @@ classdef generichopfieldnet < hopfieldnetwork
     end
     
     methods
-        function net = generichopfieldnet(P, q, A, b, Aeq, beq, options)
+        function net = hopfieldnet(P, q, A, b, Aeq, beq, options)
             % Solving the GQKP
             % min{1/2 * v' * P * v + q' * v}
             % subject to
@@ -18,19 +18,19 @@ classdef generichopfieldnet < hopfieldnetwork
             % v_{n+k} belongs to [0,1], k = 1,..., m1
             
             if nargin < 6 || nargin > 7
-                error('generichopfieldnet:IncorrectInputArguments','Please provide proper input arguments to generichopfieldnet: P, q, R, b (and options)');
+                error('hopfieldnet:IncorrectInputArguments','Please provide proper input arguments to hopfieldnet: P, q, R, b (and options)');
             else                
                 % asserting inputs
-                assert(isa(P,'double'), 'generichopfieldnet:invalid_datatype', 'P must be double.');
-                assert(isa(q,'double'), 'generichopfieldnet:invalid_datatype', 'q must be double.');
-                assert(isa(A,'double'), 'generichopfieldnet:invalid_datatype', 'A must be double.');
-                assert(isa(b,'double'), 'generichopfieldnet:invalid_datatype', 'b must be double.');
-                assert(isa(Aeq,'double'), 'generichopfieldnet:invalid_datatype', 'Aeq must be double.');
-                assert(isa(beq,'double'), 'generichopfieldnet:invalid_datatype', 'beq must be double.');                
+                assert(isa(P,'double'), 'hopfieldnet:invalid_datatype', 'P must be double.');
+                assert(isa(q,'double'), 'hopfieldnet:invalid_datatype', 'q must be double.');
+                assert(isa(A,'double'), 'hopfieldnet:invalid_datatype', 'A must be double.');
+                assert(isa(b,'double'), 'hopfieldnet:invalid_datatype', 'b must be double.');
+                assert(isa(Aeq,'double'), 'hopfieldnet:invalid_datatype', 'Aeq must be double.');
+                assert(isa(beq,'double'), 'hopfieldnet:invalid_datatype', 'beq must be double.');                
             end           
                         
             if nargin < 7
-                options = generichopfieldnet.createOptions();
+                options = hopfieldnet.createOptions();
             end
             
             % Creating net object from parent class

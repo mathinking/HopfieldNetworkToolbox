@@ -17,24 +17,16 @@ function net = train(net)
         net.trainParam.D = 1/net.trainParam.dU;
         net.trainParam.rho = net.trainParam.dL/net.trainParam.dU;
 
-        if ~isfield(net.trainParam, 'F')        
-            net.trainParam.Np = net.trainParam.N - net.trainParam.K + 3 / net.trainParam.C;
+        net.trainParam.Np = net.trainParam.N - net.trainParam.K + 3 / net.trainParam.C;
 
-            if net.trainParam.K == 0
-                net.trainParam.B = 3 + net.trainParam.C;
-                net.trainParam.A = net.trainParam.B - net.trainParam.rho;
-            else
-                net.trainParam.A = 3 + net.trainParam.C;
-                net.trainParam.B = net.trainParam.A + net.trainParam.rho;
-            end        
+        if net.trainParam.K == 0
+            net.trainParam.B = 3 + net.trainParam.C;
+            net.trainParam.A = net.trainParam.B - net.trainParam.rho;
         else
-            net.trainParam.Np = net.trainParam.N - 1 + 3 / net.trainParam.C - (net.trainParam.N - 4)*(net.trainParam.F/net.trainParam.C)*net.trainParam.dL + 1;
+            net.trainParam.A = 3 + net.trainParam.C;
+            net.trainParam.B = net.trainParam.A + net.trainParam.rho;
+        end        
 
-            net.trainParam.B = 3 + net.trainParam.F*(net.trainParam.dU*(net.trainParam.N - 2) - net.trainParam.dL*(net.trainParam.N - 4)) - net.trainParam.C + 2*net.trainParam.C;
-            net.trainParam.A = net.trainParam.B - net.trainParam.D*net.trainParam.dL - net.trainParam.F*net.trainParam.dU;
-           
-        end
-            
         net.trainParam = orderfields(net.trainParam);
     else
         net.trainFcn = 'trainty';
