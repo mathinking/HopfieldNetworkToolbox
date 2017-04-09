@@ -48,7 +48,8 @@ classdef tsphopfieldnet < hopfieldnetwork
             
             net.trainParam.C = C;
             
-            if size(net.cities.coords,1) ~= net.trainParam.N
+            if (~isempty(net.cities.coords) && size(net.cities.coords,1) ~= net.trainParam.N) || ...
+                    (isempty(net.cities.coords) && size(net.cities.d,1) ~= net.trainParam.N)
                 error('Mismatch between number of coordinates, distance matrix and neurons');
             end
                 

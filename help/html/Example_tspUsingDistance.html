@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Solving the TSP provided the distance matrix using Hopfield Network</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-20"><meta name="DC.source" content="Example_tspUsingDistance.m"><style type="text/css">
+      --><title>Solving the TSP provided the distance matrix using Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-09"><meta name="DC.source" content="Example_tspUsingDistance.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,9 +66,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Solving the TSP provided the distance matrix using Hopfield Network</h1><!--introduction--><p>The following example shows how to solve any TSP problem, provided the distance matrix between cities.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Network parameters</a></li><li><a href="#3">Creating the <tt>tsphopfieldnetwork</tt> object</a></li><li><a href="#6">Training the network</a></li><li><a href="#8">Simulating the network</a></li><li><a href="#9">Tour Length</a></li></ul></div><h2>Network parameters<a name="1"></a></h2><pre class="codeinput">rng(22); <span class="comment">% For reproducibility</span>
+  </style></head><body><div class="content"><h1>Solving the TSP provided the distance matrix using Hopfield Network</h1><!--introduction--><p>The following example shows how to solve any TSP problem, provided the distance matrix between cities.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Network parameters</a></li><li><a href="#3">Creating the <tt>tsphopfieldnetwork</tt> object</a></li><li><a href="#6">Training the network</a></li><li><a href="#8">Simulating the network</a></li><li><a href="#9">Tour Length</a></li></ul></div><h2 id="1">Network parameters</h2><pre class="codeinput">rng(22); <span class="comment">% For reproducibility</span>
 </pre><p>Free parameter C:</p><pre class="codeinput">C = 0.00001;
-</pre><h2>Creating the <tt>tsphopfieldnetwork</tt> object<a name="3"></a></h2><p>Providing the distance matrix</p><pre class="codeinput">d = [.0000 .3361 .3141 .3601 .5111 .5176 .2982 .4564 .3289 .2842;<span class="keyword">...</span>
+</pre><h2 id="3">Creating the <tt>tsphopfieldnetwork</tt> object</h2><p>Providing the distance matrix</p><pre class="codeinput">d = [.0000 .3361 .3141 .3601 .5111 .5176 .2982 .4564 .3289 .2842;<span class="keyword">...</span>
      .3361 .0000 .1107 .6149 .8407 .8083 .5815 .6418 .4378 .3934;<span class="keyword">...</span>
      .3141 .1107 .0000 .5349 .7919 .8207 .5941 .6908 .4982 .4501;<span class="keyword">...</span>
      .3601 .6149 .5349 .0000 .3397 .6528 .5171 .7375 .6710 .6323;<span class="keyword">...</span>
@@ -82,10 +82,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </pre><p>Number of cities:</p><pre class="codeinput">N = size(d,1);
 
 net = tsphopfieldnet(N,C,options);
-</pre><h2>Training the network<a name="6"></a></h2><p>The default training algorithm is <tt>trainty</tt></p><pre class="codeinput">train(net);
+</pre><h2 id="6">Training the network</h2><p>The default training algorithm is <tt>trainty</tt></p><pre class="codeinput">train(net);
 </pre><p>Results of the training phase. Network parameters</p><pre class="codeinput">getTrainParam(net)
 </pre><pre class="codeoutput">
 ans = 
+
+  struct with fields:
 
         A: 2.9408
         B: 3.0000
@@ -99,14 +101,14 @@ ans =
     dUaux: 0.8407
       rho: 0.0592
 
-</pre><h2>Simulating the network<a name="8"></a></h2><p>The default simulation algorithm is <tt>talavan-yanez</tt></p><pre class="codeinput">sim(net);
-</pre><h2>Tour Length<a name="9"></a></h2><pre class="codeinput">getResults(net,<span class="string">'tourLength'</span>)
+</pre><h2 id="8">Simulating the network</h2><p>The default simulation algorithm is <tt>talavan-yanez</tt></p><pre class="codeinput">sim(net);
+</pre><h2 id="9">Tour Length</h2><pre class="codeinput">getResults(net,<span class="string">'tourLength'</span>)
 </pre><pre class="codeoutput">
 ans =
 
     2.6908
 
-</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Solving the TSP provided the distance matrix using Hopfield Network
 % The following example shows how to solve any TSP problem, provided the

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Improving the convergence of the Hopfield Network applied to the TSP by reducing the parameter C</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-20"><meta name="DC.source" content="Example_tspReducingC.m"><style type="text/css">
+      --><title>Improving the convergence of the Hopfield Network applied to the TSP by reducing the parameter C</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-09"><meta name="DC.source" content="Example_tspReducingC.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,20 +66,22 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Improving the convergence of the Hopfield Network applied to the TSP by reducing the parameter C</h1><!--introduction--><p>In this section, you will be able to see how the convergence of the Hopfield Network is improved when reducing the free parameter C. Note that this had been proved experimentaly but there was no analytical proof until [ref].</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>tsphopfieldnetwork</tt> object with value of C 'big'</a></li><li><a href="#7">Training the network</a></li><li><a href="#9">Simulating the network</a></li><li><a href="#10">Visualizing results</a></li><li><a href="#11">Repeating the <tt>tsphopfieldnet</tt> network simulation with a smaller value of C</a></li></ul></div><h2>TSPLIB problem and network parameters<a name="1"></a></h2><pre class="codeinput">seed = 10;
+  </style></head><body><div class="content"><h1>Improving the convergence of the Hopfield Network applied to the TSP by reducing the parameter C</h1><!--introduction--><p>In this section, you will be able to see how the convergence of the Hopfield Network is improved when reducing the free parameter C. Note that this had been proved experimentaly but there was no analytical proof until [ref].</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>tsphopfieldnetwork</tt> object with value of C 'big'</a></li><li><a href="#7">Training the network</a></li><li><a href="#9">Simulating the network</a></li><li><a href="#10">Visualizing results</a></li><li><a href="#11">Repeating the <tt>tsphopfieldnet</tt> network simulation with a smaller value of C</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">seed = 10;
 rng(seed); <span class="comment">% For reproducibility</span>
 </pre><p>TSPLIB Problem:</p><pre class="codeinput">problem = tsplib({<span class="string">'berlin52'</span>});
 </pre><p>Number of cities:</p><pre class="codeinput">N = problem.nCities;
 </pre><p>Free parameter C:</p><pre class="codeinput">C = 1e5;
-</pre><h2>Creating the <tt>tsphopfieldnetwork</tt> object with value of C 'big'<a name="5"></a></h2><p>Providing problem coordinates cities and distance matrix to the <tt>tsphopfieldnet</tt> network by creating a structure of options</p><pre class="codeinput">options = tsphopfieldnet.createOptions(<span class="string">'coords'</span>,problem.coords,<span class="string">'d'</span>,problem.d,<span class="string">'type'</span>,problem.type);
+</pre><h2 id="5">Creating the <tt>tsphopfieldnetwork</tt> object with value of C 'big'</h2><p>Providing problem coordinates cities and distance matrix to the <tt>tsphopfieldnet</tt> network by creating a structure of options</p><pre class="codeinput">options = tsphopfieldnet.createOptions(<span class="string">'coords'</span>,problem.coords,<span class="string">'d'</span>,problem.d,<span class="string">'type'</span>,problem.type);
 net1 = tsphopfieldnet(N,C,options);
 </pre><p>Data coordinates (cities) can be visualized before training takes place:</p><pre class="codeinput">plot(net1);
 </pre><pre class="codeoutput">Warning: Simulation has not taken place yet. Use 'sim(net)' to simulate your
 network. 
-</pre><img vspace="5" hspace="5" src="Example_tspReducingC_01.png" alt=""> <h2>Training the network<a name="7"></a></h2><p>The default training algorithm is <tt>trainty</tt></p><pre class="codeinput">train(net1);
+</pre><img vspace="5" hspace="5" src="Example_tspReducingC_01.png" alt=""> <h2 id="7">Training the network</h2><p>The default training algorithm is <tt>trainty</tt></p><pre class="codeinput">train(net1);
 </pre><p>Results of the training phase. Network parameters</p><pre class="codeinput">getTrainParam(net1)
 </pre><pre class="codeoutput">
 ans = 
+
+  struct with fields:
 
         A: 1.0000e+05
         B: 100003
@@ -93,22 +95,24 @@ ans =
     dUaux: 1716
       rho: 0.0087
 
-</pre><h2>Simulating the network<a name="9"></a></h2><p>The default simulation algorithm is <tt>talavan-yanez</tt></p><pre class="codeinput">sim(net1);
-</pre><h2>Visualizing results<a name="10"></a></h2><pre class="codeinput">getResults(net1)
+</pre><h2 id="9">Simulating the network</h2><p>The default simulation algorithm is <tt>talavan-yanez</tt></p><pre class="codeinput">sim(net1);
+</pre><h2 id="10">Visualizing results</h2><pre class="codeinput">getResults(net1)
 plot(net1);
 </pre><pre class="codeoutput">
 ans = 
 
-        compTime: 0.8826
-          energy: [1x836 double]
+  struct with fields:
+
+        compTime: 0.5900
+          energy: [1&times;836 double]
         exitFlag: 1
     itersReached: 836
-            time: [1x836 double]
+            time: [1&times;836 double]
       tourLength: 29725
        validPath: 1
-      visitOrder: [1x52 double]
+      visitOrder: [1&times;52 double]
 
-</pre><img vspace="5" hspace="5" src="Example_tspReducingC_02.png" alt=""> <h2>Repeating the <tt>tsphopfieldnet</tt> network simulation with a smaller value of C<a name="11"></a></h2><pre class="codeinput">rng(seed); <span class="comment">% For reproducibility</span>
+</pre><img vspace="5" hspace="5" src="Example_tspReducingC_02.png" alt=""> <h2 id="11">Repeating the <tt>tsphopfieldnet</tt> network simulation with a smaller value of C</h2><pre class="codeinput">rng(seed); <span class="comment">% For reproducibility</span>
 C = 1e-5;
 
 net2 = tsphopfieldnet(N,C,options);
@@ -121,16 +125,18 @@ plot(net2);
 </pre><pre class="codeoutput">
 ans = 
 
-        compTime: 0.2266
-          energy: [1x220 double]
+  struct with fields:
+
+        compTime: 0.1724
+          energy: [1&times;220 double]
         exitFlag: 1
     itersReached: 220
-            time: [1x220 double]
+            time: [1&times;220 double]
       tourLength: 12889
        validPath: 1
-      visitOrder: [1x52 double]
+      visitOrder: [1&times;52 double]
 
-</pre><img vspace="5" hspace="5" src="Example_tspReducingC_03.png" alt=""> <p>Note that not only the solution was improved, but the number of iterations and time to convergence was considerably improved.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="Example_tspReducingC_03.png" alt=""> <p>Note that not only the solution was improved, but the number of iterations and time to convergence was considerably improved.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Improving the convergence of the Hopfield Network applied to the TSP by reducing the parameter C
 % In this section, you will be able to see how the convergence of the

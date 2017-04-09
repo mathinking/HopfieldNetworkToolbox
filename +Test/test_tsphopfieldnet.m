@@ -125,6 +125,16 @@ classdef test_tsphopfieldnet < matlab.unittest.TestCase
         function createOptions_simFcnNotValid_Errors(testCase)
             verifyError(testCase, @()tsphopfieldnet.createOptions('simFcn','yanez-talavan'),'tsphopfieldnet:invalid_value');          
         end
+        function createOptions_simFcnTalavanYanez(testCase)
+        	options = tsphopfieldnet.createOptions('simFcn','talavan-yanez');
+            net = tsphopfieldnet(4, 1e-5, options);
+            verifyTrue(testCase, strcmp(getSimFcn(net),options.simFcn));
+        end
+        function createOptions_simFcnDivideConquer(testCase)
+        	options = tsphopfieldnet.createOptions('simFcn','divide-conquer');
+            net = tsphopfieldnet(4, 1e-5, options);
+            verifyTrue(testCase, strcmp(getSimFcn(net),options.simFcn));
+        end        
         
         function train_trainFcnIsTrainty_WorksFine(testCase)
             import matlab.unittest.constraints.IsEqualTo;
@@ -189,6 +199,37 @@ classdef test_tsphopfieldnet < matlab.unittest.TestCase
             verifyEqual(testCase, sum(sum(V)), networkSize);
         end        
 
+        function sim_simDivideConquerOutputWithPolygon_hasOne1perRow(testCase)
+            rng(2);
+            options = tsphopfieldnet.createOptions('simFcn','divide-conquer');
+            networkSize = 6;
+            C = 0.1;
+            net = tsphopfieldnet(networkSize, C, options);
+            train(net);
+            V = sim(net);
+            verifyTrue(testCase, all(sum(V,2) == 1));
+        end        
+        function sim_simDivideConquerOutputWithPolygon_hasOne1perCol(testCase)
+            rng(2);
+            options = tsphopfieldnet.createOptions('simFcn','divide-conquer');
+            networkSize = 6;
+            C = 0.1;
+            net = tsphopfieldnet(networkSize, C, options);
+            train(net);
+            V = sim(net);
+            verifyTrue(testCase, all(sum(V,1) == 1));
+        end
+        function sim_simDivideConquerOutputWithPolygon_sumsN(testCase)
+            rng(2);
+            options = tsphopfieldnet.createOptions('simFcn','divide-conquer');
+            networkSize = 6;
+            C = 0.1;
+            net = tsphopfieldnet(networkSize, C, options);
+            train(net);
+            V = sim(net);
+            verifyEqual(testCase, sum(sum(V)), networkSize);
+        end    
+        
         function sim_simTalavanYanezOutputWithBerlin52_hasOne1perRow(testCase)
             rng(2);
             problem = tsplib({'berlin52'});
@@ -221,7 +262,41 @@ classdef test_tsphopfieldnet < matlab.unittest.TestCase
             train(net);
             V = sim(net);
             verifyEqual(testCase, sum(sum(V)), networkSize);
-        end        
+        end
+        
+        function sim_simDivideConquerOutputWithBerlin52_hasOne1perRow(testCase)
+            rng(2);
+            problem = tsplib({'berlin52'});
+            options = tsphopfieldnet.createOptions('coords',problem.coords,'type',problem.type,'simFcn','divide-conquer');
+            networkSize = problem.nCities;
+            C = 0.1;
+            net = tsphopfieldnet(networkSize, C, options);
+            train(net);
+            V = sim(net);
+            verifyTrue(testCase, all(sum(V,2) == 1));
+        end
+        function sim_simDivideConquerOutputWithBerlin52_hasOne1perCol(testCase)
+            rng(2);
+            problem = tsplib({'berlin52'});
+            options = tsphopfieldnet.createOptions('coords',problem.coords,'type',problem.type,'simFcn','divide-conquer');
+            networkSize = problem.nCities;
+            C = 0.1;
+            net = tsphopfieldnet(networkSize, C, options);
+            train(net);
+            V = sim(net);
+            verifyTrue(testCase, all(sum(V,1) == 1));
+        end
+        function sim_simDivideConquerOutputWithBerlin52_sumsN(testCase)
+            rng(2);
+            problem = tsplib({'berlin52'});
+            options = tsphopfieldnet.createOptions('coords',problem.coords,'type',problem.type,'simFcn','divide-conquer');
+            networkSize = problem.nCities;
+            C = 0.1;
+            net = tsphopfieldnet(networkSize, C, options);
+            train(net);
+            V = sim(net);
+            verifyEqual(testCase, sum(sum(V)), networkSize);
+        end             
         
         function reinit_netObjectAlreadySimulated_WorksFine(testCase)
             import matlab.unittest.constraints.IsEqualTo;

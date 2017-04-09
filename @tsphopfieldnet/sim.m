@@ -480,7 +480,7 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
 	% Backing up distances
     aux_d = net.cities.d;
 
-    [net.cities.d, neighbours] = tsphopfieldnet.neighbourDistance(net, p_or_tau);
+    [net.cities.d, neighbours] = neighbourDistance(net, p_or_tau);
 
     % Starting point close to saddle point
     if nargin < 2

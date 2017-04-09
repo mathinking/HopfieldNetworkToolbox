@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Improving the convergence of the Hopfield Network applied to the TSP by choosing a starting point close to the Saddle point</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-20"><meta name="DC.source" content="Example_tspSaddlePoint.m"><style type="text/css">
+      --><title>Improving the convergence of the Hopfield Network applied to the TSP by choosing a starting point close to the Saddle point</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-09"><meta name="DC.source" content="Example_tspSaddlePoint.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Improving the convergence of the Hopfield Network applied to the TSP by choosing a starting point close to the Saddle point</h1><!--introduction--><p>In this section, you will be able to see how the convergence of the Hopfield Network is improved by choosing a starting point close to the Saddle point of the Energy Function of the associated problem.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Simulating the network with default starting point</a></li><li><a href="#8">Simulating the network with starting point close to Saddle point</a></li><li><a href="#9">Comparing results</a></li></ul></div><h2>Simulating the network with default starting point<a name="1"></a></h2><pre class="codeinput">seed = 5;
+  </style></head><body><div class="content"><h1>Improving the convergence of the Hopfield Network applied to the TSP by choosing a starting point close to the Saddle point</h1><!--introduction--><p>In this section, you will be able to see how the convergence of the Hopfield Network is improved by choosing a starting point close to the Saddle point of the Energy Function of the associated problem.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Simulating the network with default starting point</a></li><li><a href="#8">Simulating the network with starting point close to Saddle point</a></li><li><a href="#9">Comparing results</a></li></ul></div><h2 id="1">Simulating the network with default starting point</h2><pre class="codeinput">seed = 5;
 rng(seed); <span class="comment">% For reproducibility</span>
 </pre><p>TSPLIB Problem:</p><pre class="codeinput">problem = tsplib({<span class="string">'tsp225'</span>});
 </pre><p>Number of cities:</p><pre class="codeinput">N = problem.nCities;
@@ -75,12 +75,12 @@ rng(seed); <span class="comment">% For reproducibility</span>
 net1 = tsphopfieldnet(N,C,options);
 </pre><p>Training the network</p><pre class="codeinput">train(net1);
 </pre><p>Simulating the network</p><pre class="codeinput">sim(net1);
-</pre><h2>Simulating the network with starting point close to Saddle point<a name="8"></a></h2><pre class="codeinput">net2 = tsphopfieldnet(N,C,options);
+</pre><h2 id="8">Simulating the network with starting point close to Saddle point</h2><pre class="codeinput">net2 = tsphopfieldnet(N,C,options);
 V = saddle(net2) + (rand(N) - 0.5)*1e-10;
 invTransferFcn = getSetting(net2,<span class="string">'invTransferFcn'</span>);
 U = invTransferFcn(V);
 sim(net2,V,U);
-</pre><h2>Comparing results<a name="9"></a></h2><pre class="codeinput">getResults(net1,<span class="string">'tourLength'</span>)
+</pre><h2 id="9">Comparing results</h2><pre class="codeinput">getResults(net1,<span class="string">'tourLength'</span>)
 
 getResults(net2,<span class="string">'tourLength'</span>)
 </pre><pre class="codeoutput">
@@ -93,7 +93,7 @@ ans =
 
        10930
 
-</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Improving the convergence of the Hopfield Network applied to the TSP by choosing a starting point close to the Saddle point
 % In this section, you will be able to see how the convergence of the
