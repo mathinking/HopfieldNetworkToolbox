@@ -1,10 +1,10 @@
 function net = init(net)
     
-	net.results.time = zeros(1,net.setting.maxIter);
-    net.results.energy = nan(1,net.setting.maxIter); 
-    net.results.energy(1) = 0;
-    net.results.exitFlag = [];
-    net.results.compTime = [];
-    net.results.itersReached = [];
+	net.Results.Time = zeros(1,net.Setting.MaxIter);
+    net.Results.Energy = nan(1,net.Setting.MaxIter); 
+    net.Results.Energy(1) = 0;
+    net.Results.ExitFlag = [];
+    net.Results.CompTime = [];
+    net.Results.ItersReached = [];
 
 end

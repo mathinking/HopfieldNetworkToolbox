@@ -1,9 +1,9 @@
-function h = plot(net, type, chains, ax, varargin)
+function plot(net, type, chains, ax, varargin)
 
-	mytext = net.cities.names;
+	mytext = net.Cities.Names;
         
-    if nargin == 1;
-        if isempty(net.results.tourLength)
+    if nargin == 1
+        if isempty(net.Results.TourLength)
             type = 'empty';
         else
             type = 'total';
@@ -28,7 +28,7 @@ function h = plot(net, type, chains, ax, varargin)
         ax = axes;
     end
         
-    coords = net.cities.coords;
+    coords = net.Cities.Coordinates;
     if isempty(coords) % No data coords available. Just visualizing order
         warning('tsphopfieldnet:NoDataCoords','No data coords available. Visualizing order instead.');
         coords = fakeCoords(net);          
@@ -47,13 +47,13 @@ function h = plot(net, type, chains, ax, varargin)
         warning('tsphopfieldnet:NotSimulated','Simulation has not taken place yet. Use ''sim(net)'' to simulate your network.');
         
     else
-        if net.results.validPath && (strcmp(type,'total') || strcmp(type,'phase2')) % Total plot or phase2
-            dispText = strrep(cellstr([char(mytext(net.results.visitOrder)'),...
-                repmat('_{(',length(mytext),1),num2str((1:net.trainParam.N)'),repmat(')}',...
+        if net.Results.ValidPath && (strcmp(type,'total') || strcmp(type,'phase2')) % Total plot or phase2
+            dispText = strrep(cellstr([char(mytext(net.Results.VisitOrder)'),...
+                repmat('_{(',length(mytext),1),num2str((1:net.TrainParam.N)'),repmat(')}',...
                 length(mytext),1)]),' ','');
 
-            h = plot(ax,[coords(net.results.visitOrder,1);coords(net.results.visitOrder(1),1)],...
-                [coords(net.results.visitOrder,2);coords(net.results.visitOrder(1),2)],...
+            h = plot(ax,[coords(net.Results.VisitOrder,1);coords(net.Results.VisitOrder(1),1)],...
+                [coords(net.Results.VisitOrder,2);coords(net.Results.VisitOrder(1),2)],...
                 'color',myCitiesColor,'marker','o','markersize',4,'markerfacecolor',myCitiesColor,...
                 'markeredgecolor',myCitiesColor,'linestyle','-');
 
@@ -65,15 +65,15 @@ function h = plot(net, type, chains, ax, varargin)
                         'markeredgecolor',myInsideColor,'linestyle','-');                    
                 end               
             end
-            text(coords(net.results.visitOrder,1),coords(net.results.visitOrder,2),...
+            text(coords(net.Results.VisitOrder,1),coords(net.Results.VisitOrder,2),...
                 dispText,'fontsize',10,'color',myCitiesTextColor,'margin',20,'Clipping','on','Parent',ax);
             
             hold(ax,'off');
             
-        elseif net.results.validPath && strcmp(type,'phase1') % Partial plot
+        elseif net.Results.ValidPath && strcmp(type,'phase1') % Partial plot
             
             % Plot single points
-            singlePoints = setxor(1:net.trainParam.N, [chains{:}]);
+            singlePoints = setxor(1:net.TrainParam.N, [chains{:}]);
             h = plot(coords(singlePoints,1), coords(singlePoints,2),...
                 'color',myCitiesColor,'marker','o','markersize',4,'markerfacecolor',myCitiesColor,...
                 'markeredgecolor',myCitiesColor,'linestyle','none');
@@ -99,7 +99,7 @@ function h = plot(net, type, chains, ax, varargin)
         if ~isempty(myTitle)
             title(ax,['\bf', myTitle]);
         else
-            title(ax,['\bf Tour length: ', num2str(net.results.tourLength)]);
+            title(ax,['\bf Tour length: ', num2str(net.Results.TourLength)]);
         end
         
     end
@@ -114,8 +114,8 @@ function adjustPlot(h,coords)
 end
 
 function coords = fakeCoords(net)
-    coords = zeros(net.trainParam.N,2);
-    coords(:,1) = 1:net.trainParam.N;
+    coords = zeros(net.TrainParam.N,2);
+    coords(:,1) = 1:net.TrainParam.N;
     coords(1:2:end,2) =  0.005;
     coords(2:2:end,2) = -0.005;
 end

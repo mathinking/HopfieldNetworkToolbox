@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Solving the TSP with TSPLIB cities using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-09"><meta name="DC.source" content="Example_tspUsingTSPLIB.m"><style type="text/css">
+      --><title>Solving the TSP with TSPLIB cities using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="Example_tspUsingTSPLIB.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,11 +66,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Solving the TSP with TSPLIB cities using a Hopfield Network</h1><!--introduction--><p>TSPLIB is an extensive set of problems frequently used for solving the TSP (and related problems) and used as a powerful reference for benchmarking different algorithms. In this section, <tt>tsphopfieldnet</tt> is used for solving the TSP when the problem coordinates are given by one of the library problems from TSPLIB.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>tsphopfieldnetwork</tt> object</a></li><li><a href="#7">Training the network</a></li><li><a href="#9">Simulating the network</a></li><li><a href="#10">Visualizing results</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">rng(6); <span class="comment">% For reproducibility</span>
+  </style></head><body><div class="content"><h1>Solving the TSP with TSPLIB cities using a Hopfield Network</h1><!--introduction--><p>TSPLIB is an extensive set of problems frequently used for solving the TSP (and related problems) and used as a powerful reference for benchmarking different algorithms. In this section, <tt>tsphopfieldnet</tt> is used for solving the TSP when the problem coordinates are given by one of the library problems from TSPLIB.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>HopfieldNetworkTSP</tt> object</a></li><li><a href="#7">Training the network</a></li><li><a href="#9">Simulating the network</a></li><li><a href="#10">Visualizing results</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">rng(6); <span class="comment">% For reproducibility</span>
 </pre><p>TSPLIB Problem:</p><pre class="codeinput">problem = tsplib({<span class="string">'berlin52'</span>});
-</pre><p>Number of cities:</p><pre class="codeinput">N = problem.nCities;
+</pre><p>Number of cities:</p><pre class="codeinput">N = problem.NumberOfCities;
 </pre><p>Free parameter C:</p><pre class="codeinput">C = 0.00001;
-</pre><h2 id="5">Creating the <tt>tsphopfieldnetwork</tt> object</h2><p>Providing problem coordinates cities and distance matrix to the <tt>tsphopfieldnet</tt> network by creating a structure of options</p><pre class="codeinput">options = tsphopfieldnet.createOptions(<span class="string">'coords'</span>,problem.coords,<span class="string">'d'</span>,problem.d,<span class="string">'type'</span>,problem.type);
+</pre><h2 id="5">Creating the <tt>HopfieldNetworkTSP</tt> object</h2><p>Providing problem cities' coordinates and distance matrix to the <tt>HopfieldNetworkTSP</tt> network by creating a <tt>HopfieldNetworkTSPOptions</tt> object of options</p><pre class="codeinput">options = tsphopfieldnetOptions(<span class="string">'Coordinates'</span>,problem.Coordinates,<span class="keyword">...</span>
+                                <span class="string">'DistanceMatrix'</span>,problem.DistanceMatrix,<span class="keyword">...</span>
+                                <span class="string">'DistanceType'</span>,problem.DistanceType);
 net = tsphopfieldnet(N,C,options);
 </pre><p>Data coordinates (cities) can be visualized before training takes place:</p><pre class="codeinput">plot(net);
 </pre><pre class="codeoutput">Warning: Simulation has not taken place yet. Use 'sim(net)' to simulate your
@@ -102,14 +104,15 @@ ans =
 
   struct with fields:
 
-        compTime: 0.1708
-          energy: [1&times;216 double]
-        exitFlag: 1
-    itersReached: 216
-            time: [1&times;216 double]
-      tourLength: 12583
-       validPath: 1
-      visitOrder: [1&times;52 double]
+    CheckpointFilename: ''
+              CompTime: 0.1781
+                Energy: [1&times;216 double]
+              ExitFlag: 1
+          ItersReached: 216
+                  Time: [1&times;216 double]
+            TourLength: 12583
+             ValidPath: 1
+            VisitOrder: [1&times;52 double]
 
 </pre><img vspace="5" hspace="5" src="Example_tspUsingTSPLIB_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -130,16 +133,19 @@ problem = tsplib({'berlin52'});
 
 %%
 % Number of cities:
-N = problem.nCities;
+N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
 C = 0.00001;
  
-%% Creating the |tsphopfieldnetwork| object
-% Providing problem coordinates cities and distance matrix to the
-% |tsphopfieldnet| network by creating a structure of options
-options = tsphopfieldnet.createOptions('coords',problem.coords,'d',problem.d,'type',problem.type);
+%% Creating the |HopfieldNetworkTSP| object
+% Providing problem cities' coordinates and distance matrix to the
+% |HopfieldNetworkTSP| network by creating a |HopfieldNetworkTSPOptions|
+% object of options
+options = tsphopfieldnetOptions('Coordinates',problem.Coordinates,...
+                                'DistanceMatrix',problem.DistanceMatrix,...
+                                'DistanceType',problem.DistanceType);
 net = tsphopfieldnet(N,C,options);
 
 %%

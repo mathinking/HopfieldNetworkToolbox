@@ -1,4 +1,4 @@
 function name = getName(net)
-    name = net.name;
+    name = net.Name;
 end
 

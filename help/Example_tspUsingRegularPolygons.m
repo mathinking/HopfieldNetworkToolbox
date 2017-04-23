@@ -7,7 +7,7 @@
 %
 % As a matter of fact, the coordinates of a regular polygon of size N is 
 % used as the default behaviour of |tsphopfieldnet| if no set of 
-% coordinates is provided to the network.
+% coordinates is provided to the network through |tsphopfieldnetOptions|.
 
 %% Network parameters
 rng(2); % For reproducibility
@@ -20,8 +20,9 @@ N = 10;
 % Free parameter C:
 C = 0.00001;
  
-%% Creating the |tsphopfieldnetwork| object
+%% Creating the |HopfieldNetworkTSP| object
 net = tsphopfieldnet(N,C);
+
 %%
 % Data coordinates (cities) can be visualized before training takes place:
 plot(net);

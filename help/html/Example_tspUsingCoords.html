@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Solving the TSP provided the problem's coordinates using Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-09"><meta name="DC.source" content="Example_tspUsingCoords.m"><style type="text/css">
+      --><title>Solving the TSP provided the problem's coordinates using Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="Example_tspUsingCoords.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -78,7 +78,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
           0.8488 0.3609;<span class="keyword">...</span>
           0.6683 0.2536;<span class="keyword">...</span>
           0.6195 0.2634];
-</pre><p>Providing cities to the network through the structure of options</p><pre class="codeinput">options = tsphopfieldnet.createOptions(<span class="string">'coords'</span>,coords);
+</pre><p>Providing cities to the network through the <tt>HopfieldNetworkTSPOptions</tt> class</p><pre class="codeinput">options = tsphopfieldnetOptions(<span class="string">'Coordinates'</span>,coords);
 </pre><p>Number of cities:</p><pre class="codeinput">N = size(coords,1);
 
 net = tsphopfieldnet(N,C,options);
@@ -112,14 +112,15 @@ ans =
 
   struct with fields:
 
-        compTime: 0.0307
-          energy: [1&times;93 double]
-        exitFlag: 1
-    itersReached: 93
-            time: [1&times;93 double]
-      tourLength: 2.6907
-       validPath: 1
-      visitOrder: [2 10 9 8 7 6 5 4 1 3]
+    CheckpointFilename: ''
+              CompTime: 0.0322
+                Energy: [1&times;93 double]
+              ExitFlag: 1
+          ItersReached: 93
+                  Time: [1&times;93 double]
+            TourLength: 2.6907
+             ValidPath: 1
+            VisitOrder: [2 10 9 8 7 6 5 4 1 3]
 
 </pre><img vspace="5" hspace="5" src="Example_tspUsingCoords_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -148,8 +149,8 @@ coords = [0.4000 0.4439;...
           0.6195 0.2634];
 
 %%      
-% Providing cities to the network through the structure of options      
-options = tsphopfieldnet.createOptions('coords',coords);
+% Providing cities to the network through the |HopfieldNetworkTSPOptions| class
+options = tsphopfieldnetOptions('Coordinates',coords);
 
 %%
 % Number of cities:

@@ -1,3 +1,3 @@
 function trainFcn = getTrainFcn(net)
-    trainFcn = net.trainFcn;
+    trainFcn = net.TrainFcn;
 end

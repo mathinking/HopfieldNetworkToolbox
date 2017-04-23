@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Solving the TSP with cities in Polygon Vertices using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-09"><meta name="DC.source" content="Example_tspUsingRegularPolygons.m"><style type="text/css">
+      --><title>Solving the TSP with cities in Polygon Vertices using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="Example_tspUsingRegularPolygons.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,10 +66,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Solving the TSP with cities in Polygon Vertices using a Hopfield Network</h1><!--introduction--><p>There are numerous TSP problems that have been used in the literature. In this section, an additional set of problem examples is proposed, by placing TSP cities in the vertices of regular polygons. This provides a whole new set of TSP problems that can be used to test different method approaches.</p><p>As a matter of fact, the coordinates of a regular polygon of size N is used as the default behaviour of <tt>tsphopfieldnet</tt> if no set of coordinates is provided to the network.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Network parameters</a></li><li><a href="#4">Creating the <tt>tsphopfieldnetwork</tt> object</a></li><li><a href="#6">Training the network</a></li><li><a href="#8">Simulating the network</a></li><li><a href="#9">Visualizing results</a></li></ul></div><h2 id="1">Network parameters</h2><pre class="codeinput">rng(2); <span class="comment">% For reproducibility</span>
+  </style></head><body><div class="content"><h1>Solving the TSP with cities in Polygon Vertices using a Hopfield Network</h1><!--introduction--><p>There are numerous TSP problems that have been used in the literature. In this section, an additional set of problem examples is proposed, by placing TSP cities in the vertices of regular polygons. This provides a whole new set of TSP problems that can be used to test different method approaches.</p><p>As a matter of fact, the coordinates of a regular polygon of size N is used as the default behaviour of <tt>tsphopfieldnet</tt> if no set of coordinates is provided to the network through <tt>tsphopfieldnetOptions</tt>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Network parameters</a></li><li><a href="#4">Creating the <tt>HopfieldNetworkTSP</tt> object</a></li><li><a href="#6">Training the network</a></li><li><a href="#8">Simulating the network</a></li><li><a href="#9">Visualizing results</a></li></ul></div><h2 id="1">Network parameters</h2><pre class="codeinput">rng(2); <span class="comment">% For reproducibility</span>
 </pre><p>Number of cities:</p><pre class="codeinput">N = 10;
 </pre><p>Free parameter C:</p><pre class="codeinput">C = 0.00001;
-</pre><h2 id="4">Creating the <tt>tsphopfieldnetwork</tt> object</h2><pre class="codeinput">net = tsphopfieldnet(N,C);
+</pre><h2 id="4">Creating the <tt>HopfieldNetworkTSP</tt> object</h2><pre class="codeinput">net = tsphopfieldnet(N,C);
 </pre><p>Data coordinates (cities) can be visualized before training takes place:</p><pre class="codeinput">plot(net);
 </pre><pre class="codeoutput">Warning: Simulation has not taken place yet. Use 'sim(net)' to simulate your
 network. 
@@ -100,14 +100,15 @@ ans =
 
   struct with fields:
 
-        compTime: 0.0587
-          energy: [1&times;64 double]
-        exitFlag: 1
-    itersReached: 64
-            time: [1&times;64 double]
-      tourLength: 6.1803
-       validPath: 1
-      visitOrder: [6 7 8 9 10 1 2 3 4 5]
+    CheckpointFilename: ''
+              CompTime: 0.0216
+                Energy: [1&times;64 double]
+              ExitFlag: 1
+          ItersReached: 64
+                  Time: [1&times;64 double]
+            TourLength: 6.1803
+             ValidPath: 1
+            VisitOrder: [6 7 8 9 10 1 2 3 4 5]
 
 </pre><img vspace="5" hspace="5" src="Example_tspUsingRegularPolygons_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -120,7 +121,7 @@ ans =
 %
 % As a matter of fact, the coordinates of a regular polygon of size N is 
 % used as the default behaviour of |tsphopfieldnet| if no set of 
-% coordinates is provided to the network.
+% coordinates is provided to the network through |tsphopfieldnetOptions|.
 
 %% Network parameters
 rng(2); % For reproducibility
@@ -133,8 +134,9 @@ N = 10;
 % Free parameter C:
 C = 0.00001;
  
-%% Creating the |tsphopfieldnetwork| object
+%% Creating the |HopfieldNetworkTSP| object
 net = tsphopfieldnet(N,C);
+
 %%
 % Data coordinates (cities) can be visualized before training takes place:
 plot(net);

@@ -1,16 +1,14 @@
-function net = verifyIfValidSubtours(net)
-
-    subtours = net.cities.fixedCities;
-    startingPositions = net.cities.startFixedCitiesIn;
-    myCities = net.cities.names;
+function verifyIfValidSubtours(subtours, startingPositions, myCities)
     
-    if length(net.cities.fixedCities) ~= length(net.cities.startFixedCitiesIn)
-        error('tsphopfieldnet:unevensubtours','Please provide a starting position for all subtours');
-    end
     if any(cellfun(@isempty,subtours))
-        error('tsphopfieldnet:invalidsubtour','Please make sure that there are no empty subtours');
+        error('HopfieldNetworkTSP:invalidsubtours','Please make sure that there are no empty Subtours.');
     end    
-
+    if any(startingPositions > length(myCities))
+        error('HopfieldNetworkTSP:invalidsubtoursPositions','Please make sure you have provided valid starting positions (less than the number of cities) for each Subtour.');
+    end
+    assert(length(startingPositions) == length(subtours), 'HopfieldNetworkTSP:unevensubtours', ...
+        'The number of Subtours starting positions does not match the number of Subtours.');
+        
     N = length(myCities);
 
     fixedPositions = zeros(length(subtours),N);
@@ -20,7 +18,7 @@ function net = verifyIfValidSubtours(net)
         try
             cityPos = cellfun(@(c) find(strcmp(myCities,c)),thisSubtourCities);
         catch 
-            error('Check that the cities forming the subtour are present in the problem');
+            error('HopfieldNetworkTSP:SubtourCityNotPresentInNames','Verify that the cities forming the Subtour are present in the ''Names'' property.');
         end
 
         [n, bin] = histc(cityPos, unique(cityPos));
@@ -31,16 +29,16 @@ function net = verifyIfValidSubtours(net)
             if ~(length(repeatedCitiesPos) == 2 && (repeatedCitiesPos(1) == 1 && repeatedCitiesPos(end) == N+1))
                 repeatedCities = unique(thisSubtourCities(repeatedCitiesPos));
                 if length(repeatedCities) == 1
-                    error(['City ',repeatedCities{1},' is repeated in subtour ',subtours{s}]);
+                    error('HopfieldNetworkTSP:SubtourCityRepeatedSameSubtour',['City ',repeatedCities{1},' is repeated in subtour ',subtours{s}]);
                 else
-                    error(['Cities ',repeatedCities{:},' are repeated in subtour ',subtours{s}]);
+                    error('HopfieldNetworkTSP:SubtourCitiesRepeatedSameSubtour',['Cities ', strjoin(repeatedCities,', '),' are repeated in subtour ',subtours{s}]);
                 end
             end
         end
 
         startPos = startingPositions(s);
 
-        fixedPositions(s,cityPos) = tsphopfieldnet.modulo(startPos:startPos+length(thisSubtourCities)-1,N);
+        fixedPositions(s,cityPos) = network.HopfieldNetworkTSP.modulo(startPos:startPos+length(thisSubtourCities)-1,N);
 
     end
 
@@ -52,8 +50,14 @@ function net = verifyIfValidSubtours(net)
         if length(unique(thisCityPositions)) > 1
             positionsStr = sprintf('%d and ',sort(thisCityPositions));
             positionsStr(end-4:end) = [];
-            error(['City ',myCities{p},' is repeated in different subtours in positions: ', positionsStr,'.'])
+            error('HopfieldNetworkTSP:verifyIfValidSubtours:repeatedCity',['City ',myCities{p},' is repeated in different subtours in positions: ', positionsStr,'.'])
         end
     end
-
+    
+    % Repeated Subtour Positions
+    fixedPositions = sum(fixedPositions);
+    fixedPositions = fixedPositions(fixedPositions > 0);
+    assert(length(unique(fixedPositions)) == length(fixedPositions), ...
+        'HopfieldNetworkTSP:verifyIfValidSubtours:repeatedSubtourPosition', ...
+        'There are repeated positions in provided Subtours.');
 end

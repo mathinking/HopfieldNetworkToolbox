@@ -3,35 +3,47 @@ function V = sim(net,V,U)
 	[ST,~] = dbstack('-completenames');
     if ~any(strcmp({ST.name},'saddle'))
         timeID = tic;
+
+        if ~isempty(net.Setting.CheckpointPath) 
+            warning('off','MATLAB:MKDIR:DirectoryExists');
+            mkdir(net.Setting.CheckpointPath);
+            warning('on','MATLAB:MKDIR:DirectoryExists');
+            checkpointFilename = ['checkpoint_',net.SimFcn,'_',...
+                datestr(datetime(now,'ConvertFrom','datenum'),...
+                        'yyyy_mm_dd_HH_MM_SS'),'.mat'];
+            net.Results.CheckpointFilename = checkpointFilename;
+        else
+            net.Results.CheckpointFilename = '';
+        end
     end
     
     net = reinit(net);
     
-    if ~isfield(net.trainParam,'Np')
+    if ~isfield(net.TrainParam,'Np')
         error('tsphopfieldnet:NotTrained', 'Training has not taken place yet. Use train(net).');
     end
-    
-    if ~isempty(net.cities.fixedCities{1})
-        net = verifyIfValidSubtours(net);
-        aux_d = net.cities.d;
-        [net,V,U] = fixedCities(net);
+       
+    if ~isempty(net.Cities.Subtours)
+        tsphopfieldnet.verifyIfValidSubtours(net.Cities.Subtours, net.Cities.SubtoursPositions, net.Cities.Names)
+        aux_d = net.Cities.DistanceMatrix;
+        [net,V,U] = fixedCities(net); %Review fixedCities
     end
     
-    if strcmp(net.simFcn,'euler')
+    if strcmp(net.SimFcn,'euler')
         if nargin < 2
             [net,V,~,iter] = simEuler(net);
         else
             [net,V,~,iter] = simEuler(net,V,U);
         end
         
-    elseif strcmp(net.simFcn,'talavan-yanez')
-        if nargin < 2 && isempty(net.cities.fixedCities{1} )
+    elseif strcmp(net.SimFcn,'talavan-yanez')
+        if nargin < 2 && isempty(net.Cities.Subtours)
             [net,V,~,iter] = simTalavanYanez(net);
         else
             [net,V,~,iter] = simTalavanYanez(net,V,U);
         end
         
-    elseif strcmp(net.simFcn, 'divide-conquer')
+    elseif strcmp(net.SimFcn, 'divide-conquer')
         if nargin < 2
             [net,V,~,iter] = simDivideConquer(net);
         else
@@ -42,44 +54,51 @@ function V = sim(net,V,U)
         error('tsphopfieldnet:UnknownsimFcn', 'Unknown training algorithm');
     end
     
-    if ~isempty(net.cities.fixedCities{1})
-        net.cities.d = aux_d;
+    if ~isempty(net.Cities.Subtours)
+        net.Cities.DistanceMatrix = aux_d;
     end   
     
     if ~any(strcmp({ST.name},'saddle'))
         net = computeTour(net,V,iter);
-        net.results.compTime = toc(timeID);
+        net.Results.CompTime = toc(timeID);
 
         % Removing unused energy and time elements.
-        net.results.energy = net.results.energy(~isnan(net.results.energy));
-        indexRemove = find(diff(net.results.time),1,'last') + 1;
-        if length(net.results.time) > indexRemove
-            net.results.time(indexRemove:end) = [];
+        net.Results.Energy = net.Results.Energy(~isnan(net.Results.Energy));
+        indexRemove = find(diff(net.Results.Time),1,'last') + 1;
+        if length(net.Results.Time) > indexRemove
+            net.Results.Time(indexRemove:end) = [];
         end
-%         net.results.time = [net.results.time(1),net.results.time(net.results.time(2:end) ~= 0)];
-    end    
+%         net.Results.time = [net.Results.time(1),net.Results.time(net.Results.time(2:end) ~= 0)];
+
+        if ~isempty(net.Setting.CheckpointPath)
+            data = matfile(fullfile(net.Setting.CheckpointPath,...
+            net.Results.CheckpointFilename),'Writable',true);
+            data.net = net;
+        end
+        net.Results = orderfields(net.Results);
+    end
 end
 
 % --- Simulation Algorithms --- %
 
 % Euler Algorithm
 function [net,V,U,iter] = simEuler(net, V, U) 
-    N = net.trainParam.N;
+    N = net.TrainParam.N;
     if nargin == 1
         U = rand(N)-.5;   % TODO Different from Pedro's algorithm
         V = 0.5 + 1e-7*U; % TODO Different from Pedro's algorithm
     end
-    if strcmp(net.setting.hwResources,'GPU')
+    if strcmp(net.Setting.ExecutionEnvironment,'GPU')
         U = gpuArray(U);
         V = gpuArray(V);
     end
     % Stopping criteria
-    stopC1 = power(10, -1   * net.setting.e);
-    stopC2 = power(10, -1.5 * net.setting.e);
+    stopC1 = power(10, -1   * net.Setting.E);
+    stopC2 = power(10, -1.5 * net.Setting.E);
     maxDiffV = 1;
     unstable = false;
 
-    ib = net.trainParam.C * net.trainParam.Np;
+    ib = net.TrainParam.C * net.TrainParam.Np;
 
     %%%
     % Summing V rows, columns and all elements for optimal perform.
@@ -92,16 +111,27 @@ function [net,V,U,iter] = simEuler(net, V, U)
 
     iter = 1;
 
-    dt = net.setting.dt;
-    net.results.time(iter) = dt;
+    dt = net.Setting.Dt;
+    net.Results.Time(iter) = dt;
 
-    while iter <= net.setting.maxIter && (maxDiffV > stopC1 || ...
+    if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+        if ~isempty(net.Setting.CheckpointPath) 
+            tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath, ...
+                net.Results.CheckpointFilename),...
+                net.Setting.MaxIter,iter,N);
+        end
+        if net.Setting.SimulationPlot
+            fV = viewConvergence(iter,V,net);
+        end
+    end    
+    
+    while iter <= net.Setting.MaxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
 
         unstable = false;
         for i = 1:N
-            if i == N, deltaPrev = 1; else deltaPrev = i+1; end
-            if i == 1, deltaNext = N; else deltaNext = i-1; end
+            if i == N, deltaPrev = 1; else, deltaPrev = i+1; end
+            if i == 1, deltaNext = N; else, deltaNext = i-1; end
             for x = 1:N
                 TV = weightMatrixTimesV(...
                     net, deltaPrev, deltaNext, V, sumVrow, ...
@@ -113,8 +143,8 @@ function [net,V,U,iter] = simEuler(net, V, U)
                         (V(x,i) > 1 - stopC1 && dU(x,i) < 0)
                     unstable = true;
                 end
-                net.results.energy(iter+1) = ...
-                    net.results.energy(iter) + ...
+                net.Results.Energy(iter+1) = ...
+                    net.Results.Energy(iter) + ...
                     0.5* V(x,i) * dU(x,i) - ...
                     ib * V(x,i);
             end
@@ -124,8 +154,8 @@ function [net,V,U,iter] = simEuler(net, V, U)
         for i = 1:N
             for x = 1:N
                 prevV = V(x,i);
-                U(x,i) = U(x,i) + dU(x,i)*net.setting.dt;
-                V(x,i) = net.setting.transferFcn(U(x,i));
+                U(x,i) = U(x,i) + dU(x,i)*net.Setting.Dt;
+                V(x,i) = net.Setting.TransferFcn(U(x,i));
                 if abs(prevV - V(x,i)) > maxDiffV
                     maxDiffV = abs(prevV - V(x,i));
                 end
@@ -135,34 +165,50 @@ function [net,V,U,iter] = simEuler(net, V, U)
         sumVrow = sum(V,2);
         sumV = sum(sumVcol);       
 
-        net.results.time(iter+1) = net.results.time(iter) + ...
-            net.setting.dt;
-        iter = iter + 1;            
+        net.Results.Time(iter+1) = net.Results.Time(iter) + ...
+            net.Setting.Dt;
+        iter = iter + 1;
+        if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+            if ~isempty(net.Setting.CheckpointPath) 
+                tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath,...
+                    net.Results.CheckpointFilename),...
+                    net.Setting.MaxIter,iter,[],V,dU);
+            end
+            if net.Setting.SimulationPlot
+                fV = viewConvergence(iter,V,net,fV);
+            end
+        end        
     end
+    if ~isempty(net.Setting.CheckpointPath)
+        data = matfile(fullfile(net.Setting.CheckpointPath,...
+            net.Results.CheckpointFilename),'Writable',true);
+        data.Vlog(:,:,iter+1:end) = [];
+        data.dUlog(:,:,iter+1:end) = [];
+    end    
 
 end
 
 % Talaván-Yáñez Algorithm
 function [net,V,U,iter] = simTalavanYanez(net,V,U)
-    N = net.trainParam.N;
-    K = net.trainParam.K;
+    N = net.TrainParam.N;
+    K = net.TrainParam.K;
     if nargin == 1
         U = rand(N,N-K)-.5;   % TODO Different from Pedro's algorithm
         V = 0.5 + 1e-7*U;     % TODO Different from Pedro's algorithm
     end
-    if strcmp(net.setting.hwResources,'GPU')
+    if strcmp(net.Setting.ExecutionEnvironment,'GPU')
         U = gpuArray(U);
         V = gpuArray(V);
     end
     % Stopping criteria
-    stopC1 = power(10, -1   * net.setting.e);
-    stopC2 = power(10, -1.5 * net.setting.e);
+    stopC1 = power(10, -1   * net.Setting.E);
+    stopC2 = power(10, -1.5 * net.Setting.E);
     maxDiffV = 1;
     unstable = false;
 
-    u_e = net.setting.invTransferFcn(stopC1); 
+    u_e = net.Setting.InvTransferFcn(stopC1); 
 
-	ib = net.trainParam.C * net.trainParam.Np;
+	ib = net.TrainParam.C * net.TrainParam.Np;
     
     %%%
     % Summing V rows, columns and all elements for optimal performance
@@ -174,27 +220,25 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
     dU = zeros(N,N-K);
 
     iter = 1;
-
-    while iter <= net.setting.maxIter && (maxDiffV > stopC1 || ...
+ 
+    [ST,~] = dbstack('-completenames');
+    if ~any(strcmp({ST.name},'saddle'))
+        if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+            if ~isempty(net.Setting.CheckpointPath) 
+                tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath, ...
+                    net.Results.CheckpointFilename),...
+                    net.Setting.MaxIter,iter,N-K);
+            end
+            if net.Setting.SimulationPlot
+                fV = viewConvergence(iter,V,net);
+            end
+        end
+    end
+           
+    while iter <= net.Setting.MaxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
 
         dt = 10^100; % Initial value for dt
-
-        if net.setting.loggingV || net.setting.viewConvergence
-            [ST,~] = dbstack('-completenames');
-            if ~any(strcmp({ST.name},'saddle'))
-                if net.setting.loggingV
-                    tsphopfieldnet.loggingV(iter,V,dU);
-                end
-                if net.setting.viewConvergence
-                    if iter == 1
-                        fV = viewConvergence(iter,V,net);
-                    else
-                        fV = viewConvergence(iter,V,net,fV);
-                    end
-                end
-            end
-        end
 
         % Computation of the weight matrix T
         % $$ T_{xi,yj} = -(A*\delta_{x,y}*(1-\delta_{i,j}) + B*(1-\delta_{x,y})*
@@ -203,7 +247,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
         
         dU = TV + ib;
 
-        dV = 2./net.setting.u0 .* V .* (1-V) .*dU;
+        dV = 2./net.Setting.U0 .* V .* (1-V) .*dU;
 
 %       interiorV = V > 0 & V < 1;
         interiorV = U > u_e & U < -u_e;
@@ -267,8 +311,8 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
             dt = min(dt,S1./S2);
             sw_optimal = true;
         end
-        if iter < net.setting.R_ITER && ~sw_optimal
-            dt = net.setting.q * dt; % Integration step reduction
+        if iter < net.Setting.R_Iter && ~sw_optimal
+            dt = net.Setting.Q * dt; % Integration step reduction
         end
 
         % State update
@@ -283,7 +327,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 %                 borderV = (V < stopC1) | (V > 1-stopC1);
         borderV = (U <= u_e) | (U >= -u_e);
         U(borderV) = U(borderV) + dU(borderV).*dt;
-        V(borderV) = net.setting.transferFcn(U(borderV));
+        V(borderV) = net.Setting.TransferFcn(U(borderV));
         U(borderV & U <= u_e) = u_e; V(borderV & U <= u_e) = 0; % Stays in the border
         U(borderV & U >=-u_e) =-u_e; V(borderV & U >=-u_e) = 1; % Stays in the border
 
@@ -311,23 +355,44 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 
         %%%
         % $E(t + \Delta t) = E(t) - S_{1}\Delta t + \frac{1}{2}S_{2}\Delta t^{2}$
-        if strcmp(net.setting.hwResources,'GPU')
+        if strcmp(net.Setting.ExecutionEnvironment,'GPU')
             S1 = gather(S1);
             S2 = gather(S2);
             dt = gather(dt);
         end
-        net.results.energy(iter+1) = net.results.energy(iter) - ...
+        net.Results.Energy(iter+1) = net.Results.Energy(iter) - ...
             S1.*dt + 0.5.*S2.*dt.^2;
-        net.results.time(iter+1) = net.results.time(iter) + dt;
+        net.Results.Time(iter+1) = net.Results.Time(iter) + dt;
         iter = iter + 1;
+        
+        if ~any(strcmp({ST.name},'saddle'))
+            if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+                if ~isempty(net.Setting.CheckpointPath) 
+                    tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath,...
+                        net.Results.CheckpointFilename),...
+                        net.Setting.maxIter,iter,[],V,dU);
+                end
+                if net.Setting.SimulationPlot
+                    fV = viewConvergence(iter,V,net,fV);
+                end
+            end
+        end
     end
 
-    if strcmp(net.setting.hwResources,'GPU') && nargout > 1
+    if strcmp(net.Setting.ExecutionEnvironment,'GPU') && nargout > 1
         V = gather(V);
         U = gather(U);
         iter = gather(iter);
     end
-     
+
+    if ~any(strcmp({ST.name},'saddle'))
+        if ~isempty(net.Setting.CheckpointPath)
+            data = matfile(fullfile(net.Setting.CheckpointPath,...
+                net.Results.CheckpointFilename),'Writable',true);
+            data.Vlog(:,:,iter+1:end) = [];
+            data.dUlog(:,:,iter+1:end) = [];
+        end
+    end    
 end
 
 % Divide and Conquer algorithm
@@ -349,45 +414,45 @@ function [net,V,U,iter] = simDivideConquer(net,V,U)
     % The Phase 1 problem. TSP^tau_1
     % 2 possible methods:
     %    a. using tau which uses closes tau neighbours
-    %    b. using p which uses distances <= p * net.trainParam.dU + (1-p) * net.trainParam.dL
+    %    b. using p which uses distances <= p * net.TrainParam.dU + (1-p) * net.TrainParam.dL
     
-    if net.trainParam.K == 0
+    if net.TrainParam.K == 0
         if nargin < 2
-            V = saddle(net) + (rand(net.trainParam.N) - 0.5) * 1e-5;
-            U = net.setting.invTransferFcn(V);
+            V = saddle(net) + (rand(net.TrainParam.N) - 0.5) * 1e-5;
+            U = net.Setting.InvTransferFcn(V);
         end
         [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot);
         
         % Reached max number of iterations        
-        if net.results.exitFlag == 0
+        if net.Results.ExitFlag == 0
             mkdir('Phase1_InsuficientIterations');
             save(fullfile(pwd,'Phase1_InsuficientIterations',regexprep(datestr(datetime),{':',' ','-'},'_')))
-            while net.results.exitFlag <= 0
-                V = V + (rand(net.trainParam.N) - 0.5) * 1e-5;
-                U = net.setting.invTransferFcn(V);
+            while net.Results.ExitFlag <= 0
+                V = V + (rand(net.TrainParam.N) - 0.5) * 1e-5;
+                U = net.Setting.InvTransferFcn(V);
                 [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot);
             end
             
         % Possible saddle point reached
-        elseif net.results.exitFlag == -1 
+        elseif net.Results.ExitFlag == -1 
             mkdir('Phase1_PossibleSaddlePoint');
             save(fullfile(pwd,'Phase1_PossibleSaddlePoint',regexprep(datestr(datetime),{':',' ','-'},'_')))            
-            while net.results.exitFlag <= 0
-                V = V + (rand(net.trainParam.N) - 0.5) * 1e-5;
-                U = net.setting.invTransferFcn(V);
+            while net.Results.ExitFlag <= 0
+                V = V + (rand(net.TrainParam.N) - 0.5) * 1e-5;
+                U = net.Setting.InvTransferFcn(V);
                 [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot);
             end
         end
         % TODO Add correct number of iterations
     else
         % Construir chains
-        chains = cell(1,net.trainParam.K);
-        for c = 1:net.trainParam.K
+        chains = cell(1,net.TrainParam.K);
+        for c = 1:net.TrainParam.K
             chains{c} = [2*c-1,2*c];
         end
     end
     
-    if (~isempty(chains) && length(chains{1}) <= net.trainParam.N && net.results.exitFlag == 1) || isempty(chains) && net.results.exitFlag == 1
+    if (~isempty(chains) && length(chains{1}) <= net.TrainParam.N && net.Results.ExitFlag == 1) || isempty(chains) && net.Results.ExitFlag == 1
 
         % Part 2. 3 possible methods:
         % a. fixing cities
@@ -395,46 +460,46 @@ function [net,V,U,iter] = simDivideConquer(net,V,U)
         % c. connecting subtours with greedy
         [netPhase2,V2] = simDivideConquerPhase2(net,chains,plotPhases,myPlot);
         % Building final V
-        V = zeros(net.trainParam.N);
+        V = zeros(net.TrainParam.N);
         iNew = 1;
         iOld = 1;
 
         % Reached max number of iterations        
-        if netPhase2.results.exitFlag == 0
+        if netPhase2.Results.ExitFlag == 0
             mkdir('Phase2_InsuficientIterations');
             save(fullfile(pwd,'Phase2_InsuficientIterations',regexprep(datestr(datetime),{':',' ','-'},'_')))
-            while netPhase2.results.exitFlag <= 0
-                V2 = V2 + (rand(netPhase2.trainParam.N,netPhase2.trainParam.N-netPhase2.trainParam.K) - 0.5) * 1e-5;
-                U = netPhase2.setting.invTransferFcn(V2);
+            while netPhase2.Results.ExitFlag <= 0
+                V2 = V2 + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-5;
+                U = netPhase2.Setting.InvTransferFcn(V2);
                 V2 = sim(netPhase2, V2, U);
             end
             
         % Possible saddle point reached
-        elseif netPhase2.results.exitFlag == -1 
+        elseif netPhase2.Results.ExitFlag == -1 
             mkdir('Phase2_PossibleSaddlePoint');
             save(fullfile(pwd,'Phase2_PossibleSaddlePoint',regexprep(datestr(datetime),{':',' ','-'},'_')))            
             % Stuck in a saddle point. Perturbation required.
-            while netPhase2.results.exitFlag <= 0
-                V2 = V2 + (rand(netPhase2.trainParam.N,netPhase2.trainParam.N-netPhase2.trainParam.K) - 0.5) * 1e-5;
-                U = netPhase2.setting.invTransferFcn(V2);
+            while netPhase2.Results.ExitFlag <= 0
+                V2 = V2 + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-5;
+                U = netPhase2.Setting.InvTransferFcn(V2);
                 V2 = sim(netPhase2, V2, U);
             end
         end
         % TODO Add correct number of iterations        
         
-        while iNew <= net.trainParam.N
+        while iNew <= net.TrainParam.N
             
-            thisCity = find(strcmp(net.cities.names,netPhase2.cities.names(netPhase2.results.visitOrder(iOld))));
+            thisCity = find(strcmp(net.Cities.Names,netPhase2.Cities.Names(netPhase2.Results.VisitOrder(iOld))));
 
             V(thisCity,iNew) = 1;
             iNew = iNew + 1;
-            if netPhase2.results.visitOrder(iOld) <= 2*netPhase2.trainParam.K
+            if netPhase2.Results.VisitOrder(iOld) <= 2*netPhase2.TrainParam.K
                 for c = 1:length(chains)
                     if any(chains{c} == thisCity)
                         break;
                     end
                 end
-                if rem(netPhase2.results.visitOrder(iOld),2) % Start of chain
+                if rem(netPhase2.Results.VisitOrder(iOld),2) % Start of chain
                     for thisChain = 2:length(chains{c})
                         V(chains{c}(thisChain),iNew) = 1;
                         iNew = iNew + 1;
@@ -450,48 +515,48 @@ function [net,V,U,iter] = simDivideConquer(net,V,U)
             end
             iOld = iOld + 1;            
         end
-        U = net.setting.invTransferFcn(V);
-        iter = net.results.itersReached + netPhase2.results.itersReached - 1;
+        U = net.Setting.InvTransferFcn(V);
+        iter = net.Results.ItersReached + netPhase2.Results.ItersReached - 1;
 
         if plotPhases
-            if isempty(net.results.tourLength); %#ok<UNRCH>
+            if isempty(net.Results.TourLength) %#ok<UNRCH>
                 init(net);
                 net = computeTour(net,V,iter); % Needed for plot phase1 + phase2 to output correctly
             else
-                [~,net.results.visitOrder] = max(V); % Needed for plot phase1 + phase2 to output correctly
+                [~,net.Results.VisitOrder] = max(V); % Needed for plot phase1 + phase2 to output correctly
             end
             plot(net,'phase2',chains,[],myPlot.myCitiesColorP2,myPlot.myCitiesTextColor,myPlot.myInsideColorP1,myPlot.myTitle);
         end    
 
         % Removing unused energy and time elements.
-        net.results.energy = net.results.energy(~isnan(net.results.energy));
-        net.results.time = [net.results.time(1),net.results.time(net.results.time(2:end) ~= 0)];
+        net.Results.Energy = net.Results.Energy(~isnan(net.Results.Energy));
+        net.Results.Time = [net.Results.Time(1),net.Results.Time(net.Results.Time(2:end) ~= 0)];
 
-        net.results.energy = [net.results.energy, netPhase2.results.energy(2:end)];
-        net.results.time = [net.results.time, net.results.time(end) + netPhase2.results.time(2:end)];
+        net.Results.Energy = [net.Results.Energy, netPhase2.Results.Energy(2:end)];
+        net.Results.Time = [net.Results.Time, net.Results.Time(end) + netPhase2.Results.Time(2:end)];
     else
-        iter = net.results.itersReached;
+        iter = net.Results.ItersReached;
     end
 end
 
 function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
 
-    p_or_tau = net.cities.tau;
+    p_or_tau = net.Cities.Tau;
 	% Backing up distances
-    aux_d = net.cities.d;
+    aux_d = net.Cities.DistanceMatrix;
 
-    [net.cities.d, neighbours] = neighbourDistance(net, p_or_tau);
+    [net.Cities.d, neighbours] = neighbourDistance(net, p_or_tau);
 
     % Starting point close to saddle point
     if nargin < 2
-        V = saddle(net) + (rand(net.trainParam.N) - 0.5) * 1e-5;
-        U = net.setting.invTransferFcn(V);
+        V = saddle(net) + (rand(net.TrainParam.N) - 0.5) * 1e-5;
+        U = net.Setting.InvTransferFcn(V);
     end
     
     [net,V,U,iter] = simTalavanYanez(net,V,U);
 
     % Retrieving original distance from backup.    
-    net.cities.d = aux_d;
+    net.Cities.d = aux_d;
     
     % Finding chains such that go from city x to city y (from
     % position j to position j+1) using the original distance.
@@ -500,11 +565,11 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
     % Extract chains from S.
 	chains = {};
             
-    if net.results.validPath
-        finalTour = net.results.visitOrder;
+    if net.Results.ValidPath
+        finalTour = net.Results.VisitOrder;
         
         % X: City matrix. Connecting cities from j to j+1
-        X = zeros(net.trainParam.N);
+        X = zeros(net.TrainParam.N);
         for x = 1:size(X,1)-1
             X(finalTour(x),finalTour(x+1)) = 1;
         end
@@ -564,7 +629,7 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
             h = plot(net);
             hold on;
         end
-        if length(chains) == 1 && length(chains{1}) > net.trainParam.N
+        if length(chains) == 1 && length(chains{1}) > net.TrainParam.N
             return;
         end
         % Ordering chains
@@ -594,60 +659,64 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
         for s = 1:noChains
             chainExtremes{s}  = chains{s}([1,end]);
         end
-        singleCities = setxor(1:net.trainParam.N,[chains{:}]);
+        singleCities = setxor(1:net.TrainParam.N,[chains{:}]);
         newCities = [[chainExtremes{:}],singleCities];
         
-        newNames  = net.cities.names(newCities);
-
-        newOptions = tsphopfieldnet.createOptions(...
-            'R_ITER'              , net.setting.R_ITER               ,...
-            'dt'                  , net.setting.dt                   ,...
-            'e'                   , net.setting.e                    ,...
-            'hwResources'         , net.setting.hwResources          ,...
-            'loggingV'            , net.setting.loggingV             ,...
-            'maxIter'             , net.setting.maxIter              ,...
-            'q'                   , net.setting.q                    ,...
-            'showCommandLine'     , net.setting.showCommandLine      ,...
-            'u0'                  , net.setting.u0                   ,...
-            'd'                   , net.cities.d(newCities,newCities),...
-            'names'               , newNames                         ,...
-            'type'                , net.cities.type                  ,...
-            'simFcn'              , 'talavan-yanez');
-
-        if ~isempty(net.cities.coords)
-            newOptions.cities.coords = net.cities.coords(newCities,:);
+        newNames  = net.Cities.Names(newCities);
+        if ~isempty(net.Cities.Coordinates)
+            newCoordinates = net.Cities.Coordinates(newCities,:);
+        else
+            newCoordinates = [];
         end
         
-        netPhase2 = tsphopfieldnet(length(newCities),net.trainParam.C,newOptions);
-        netPhase2.setting.transferFcn = net.setting.transferFcn;
-        netPhase2.setting.invTransferFcn = net.setting.invTransferFcn;
+        newOptions = tsphopfieldnetOptions(...
+            'R_Iter'              , net.Setting.R_Iter                            ,...
+            'Dt'                  , net.Setting.Dt                                ,...
+            'E'                   , net.Setting.E                                 ,...
+            'ExecutionEnvironment', net.Setting.ExecutionEnvironment              ,...
+            'CheckpointPath'      , net.Setting.CheckpointPath                    ,...
+            'MaxIter'             , net.Setting.MaxIter                           ,...
+            'Q'                   , net.Setting.Q                                 ,...
+            'Verbose'             , net.Setting.Verbose                           ,...
+            'U0'                  , net.Setting.U0                                ,...
+            'DistanceMatrix'      , net.Cities.DistanceMatrix(newCities,newCities),...
+            'Names'               , newNames                                      ,...
+            'DistanceType'        , net.Cities.DistanceType                       ,...
+            'Coordinates'         , newCoordinates                                ,...
+            'SimFcn'              , 'talavan-yanez');
+
+
         
-        netPhase2.trainParam.K = noChains;
+        netPhase2 = tsphopfieldnet(length(newCities),net.TrainParam.C,newOptions);
+        netPhase2.Setting.transferFcn = net.Setting.TransferFcn;
+        netPhase2.Setting.InvTransferFcn = net.Setting.InvTransferFcn;
+        
+        netPhase2.TrainParam.K = noChains;
 %         aux_dPhase2 = netPhase2.cities.d;
-%         reOrder = reshape(flipud(reshape(1:2*netPhase2.trainParam.K,2,netPhase2.trainParam.K)),2*netPhase2.trainParam.K,1);
+%         reOrder = reshape(flipud(reshape(1:2*netPhase2.TrainParam.K,2,netPhase2.TrainParam.K)),2*netPhase2.TrainParam.K,1);
 %         dxyc = netPhase2.cities.d;
-%         dxyc(:,1:2*netPhase2.trainParam.K) = dxyc(:,reOrder);
+%         dxyc(:,1:2*netPhase2.TrainParam.K) = dxyc(:,reOrder);
 %         dxyc(1:length(dxyc)+1:end) = 0; %?  
 %         netPhase2.cities.d = dxyc;
 %         netPhase2.cities.d(1,2) = 0;
 %         netPhase2.cities.d(2,1) = 0;
         
-        if netPhase2.trainParam.K > 1 && netPhase2.trainParam.N > 2
-            for x = 1:2:2*netPhase2.trainParam.K-1
-                netPhase2.cities.d(x+1,x) = 0;
-                netPhase2.cities.d(x,x+1) = 0;
+        if netPhase2.TrainParam.K > 1 && netPhase2.TrainParam.N > 2
+            for x = 1:2:2*netPhase2.TrainParam.K-1
+                netPhase2.Cities.DistanceMatrix(x+1,x) = 0;
+                netPhase2.Cities.DistanceMatrix(x,x+1) = 0;
             end
         end
         train(netPhase2);
 %         netPhase2.cities.d = aux_dPhase2;
         
-        V = saddle(netPhase2) + (rand(netPhase2.trainParam.N,netPhase2.trainParam.N-netPhase2.trainParam.K) - 0.5) * 1e-10;
-        U = netPhase2.setting.invTransferFcn(V);
+        V = saddle(netPhase2) + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-10;
+        U = netPhase2.Setting.InvTransferFcn(V);
         
         V = sim(netPhase2,V,U);
-        if ~netPhase2.results.validPath
-            net.results.validPath = netPhase2.results.validPath;
-            net.results.exitFlag =  netPhase2.results.exitFlag;
+        if ~netPhase2.Results.ValidPath
+            net.Results.ValidPath = netPhase2.Results.ValidPath;
+            net.Results.ExitFlag =  netPhase2.Results.ExitFlag;
             return;
         end
         
@@ -661,9 +730,9 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
 
     end
     
-    net.simFcn = 'divide-conquer';
-    net.cities.fixedCities = {''};
-    net.cities.startFixedCitiesIn = NaN;
+    net.SimFcn = 'divide-conquer';
+    net.Cities.Subtours = '';
+    net.Cities.SubtoursPositions = NaN;
 
 end
 
@@ -672,95 +741,95 @@ end
 function TV = weightMatrixTimesV(net,deltaPrev,deltaNext,...
     V, sumVrow, sumVcol, sumV, x, i)
 
-    TV = - net.trainParam.D * net.cities.d(x,:) * ...
+    TV = - net.TrainParam.D * net.Cities.DistanceMatrix(x,:) * ...
         sum(V(:,[deltaPrev, deltaNext]),2) + ...
-        (-net.trainParam.A * sumVrow(x) - ...
-        net.trainParam.B * sumVcol(i)) -...
-        net.trainParam.C * sumV + ...
-        (net.trainParam.A + net.trainParam.B) * V(x,i);
+        (-net.TrainParam.A * sumVrow(x) - ...
+        net.TrainParam.B * sumVcol(i)) -...
+        net.TrainParam.C * sumV + ...
+        (net.TrainParam.A + net.TrainParam.B) * V(x,i);
 end
 
 function TV = weightMatrixTimesVvectorized(net,...
     V, sumVrow, sumVcol, sumV)
 
-    deltaPrev = [net.trainParam.N-net.trainParam.K,1:net.trainParam.N-net.trainParam.K-1];
-    deltaNext = [2:net.trainParam.N-net.trainParam.K,1];
+    deltaPrev = [net.TrainParam.N-net.TrainParam.K,1:net.TrainParam.N-net.TrainParam.K-1];
+    deltaNext = [2:net.TrainParam.N-net.TrainParam.K,1];
     
-    if net.trainParam.K == 0
-        dVpVn = net.cities.d * (V(:,deltaPrev) + V(:,deltaNext));
-        TV = bsxfun(@plus, -net.trainParam.A*sumVrow, ...
-            -net.trainParam.B*sumVcol) + ...
-            (net.trainParam.A + net.trainParam.B) * V - ... 
-            net.trainParam.C * sumV - ...
-            net.trainParam.D * dVpVn;
+    if net.TrainParam.K == 0
+        dVpVn = net.Cities.DistanceMatrix * (V(:,deltaPrev) + V(:,deltaNext));
+        TV = bsxfun(@plus, -net.TrainParam.A*sumVrow, ...
+            -net.TrainParam.B*sumVcol) + ...
+            (net.TrainParam.A + net.TrainParam.B) * V - ... 
+            net.TrainParam.C * sumV - ...
+            net.TrainParam.D * dVpVn;
 
     else % HAY QUE TRABAJAR ESTO
-        reOrder = reshape(flipud(reshape(1:2*net.trainParam.K,2,net.trainParam.K)),2*net.trainParam.K,1);
+        reOrder = reshape(flipud(reshape(1:2*net.TrainParam.K,2,net.TrainParam.K)),2*net.TrainParam.K,1);
     	termA = repmat(sumVrow,1,size(V,2)) - V;
-        termA(1:2*net.trainParam.K,:) = termA(1:2*net.trainParam.K,:) + termA(reOrder,:);
+        termA(1:2*net.TrainParam.K,:) = termA(1:2*net.TrainParam.K,:) + termA(reOrder,:);
         % Sum for free cities (x 2)
-        termA(2*net.trainParam.K+1:end,:) = termA(2*net.trainParam.K+1:end,:) + termA(2*net.trainParam.K+1:end,:);
+        termA(2*net.TrainParam.K+1:end,:) = termA(2*net.TrainParam.K+1:end,:) + termA(2*net.TrainParam.K+1:end,:);
         
         termB = repmat(sumVcol,size(V,1),1) - V;
 
-        dxyc = net.cities.d;
-        dxyc(:,1:2*net.trainParam.K) = dxyc(:,reOrder);
+        dxyc = net.Cities.DistanceMatrix;
+        dxyc(:,1:2*net.TrainParam.K) = dxyc(:,reOrder);
 %         dxyc(1:length(dxyc)+1:end) = 0; %?
         
-        dxcy = net.cities.d;
-        dxcy(1:2*net.trainParam.K,:) = dxcy(reOrder,:);
+        dxcy = net.Cities.DistanceMatrix;
+        dxcy(1:2*net.TrainParam.K,:) = dxcy(reOrder,:);
 %         dxcy(1:length(dxyc)+1:end) = 0; %?
         
         termD = dxyc*V(:,deltaPrev) + dxcy*V(:,deltaNext);
         
-        TV = -net.trainParam.A * termA - net.trainParam.B * termB  - ... 
-            net.trainParam.C * sumV - net.trainParam.D * termD;
+        TV = -net.TrainParam.A * termA - net.TrainParam.B * termB  - ... 
+            net.TrainParam.C * sumV - net.TrainParam.D * termD;
     end
 end
 
 function net = computeTour(net,V,iter)
 
     % Reconstructing original distance
-    if strcmp(net.simFcn,'talavan-yanez')
-        d = net.trainParam.dUaux * net.cities.d;
-    else %strcmp(net.simFcn,'divide-conquer')
-        d = net.cities.d;
+    if strcmp(net.SimFcn,'talavan-yanez')
+        d = net.TrainParam.dUaux * net.Cities.DistanceMatrix;
+    else %strcmp(net.SimFcn,'divide-conquer')
+        d = net.Cities.DistanceMatrix;
     end
         
-    V(V > 1 - power(10, -1 * net.setting.e)) = 1; %FIXME to be removed?
-    V(V < power(10, -1 * net.setting.e)) = 0;
+    V(V > 1 - power(10, -1 * net.Setting.E)) = 1; %FIXME to be removed?
+    V(V < power(10, -1 * net.Setting.E)) = 0;
     
-    if strcmp(net.simFcn,'euler') % More relaxed criteria
+    if strcmp(net.SimFcn,'euler') % More relaxed criteria
         V(V > 0.99) = 1;
         V(V < 0.01) = 0;
     end
     
-    if all(any(V == 1, 1)) && all(any(V == 1,2)) && sum(sum(V)) == net.trainParam.N
-        net.results.validPath = true;
-        [~,net.results.visitOrder] = max(V);
-        pos = sub2ind(size(d), net.results.visitOrder, ...
-            circshift(net.results.visitOrder,[1,-1]));
-        net.results.tourLength = sum(d(pos));
-        net.results.exitFlag = 1;
+    if all(any(V == 1, 1)) && all(any(V == 1,2)) && sum(sum(V)) == net.TrainParam.N
+        net.Results.ValidPath = true;
+        [~,net.Results.VisitOrder] = max(V);
+        pos = sub2ind(size(d), net.Results.VisitOrder, ...
+            circshift(net.Results.VisitOrder,[1,-1]));
+        net.Results.TourLength = sum(d(pos));
+        net.Results.ExitFlag = 1;
         
-    elseif net.trainParam.K > 0 && all(any(V == 1, 1)) && ...
-            sum(sum(V)) == net.trainParam.N - net.trainParam.K && ...
-            all([arrayfun(@(K) sum(sum(V(2*K-1:2*K,:))), 1:net.trainParam.K),sum(V(2*net.trainParam.K+1:end,:),2)'])
+    elseif net.TrainParam.K > 0 && all(any(V == 1, 1)) && ...
+            sum(sum(V)) == net.TrainParam.N - net.TrainParam.K && ...
+            all([arrayfun(@(K) sum(sum(V(2*K-1:2*K,:))), 1:net.TrainParam.K),sum(V(2*net.TrainParam.K+1:end,:),2)'])
         
         % The computed tour has fixed chains
-        net.results.validPath = true;
+        net.Results.ValidPath = true;
         [~,provisionalOrder] = max(V);
-        net.results.visitOrder = zeros(1,net.trainParam.N);
+        net.Results.VisitOrder = zeros(1,net.TrainParam.N);
         iNew = 1;
         iOld = 1;
-        while iNew <= net.trainParam.N
-            net.results.visitOrder(iNew) = provisionalOrder(iOld);
-            if net.results.visitOrder(iNew) <= 2*net.trainParam.K
-                if rem(net.results.visitOrder(iNew),2)
-                    net.results.visitOrder(iNew+1) = net.results.visitOrder(iNew) + 1;
+        while iNew <= net.TrainParam.N
+            net.Results.VisitOrder(iNew) = provisionalOrder(iOld);
+            if net.Results.VisitOrder(iNew) <= 2*net.TrainParam.K
+                if rem(net.Results.VisitOrder(iNew),2)
+                    net.Results.VisitOrder(iNew+1) = net.Results.VisitOrder(iNew) + 1;
                     iNew = iNew+1;
                 else
-                    net.results.visitOrder(iNew+1) = net.results.visitOrder(iNew) - 1;
+                    net.Results.VisitOrder(iNew+1) = net.Results.VisitOrder(iNew) - 1;
                     iNew = iNew+1;
                 end
             end
@@ -768,23 +837,23 @@ function net = computeTour(net,V,iter)
             iOld = iOld+1;
         end
         
-        pos = sub2ind(size(d), net.results.visitOrder, ...
-            circshift(net.results.visitOrder,[1,-1]));
-        net.results.tourLength = sum(d(pos));
-        net.results.exitFlag = 1;
+        pos = sub2ind(size(d), net.Results.VisitOrder, ...
+            circshift(net.Results.VisitOrder,[1,-1]));
+        net.Results.TourLength = sum(d(pos));
+        net.Results.ExitFlag = 1;
         
     else
         % Error produced during simulation
-        if iter > net.setting.maxIter % Max iterations reached
-            net.results.exitFlag = 0;
+        if iter > net.Setting.MaxIter % Max iterations reached
+            net.Results.ExitFlag = 0;
         else 
-            if isempty(net.results.exitFlag)
-                net.results.exitFlag = -1;
+            if isempty(net.Results.ExitFlag)
+                net.Results.ExitFlag = -1;
             end
         end
-        net.results.validPath = false;
-        net.results.tourLength = nan;                
+        net.Results.ValidPath = false;
+        net.Results.TourLength = nan;                
     end
-    net.results.itersReached = iter;
+    net.Results.ItersReached = iter;
 
 end

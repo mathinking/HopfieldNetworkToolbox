@@ -1,18 +1,18 @@
 function net = train(net)
-    net.trainParam.alpha = 0;
-    net.trainParam.beta = zeros(net.problemParameters.m,1);
-    net.trainParam.eps = 0;
-    net.trainParam.gamma = zeros(net.problemParameters.n + net.problemParameters.m1);
-    net.trainParam.phi = zeros(net.problemParameters.m);
+    net.TrainParam.alpha = 0;
+    net.TrainParam.beta = zeros(net.ProblemParameters.m,1);
+    net.TrainParam.eps = 0;
+    net.TrainParam.gamma = zeros(net.ProblemParameters.n + net.ProblemParameters.m1);
+    net.TrainParam.phi = zeros(net.ProblemParameters.m);
     
-    e_k = {net.problemParameters.R,net.problemParameters.b};
-    Wk0 = cell(net.problemParameters.m1,1);
-    Wk1 = cell(net.problemParameters.m,1);
-    Wk2 = cell(net.problemParameters.m,1);
-    n = net.problemParameters.n;
+    e_k = {net.ProblemParameters.R,net.ProblemParameters.b};
+    Wk0 = cell(net.ProblemParameters.m1,1);
+    Wk1 = cell(net.ProblemParameters.m,1);
+    Wk2 = cell(net.ProblemParameters.m,1);
+    n = net.ProblemParameters.n;
     
-%     for k = 1:net.problemParameters.m
-%         if k <= net.problemParameters.m1
+%     for k = 1:net.ProblemParameters.m
+%         if k <= net.ProblemParameters.m1
 %             if k > 1
 %                                 
 %             end
@@ -24,28 +24,28 @@ function net = train(net)
 %     end
 	
     % Gradient of E
-%     E = cell(1,net.problemParameters.n+net.problemParameters.m1);
+%     E = cell(1,net.ProblemParameters.n+net.ProblemParameters.m1);
 %     
 %     for i = 1:length(E)
-%         if i <= net.problemParameters.n
+%         if i <= net.ProblemParameters.n
 %             E{i} = @(alpha,Phi,beta,gamma)[alpha*P(i,:) + alpha*q(i)]
 %         end
 %     end
 %     
     % Order of parameters: [alpha, Phi's,     
-    net.trainParam.alpha = 0.2;
-    alpha = net.trainParam.alpha;
-% 	net.trainParam.eps = 
-    phi1 = 0.1;
-    net.trainParam.Phi = [phi1,0;0,0];
-    net.trainParam.beta = [0;0];
-    net.trainParam.gamma(1,1) = 0.5*(alpha+phi1);
-    net.trainParam.gamma(2,2) = 3/2*alpha + 0.5*phi1;
+    net.TrainParam.alpha = 1;
+    phi1 = 5;
+    alpha = net.TrainParam.alpha;
+ 	net.TrainParam.eps = 3*alpha/2 + phi1/2;
+    net.TrainParam.Phi = phi1;
+    net.TrainParam.beta = -alpha/2 - phi1;
+    net.TrainParam.gamma(1,1) = (2*alpha+phi1/2);
+    net.TrainParam.gamma(2,2) = phi1/2 - alpha;
     
     % T  = -(alpha * P + R'*Phi*R - 2*diag(gamma));
-    net.trainParam.T  = -(net.trainParam.alpha * net.problemParameters.P + net.problemParameters.R'*net.trainParam.Phi*net.problemParameters.R - 2*net.trainParam.gamma);
+    net.TrainParam.T  = -(net.TrainParam.alpha * net.ProblemParameters.P + net.ProblemParameters.R'*net.TrainParam.Phi*net.ProblemParameters.R - 2*net.TrainParam.gamma);
     
     % ib = -(alpha * q + R'*beta + gamma);
-    net.trainParam.ib = -(net.trainParam.alpha * net.problemParameters.q + net.problemParameters.R'*net.trainParam.beta + diag(net.trainParam.gamma));
+    net.TrainParam.ib = -(net.TrainParam.alpha * net.ProblemParameters.q + net.ProblemParameters.R'*net.TrainParam.beta + diag(net.TrainParam.gamma));
 end
 

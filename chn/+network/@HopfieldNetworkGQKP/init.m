@@ -1,10 +1,10 @@
 function net = init(net)
     
-    net = init@hopfieldnetwork(net);
+    net = init@network.HopfieldNetwork(net);
     
-    net.results.validSolution = false;
-    net.results.x = [];
+    net.Results.ValidSolution = false;
+    net.Results.x = [];
     
-    net.results = orderfields(net.results);
+    net.Results = orderfields(net.Results);
     
 end

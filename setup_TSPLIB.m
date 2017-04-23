@@ -3,18 +3,18 @@
 % http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/
 
 webFile = 'http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp/ALL_tsp.tar.gz';
-filesPath = fileparts(fileparts(which('tsphopfieldnet.m')));
+filesPath = fullfile(fileparts(fileparts(which('tsphopfieldnet.m'))),'data1');
 fprintf(1,'\nDownloading TSPLIB library...\n');
 
+tempFile = 'ALL_tsp.tar.gz';
 try
-    websave(fullfile(filesPath,'ALL_tsp.tar'), webFile);
+    websave(fullfile(filesPath,tempFile), webFile);
 catch me
     fprintf(1,'Please, make sure you have Internet connection\n');
 end
     
 fprintf(1,'TSPLIB files downloaded!\n');
 
-tempFile = 'ALL_tsp.tar.gz';
 TSPFilesDir = fullfile(filesPath,'TSPFiles');
 TSPToursDir = fullfile(TSPFilesDir,'TSPTours');
 untar(fullfile(filesPath,tempFile),TSPFilesDir)

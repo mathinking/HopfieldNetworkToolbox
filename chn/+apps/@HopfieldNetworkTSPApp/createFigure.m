@@ -12,7 +12,7 @@ function createFigure(app)
     app.figure.HandleVisibility	= 'off';
     app.figure.Name             = 'Hopfield Net TSP solver App';
     
-    problems = tsplib.problemNames(true,false);
+    problems = utils.TSPLIB.problemNames(true,false);
     
     app.tabgroup = uitabgroup(app.figure);
     app.tabgroup.Position = [0.05,0.7,0.45,0.25];
@@ -151,27 +151,27 @@ function createFigure(app)
     app.simFcnMenu.Callback = @(~,~)cb_simFcn(app);
     app.simFcnMenu.String = {'Algorithm';'euler';'talavan-yanez';'divide-conquer'};
     
-    app.hwResources = uibuttongroup(app.simulation);
-    app.hwResources.Units = 'normalized';   
-    app.hwResources.Position = [0.1,0.675,0.8,0.175];
-    app.hwResources.Title = 'Processor';
-    app.hwResources.FontSize = 9;
-    app.hwResources.FontUnits = 'normalized';
-    app.hwResources.FontAngle = 'italic';
+    app.ExecutionEnvironment = uibuttongroup(app.simulation);
+    app.ExecutionEnvironment.Units = 'normalized';   
+    app.ExecutionEnvironment.Position = [0.1,0.675,0.8,0.175];
+    app.ExecutionEnvironment.Title = 'Processor';
+    app.ExecutionEnvironment.FontSize = 9;
+    app.ExecutionEnvironment.FontUnits = 'normalized';
+    app.ExecutionEnvironment.FontAngle = 'italic';
     
-    app.hwResourcesCPU = uicontrol(app.hwResources,'Style','radiobutton');
-	app.hwResourcesCPU.Units = 'normalized';
-    app.hwResourcesCPU.Position = [0.15,0.35,0.3,0.35];
-    app.hwResourcesCPU.String = 'CPU';
-	app.hwResourcesCPU.FontUnits = 'normalized';
-    app.hwResourcesCPU.FontSize = 0.7;  
+    app.ExecutionEnvironmentCPU = uicontrol(app.ExecutionEnvironment,'Style','radiobutton');
+	app.ExecutionEnvironmentCPU.Units = 'normalized';
+    app.ExecutionEnvironmentCPU.Position = [0.15,0.35,0.3,0.35];
+    app.ExecutionEnvironmentCPU.String = 'CPU';
+	app.ExecutionEnvironmentCPU.FontUnits = 'normalized';
+    app.ExecutionEnvironmentCPU.FontSize = 0.7;  
 
-    app.hwResourcesGPU = uicontrol(app.hwResources,'Style','radiobutton');
-    app.hwResourcesGPU.Units = 'normalized';
-    app.hwResourcesGPU.Position = [0.6,0.35,0.3,0.35];
-    app.hwResourcesGPU.String = 'GPU';   
-    app.hwResourcesGPU.FontUnits = 'normalized';
-    app.hwResourcesGPU.FontSize = 0.7;
+    app.ExecutionEnvironmentGPU = uicontrol(app.ExecutionEnvironment,'Style','radiobutton');
+    app.ExecutionEnvironmentGPU.Units = 'normalized';
+    app.ExecutionEnvironmentGPU.Position = [0.6,0.35,0.3,0.35];
+    app.ExecutionEnvironmentGPU.String = 'GPU';   
+    app.ExecutionEnvironmentGPU.FontUnits = 'normalized';
+    app.ExecutionEnvironmentGPU.FontSize = 0.7;
 
     app.seed = uibuttongroup(app.simulation);
     app.seed.Units = 'normalized';

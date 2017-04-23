@@ -13,7 +13,7 @@ function defaultSettings(app)
     
     % Simulation
     app.simFcnMenu.Value = 1;
-    app.hwResources.SelectedObject = app.hwResourcesCPU;
+    app.ExecutionEnvironment.SelectedObject = app.ExecutionEnvironmentCPU;
 
     app.seed.SelectedObject = app.seedShuffle;
     app.seedFixedEdit.String = '3';

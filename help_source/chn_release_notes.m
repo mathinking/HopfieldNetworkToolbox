@@ -7,7 +7,7 @@
 % Statistics and Machine Learning Toolbox™>
 % 
 %% Version 1.1.2, 09-Apr-2017
-% Bug fixing for Unix platforms
+% Minor Bugs
 %
 % List of <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av1.1.2+is%3Aclosed+label%3Abug
 % Bugs> fixed and <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av1.1.2+is%3Aclosed+label%3Aenhancement

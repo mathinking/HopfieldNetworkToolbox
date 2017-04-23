@@ -4,21 +4,22 @@ if isscalar(tau_or_p)
     if tau_or_p > 1
 
         tau = tau_or_p;
-        Ng = false(size(net.cities.d));
-        for x = 1:size(net.cities.d,1)
-            neighbourCities = findClosestCities(net.cities.d(x,:),tau);
+        Ng = false(size(net.Cities.DistanceMatrix));
+        for x = 1:size(net.Cities.DistanceMatrix,1)
+            neighbourCities = findClosestCities(net.Cities.DistanceMatrix(x,:),tau);
             Ng(x,neighbourCities) = true;
             Ng(neighbourCities,x) = true;
         end
 
         modifiedDistance = zeros(size(Ng));
-        modifiedDistance(Ng == 0 & ~logical(eye(size(net.cities.d)))) = net.trainParam.dU - (net.trainParam.dL./net.cities.d(Ng == 0 & ~logical(eye(size(net.cities.d))))-net.trainParam.rho);
-        modifiedDistance(Ng == 1) = net.cities.d(Ng == 1);
+        modifiedDistance(Ng == 0 & ~logical(eye(size(net.Cities.DistanceMatrix)))) = ...
+            net.TrainParam.dU - (net.TrainParam.dL./net.Cities.DistanceMatrix(Ng == 0 & ~logical(eye(size(net.Cities.DistanceMatrix))))-net.TrainParam.rho);
+        modifiedDistance(Ng == 1) = net.Cities.DistanceMatrix(Ng == 1);
     else
         p = tau_or_p;
-        alpha = p * net.trainParam.dU + (1-p) * net.trainParam.dL;
-        modifiedDistance = net.cities.d;
-        modifiedDistance( net.cities.d > alpha & ~logical(eye(net.trainParam.N)) ) = net.trainParam.dU;
+        alpha = p * net.TrainParam.dU + (1-p) * net.TrainParam.dL;
+        modifiedDistance = net.Cities.DistanceMatrix;
+        modifiedDistance( net.Cities.DistanceMatrix > alpha & ~logical(eye(net.TrainParam.N)) ) = net.TrainParam.dU;
 
         Ng = modifiedDistance <= alpha;
 
@@ -32,21 +33,21 @@ else
     tau = tau_or_p(tau_or_p >= 1);
     p   = tau_or_p(tau_or_p <  1);
 
-    alpha = p * net.trainParam.dU + (1-p) * net.trainParam.dL;
-    modifiedDistance = zeros(net.trainParam.N);
-	modifiedDistance(net.cities.d <= alpha) = net.cities.d(net.cities.d <= alpha);
+    alpha = p * net.TrainParam.dU + (1-p) * net.TrainParam.dL;
+    modifiedDistance = zeros(net.TrainParam.N);
+	modifiedDistance(net.Cities.DistanceMatrix <= alpha) = net.Cities.DistanceMatrix(net.Cities.DistanceMatrix <= alpha);
     
-    Ng = net.cities.d <= alpha;
+    Ng = net.Cities.DistanceMatrix <= alpha;
     
-    for x = 1:size(net.cities.d,1)
+    for x = 1:size(net.Cities.DistanceMatrix,1)
         if all(modifiedDistance(x,:) == 0)
-            neighbourCities = findClosestCities(net.cities.d(x,:),tau);
+            neighbourCities = findClosestCities(net.Cities.DistanceMatrix(x,:),tau);
             Ng(x,neighbourCities) = true;
             Ng(neighbourCities,x) = true;
         end
     end
-    modifiedDistance(Ng == 1 & net.cities.d > alpha) = net.cities.d(Ng == 1 & net.cities.d > alpha); 
-    modifiedDistance(Ng == 0) = net.trainParam.dU;
+    modifiedDistance(Ng == 1 & net.Cities.DistanceMatrix > alpha) = net.Cities.DistanceMatrix(Ng == 1 & net.Cities.DistanceMatrix > alpha); 
+    modifiedDistance(Ng == 0) = net.TrainParam.dU;
     
 end
 

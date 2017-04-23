@@ -1,6 +1,6 @@
 function net = setOptions(net,options)
    
-    net.simFcn = options.simFcn;
-	net.trainFcn = options.trainFcn;
+    net.SimFcn = options.SimFcn;
+	net.TrainFcn = options.TrainFcn;
  
 end

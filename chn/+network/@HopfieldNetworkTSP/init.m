@@ -1,11 +1,11 @@
 function net = init(net)
     
-    net = init@hopfieldnetwork(net);
+    net = init@network.HopfieldNetwork(net);
     
-    net.results.validPath = false;
-    net.results.tourLength = [];
-    net.results.visitOrder = [];
+    net.Results.ValidPath = false;
+    net.Results.TourLength = [];
+    net.Results.VisitOrder = [];
     
-    net.results = orderfields(net.results);
+    net.Results = orderfields(net.Results);
     
 end

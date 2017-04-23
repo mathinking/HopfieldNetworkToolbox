@@ -13,15 +13,17 @@ problem = tsplib({'tsp225'});
 
 %%
 % Number of cities:
-N = problem.nCities;
+N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
 C = 1e-5;
  
 %% 
-% Creating the |tsphopfieldnetwork| object 
-options = tsphopfieldnet.createOptions('coords',problem.coords,'d',problem.d,'type',problem.type);
+% Creating the |HopfieldNetworkTSP| object 
+options = tsphopfieldnetOptions('Coordinates',problem.Coordinates,...
+                                'DistanceMatrix',problem.DistanceMatrix,...
+                                'DistanceType',problem.DistanceType);
 net1 = tsphopfieldnet(N,C,options);
 
 %% 
@@ -36,12 +38,12 @@ sim(net1);
 
 net2 = tsphopfieldnet(N,C,options);
 V = saddle(net2) + (rand(N) - 0.5)*1e-10;
-invTransferFcn = getSetting(net2,'invTransferFcn');
+invTransferFcn = getSetting(net2,'InvTransferFcn');
 U = invTransferFcn(V);
 sim(net2,V,U);
 
 %% Comparing results
 
-getResults(net1,'tourLength')
+getResults(net1,'TourLength')
 
-getResults(net2,'tourLength')
+getResults(net2,'TourLength')

@@ -1,7 +1,6 @@
 function setTrainFcn(net,trainFcn)
 
-	assert(strcmp('trainty',trainFcn), ...
-        'Training function (parametrization) must be ''trainty''');
-    net.trainFcn = trainFcn;
+    options = tsphopfieldnetOptions('TrainFcn', trainFcn);   
+    net.TrainFcn = options.TrainFcn;
     
 end

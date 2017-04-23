@@ -1,9 +1,9 @@
 function returningValue = getTrainParam(net,field)
-    if nargin == 1;
-        returningValue = net.trainParam;
+    if nargin == 1
+        returningValue = net.TrainParam;
     else
-        if isfield(net.trainParam,field)
-            returningValue = net.trainParam.(field);
+        if isfield(net.TrainParam,field)
+            returningValue = net.TrainParam.(field);
         else
             error('hopfieldNetwork:unvalidSetting',['Unvalid setting: ', field]);
         end

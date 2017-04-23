@@ -1,4 +1,4 @@
-classdef tsphopfieldnetApp < handle
+classdef HopfieldNetworkTSPApp < handle
     
     properties (Access = public)
         figure;
@@ -29,9 +29,9 @@ classdef tsphopfieldnetApp < handle
         simulation;      
         simFcnMenu;
         
-        hwResources;
-        hwResourcesCPU;
-        hwResourcesGPU;
+        ExecutionEnvironment;
+        ExecutionEnvironmentCPU;
+        ExecutionEnvironmentGPU;
         
         seed;
         seedShuffle;
@@ -80,7 +80,7 @@ classdef tsphopfieldnetApp < handle
     end
     
     methods 
-        function app = tsphopfieldnetApp()
+        function app = HopfieldNetworkTSPApp()
             createFigure(app);
             defaultSettings(app);
             drawnow nocallbacks;

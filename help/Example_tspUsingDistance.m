@@ -9,7 +9,7 @@ rng(22); % For reproducibility
 % Free parameter C:
 C = 0.00001;
  
-%% Creating the |tsphopfieldnetwork| object
+%% Creating the |HopfieldNetworkTSPOptions| object
 % Providing the distance matrix
 d = [.0000 .3361 .3141 .3601 .5111 .5176 .2982 .4564 .3289 .2842;...
      .3361 .0000 .1107 .6149 .8407 .8083 .5815 .6418 .4378 .3934;...
@@ -23,9 +23,9 @@ d = [.0000 .3361 .3141 .3601 .5111 .5176 .2982 .4564 .3289 .2842;...
      .2842 .3934 .4501 .6323 .6857 .4654 .2674 .2492 .0498 .0000];
  
 %%      
-% Providing the distance matrix to the network through the structure of 
-% options      
-options = tsphopfieldnet.createOptions('d',d);
+% Providing the distance matrix to the network through the 
+% |HopfieldNetworkTSPOptions| class
+options = tsphopfieldnetOptions('DistanceMatrix',d,'DistanceType','explicit');
 
 %%
 % Number of cities:
@@ -45,4 +45,4 @@ getTrainParam(net)
 sim(net);
 
 %% Tour Length
-getResults(net,'tourLength')
+getResults(net,'TourLength')

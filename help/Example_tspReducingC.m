@@ -14,16 +14,19 @@ problem = tsplib({'berlin52'});
 
 %%
 % Number of cities:
-N = problem.nCities;
+N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
 C = 1e5;
  
-%% Creating the |tsphopfieldnetwork| object with value of C 'big'
+%% Creating the |HopfieldNetworkTSP| object with value of C 'big'
 % Providing problem coordinates cities and distance matrix to the
-% |tsphopfieldnet| network by creating a structure of options
-options = tsphopfieldnet.createOptions('coords',problem.coords,'d',problem.d,'type',problem.type);
+% |HopfieldNetworkTSP| network by creating a |HopfieldNetworkTSPOptions| 
+% object of options
+options = tsphopfieldnetOptions('Coordinates',problem.Coordinates,...
+                                'DistanceMatrix',problem.DistanceMatrix,...
+                                'DistanceType',problem.DistanceType);
 net1 = tsphopfieldnet(N,C,options);
 
 %%

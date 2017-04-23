@@ -1,36 +1,36 @@
 function disp(net)
     if length(net) > 1
         fprintf([num2str(size(net,1)),'x',num2str(size(net,2)), ...
-            ' hopfield array \n\n']);
+            ' hopfieldnet array \n\n']);
         return;
     end
-
-    tab1 = 13;
-    tab2 = 21;
+    tab = 27;
     strSection = @(rightTab,section) ...
-        ['<strong>',repmat(' ',1,rightTab-length(section)),...
-        section,': ','</strong>'];
-    fprintf([strSection(tab1,'Neural Network'),' ','\n\n']);
-    fprintf([strSection(tab1,'name'),net.name,'\n\n']);
-    fprintf([strSection(tab1,'trainFcn'),net.trainFcn,'\n']);
+        [repmat(' ',1,rightTab-length(section)),section,': '];
+    %fprintf([strSection(tab,['  ',net.Name,' with properties']),' ','\n\n']);
+    
+    fprintf([repmat(' ',1,tab-length(['  ',net.Name,' with properties'])),...
+        '  ','<a href = "matlab:helpPopup ',net.Name, '">', net.Name,...
+        '</a>',' with properties',': ','\n\n']);    
+    printsection('TrainFcn', net);
 	fprintf('\n');
-    fprintf([strSection(tab1,'simFcn'),net.simFcn,'\n']);
+    printsection('SimFcn', net);
     fprintf('\n');
-    fprintf([strSection(tab1,'trainParam'),'\n']);
-    dispStruct(net.trainParam);
+    printsection('TrainParam');
+    dispStruct(net.TrainParam);
     fprintf('\n');
-    fprintf([strSection(tab1,'originalParameters'),'\n']);
-    dispStruct(net.originalParameters);
+    printsection('OriginalParameters');
+    dispStruct(net.OriginalParameters);
     fprintf('\n');
-	fprintf([strSection(tab1,'problemParameters'),'\n']);
-    dispStruct(net.problemParameters);
+	printsection('ProblemParameters');
+    dispStruct(net.ProblemParameters);
     fprintf('\n');
-    fprintf([strSection(tab1,'setting'),'\n']);
-    dispStruct(net.setting);
-    if ~isempty(net.results.x)
+    printsection('Setting'); 
+    dispStruct(net.Setting);
+    if ~isempty(net.Results.x)
         fprintf('\n');
-        fprintf([strSection(tab1,'results'),'\n']);
-        dispStruct(net.results);
+        printsection('Results');
+        dispStruct(net.Results);
     end
     fprintf('\n');
 
@@ -56,8 +56,16 @@ function disp(net)
                 end
             end    
 
-            fprintf([strSection(tab2,structfields{i}),...
+            fprintf([strSection(tab,structfields{i}),...
                 field2str,'\n']);
         end       
+    end
+    function printsection(field, net)
+        if nargin == 1
+            fprintf([strSection(tab,field),'\n']);
+        else
+            fprintf([strSection(tab,field),net.(field),'\n']);
+        end
+        fprintf([repmat(' ',1,tab-length(field)),repmat('=',1,length(field)),'\n']);
     end
 end

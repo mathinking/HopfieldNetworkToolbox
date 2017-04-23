@@ -8,17 +8,17 @@ function d = computeDistance(coords, type)
 % 
 %   See also PDIST, SQUAREFORM
 
-    switch type
-        case 'GEO'
+    switch lower(type)
+        case 'geo'
             d = cityDistances_GEO(coords);
-        case 'EUC_2D'
+        case 'euc_2d'
             d = cityDistances_EUC_2D(coords); % Uses round (for TSPLIB)
-        case 'EUC'
+        case 'euc'
             d = pdist(coords,'euclidean');
             d = squareform(d);        
-        case 'ATT'
+        case 'att'
             d = cityDistances_ATT(coords);
-        case 'CEIL_2D'
+        case 'ceil_2d'
             d = cityDistances_CEIL_2D(coords);
         otherwise
             error('Unknown distance matrix case');

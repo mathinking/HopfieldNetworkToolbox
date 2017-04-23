@@ -4,7 +4,7 @@ xsi:noNamespaceSchemaLocation="optional">
     <!-- info.xml file for the Hopfield Network Toolbox -->
     
     <!-- Release element is not used, but provides documentation -->
-    <matlabrelease>2015b</matlabrelease>
+    <matlabrelease>2017a</matlabrelease>
     <!-- (Required) The name element appears in the Contents pane -->
     <name>Hopfield Network</name>
     <!-- (Required) The type elementidentifies your package; pick one: -->

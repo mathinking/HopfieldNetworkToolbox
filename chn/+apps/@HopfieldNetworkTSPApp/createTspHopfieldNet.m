@@ -11,22 +11,22 @@ function createTspHopfieldNet(app,varargin)
 
     if isequal(app.tabgroup.SelectedTab,app.tabTSPLIB)
         problem = varargin{1};
-        options = tsphopfieldnet.createOptions('coords',problem.coords,...
-            'd',problem.d,'type',problem.type,'simFcn',simFcn);
-        app.net = tsphopfieldnet(problem.nCities, C, options);        
+        options = tsphopfieldnetOptions('Coordinates',problem.Coordinates,...
+            'DistanceMatrix',problem.DistanceMatrix,'DistanceType',problem.DistanceType,'SimFcn',simFcn);
+        app.net = tsphopfieldnet(problem.NumberOfCities, C, options);        
     elseif isequal(app.tabgroup.SelectedTab,app.tabPolygon) 
         N = varargin{1};
-        options = tsphopfieldnet.createOptions('type','EUC','simFcn',simFcn);
+        options = tsphopfieldnetOptions('DistanceType','EUC','SimFcn',simFcn);
         app.net = tsphopfieldnet(N, C, options);
     elseif isequal(app.tabgroup.SelectedTab,app.tabOther)
         if isequal(app.tabOtherCoordsOrDist.SelectedObject,app.tabOtherCoordinates)
             coords = varargin{1};
             N = size(coords,1);
-            options = tsphopfieldnet.createOptions('coords',coords,'type','EUC','simFcn',simFcn);
+            options = tsphopfieldnetOptions('Coordinates',coords,'DistanceType','EUC','SimFcn',simFcn);
         else
             d = varargin{1};
             N = size(d,1);
-            options = tsphopfieldnet.createOptions('d',d,'type','EXPLICIT','simFcn',simFcn);
+            options = tsphopfieldnetOptions('DistanceMatrix',d,'DistanceType','EXPLICIT','SimFcn',simFcn);
         end
         app.net = tsphopfieldnet(N, C, options);
     end

@@ -1,10 +1,10 @@
 function returningValue = getCities(net,field)   
 
-    if nargin == 1;
-        returningValue = net.cities;
+    if nargin == 1
+        returningValue = net.Cities;
     else
-        if isfield(net.cities,field)
-            returningValue = net.cities.(field);
+        if isfield(net.Cities,field)
+            returningValue = net.Cities.(field);
         else
             error('hopfieldNetwork:unvalidSetting',['Unvalid setting: ', field]);
         end

@@ -25,7 +25,7 @@ else
     algorithms = app.simFcnMenu.String;
     setSimFcn(app.net,algorithms{app.simFcnMenu.Value});
     if strcmp(algorithms{app.simFcnMenu.Value},'divide-conquer')
-        setCities(app.net,'tau',max(3,round(getTrainParam(app.net,'N')/10))); %#TODO Bring to APP
+        setCities(app.net,'Tau',max(3,round(getTrainParam(app.net,'N')/10))); %#TODO Bring to APP
     end
 end
 
@@ -37,21 +37,21 @@ e = str2double(app.settings_eEdit.String);
 q = str2double(app.settings_qEdit.String);
 
 try
-    setSetting(app.net,'u0',u0)
-    setSetting(app.net,'maxIter',maxIter)
-    setSetting(app.net,'R_ITER',R_ITER)
-    setSetting(app.net,'dt',dt)
-    setSetting(app.net,'e',e)
-    setSetting(app.net,'q',q)
+    setSetting(app.net,'U0',u0)
+    setSetting(app.net,'MaxIter',maxIter)
+    setSetting(app.net,'R_Iter',R_ITER)
+    setSetting(app.net,'Dt',dt)
+    setSetting(app.net,'E',e)
+    setSetting(app.net,'Q',q)
 catch me
 	msgbox(me.message)
     return;
 end
 
-if isequal(app.hwResources.SelectedObject,app.hwResourcesCPU)
-	setSetting(app.net,'hwResources','CPU')
+if isequal(app.ExecutionEnvironment.SelectedObject,app.ExecutionEnvironmentCPU)
+	setSetting(app.net,'ExecutionEnvironment','CPU')
 else
-	setSetting(app.net,'hwResources','GPU')
+	setSetting(app.net,'ExecutionEnvironment','GPU')
 end
 
 if isequal(app.seed.SelectedObject,app.seedShuffle)
@@ -70,7 +70,7 @@ train(app.net);
 sim(app.net);
 stop(app.elapsedTimer);
 
-if getResults(app.net, 'exitFlag') ~= 1
+if getResults(app.net, 'ExitFlag') ~= 1
     msgbox('You may need to increase the number of iterations','Warning','warn');
 else
     plot(app.net,'total',[],app.plot);

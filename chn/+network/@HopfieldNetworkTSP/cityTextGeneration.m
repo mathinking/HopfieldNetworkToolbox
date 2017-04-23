@@ -5,7 +5,7 @@ function myText = cityTextGeneration(N)
 %   using characters from A-Z. If more characters are needed, they are
 %   generated using combinations of n things taken k at a time.
 %   
-%   See also NCHOOSEK, PLOTTSPPATH
+%   See also NCHOOSEK
 
     enough = false;
     i = 1;
@@ -27,5 +27,5 @@ function myText = cityTextGeneration(N)
     else
         myText = myText(1:N,:);
     end
-    myText = cellstr(myText);
+    myText = cellstr(myText)';
 end

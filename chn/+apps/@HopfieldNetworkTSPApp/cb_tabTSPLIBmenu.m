@@ -17,7 +17,7 @@ app.elapsedTime.String = '';
 drawnow;
 if problemSelected > 1
     problem = tsplib(problems(problemSelected));
-    app.tabTSPLIBnCitiesEdit.String = num2str(problem.nCities);
-    app.tabTSPLIBdistTypeEdit.String = problem.type;
+    app.tabTSPLIBnCitiesEdit.String = num2str(problem.NumberOfCities);
+    app.tabTSPLIBdistTypeEdit.String = problem.DistanceType;
     createTspHopfieldNet(app,problem)
 end

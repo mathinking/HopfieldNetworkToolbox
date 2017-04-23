@@ -2,13 +2,13 @@ function V = sim(net,V,U)
 
     timeID = tic;
     net = reinit(net);
-    if strcmp(net.simFcn,'euler')
+    if strcmp(net.SimFcn,'euler')
         if nargin < 2
             [net,V,~,iter] = simEuler(net);
         else
             [net,V,~,iter] = simEuler(net,V,U);
         end  
-    elseif strcmp(net.simFcn,'talavan-yanez') 
+    elseif strcmp(net.SimFcn,'talavan-yanez') 
         if nargin < 2
             [net,V,~,iter] = simTalavanYanez(net);
         else
@@ -17,7 +17,7 @@ function V = sim(net,V,U)
     end
     net = computeSolution(net,V,iter);
 
-    net.results.compTime = toc(timeID);
+    net.Results.CompTime = toc(timeID);
 end
 
 
@@ -26,21 +26,15 @@ end
 function [net,V,U,iter] = simEuler(net,V)
 
     % Stopping criteria
-    stopC1 = power(10, -1   * net.setting.e);
-    stopC2 = power(10, -1.5 * net.setting.e);
+    stopC1 = power(10, -1   * net.Setting.E);
+    stopC2 = power(10, -1.5 * net.Setting.E);
     maxDiffV = 1;
     unstable = false;
 
-    %%%
-    % Summing V rows, columns and all elements for optimal perform.
-%     sumVcol = sum(V);
-%     sumVrow = sum(V,2);
-%     sumV = sum(sumVcol);
+    N = net.ProblemParameters.networkSize(1);
+    T = net.TrainParam.T;
+    ib = net.TrainParam.ib;
 
-    N = net.problemParameters.networkSize(1);
-    T = net.trainParam.T;
-    ib = net.trainParam.ib;
-    net.setting.maxIter = 10000;
     % Memory allocation
     dU = zeros(N,1);
 
@@ -50,110 +44,78 @@ function [net,V,U,iter] = simEuler(net,V)
     end
 
     iter = 1;
-    % Showing Network parameters in the command window
-%             if net.setting.showCommandLine
+% Showing Network parameters in the command window
+%             if net.Setting.Verbose
 %                 hopfield.tsp.display.printWhenStarting(net);
 %             end
 
-    dt = net.setting.dt;
-    net.results.time(iter) = dt;
+    dt = net.Setting.Dt;
+    net.Results.Time(iter) = dt;
     maxDiffV = 1;
 
-    while iter <= net.setting.maxIter && (maxDiffV > stopC1 || ...
+    while iter <= net.Setting.MaxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
 
         unstable = false;
-        net.results.energy(iter+1) = 0;
+        net.Results.Energy(iter+1) = 0;
 
         dU = T*V + ib;
 
         Vprev = V;
-        U = U + dU * net.setting.dt;
-        V = net.setting.transferFcn(U);
+        U = U + dU * net.Setting.Dt;
+        V = net.Setting.TransferFcn(U);
 
         maxDiffV = max(abs(Vprev-V));
         iter = iter + 1;            
     end
-    net.results.x = V;
+    net.Results.x = V;
 end
 
 % Talaván-Yáñez Algorithm
 
 function [net,V,U,iter] = simTalavanYanez(net,V,U)
-%     N = net.trainParam.N;
 
-    N = net.problemParameters.networkSize(1);
-    T = net.trainParam.T;
-    ib = net.trainParam.ib;
+
+    N = net.ProblemParameters.networkSize(1);
+    T = net.TrainParam.T;
+    ib = net.TrainParam.ib;
     
     if nargin == 1
-        U = rand(N,1)-.5;   % TODO Different from Pedro's algorithm
+        U = rand(N,1)-.5; % TODO Different from Pedro's algorithm
         V = 0.5 + 1e-7*U; % TODO Different from Pedro's algorithm
     end
-    if strcmp(net.setting.hwResources,'GPU')
+    if strcmp(net.Setting.ExecutionEnvironment,'GPU')
         U = gpuArray(U);
         V = gpuArray(V);
     end
     % Stopping criteria
-    stopC1 = power(10, -1   * net.setting.e);
-    stopC2 = power(10, -1.5 * net.setting.e);
+    stopC1 = power(10, -1   * net.Setting.E);
+    stopC2 = power(10, -1.5 * net.Setting.E);
     maxDiffV = 1;
     unstable = false;
 
-    u_e = net.setting.invTransferFcn(stopC1); 
-
-%     ib = net.trainParam.C * net.trainParam.Np;
-
-    %%%
-    % Summing V rows, columns and all elements for optimal performance
-%     sumVcol = sum(V);   % Si
-%     sumVrow = sum(V,2); % Sx
-%     sumV = sum(sumVcol);
-
-    % Memory allocation
-%             dU = zeros(N);
+    u_e = net.Setting.InvTransferFcn(stopC1); 
 
     iter = 1;
-    % Showing Network parameters in the command window
-%             if net.setting.showCommandLine
+% Showing Network parameters in the command window
+%             if net.Setting.Verbose
 %                 hopfield.tsp.display.printWhenStarting(net);
 %             end
 
-    while iter < net.setting.maxIter && (maxDiffV > stopC1 || ...
+    while iter < net.Setting.MaxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
 
         dt = 10^100; % Initial value for dt
 
-%         if net.setting.loggingV || net.setting.viewConvergence
-%             [ST,~] = dbstack('-completenames');
-%             if ~any(strcmp({ST.name},'saddle'))
-%                 if net.setting.loggingV
-%                     tsphopfieldnet.loggingV(iter,V);
-%                 end
-%                 if net.setting.viewConvergence
-%                     if iter == 1
-%                         fV = viewConvergence(iter,V,net);
-%                     else
-%                         fV = viewConvergence(iter,V,net,fV);
-%                     end
-%                 end
-%             end
-%         end
-
         % Computation of the weight matrix T
         % $$ T_{xi,yj} = -(A*\delta_{x,y}*(1-\delta_{i,j}) + B*(1-\delta_{x,y})*
         % \delta_{i,j} + C - D*d_{x*y} * (\delta_{j,i+1} + \delta_{j,i-1}) $$
-%         TV = weightMatrixTimesVvectorized(net, V, ...
-%             sumVrow, sumVcol, sumV);
 
         dU = T*V + ib;
 
-        dV = 2./net.setting.u0 .* V .* (1-V) .*dU;
+        dV = 2./net.Setting.U0 .* V .* (1-V) .*dU;
 
-%                 interiorV = V > 0 & V < 1;
         interiorV = U > u_e & U < -u_e;
-        %(V > stopC1) & (V < 1-stopC1);
-%                 borderV = ~interiorV;
 
         % Computation of dt             
         % In interior states, $\Delta t$ should not make the state get outside the 
@@ -191,13 +153,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
         % $S_{2} = - \sum_{i = 1}^{n} \sum_{j = 1}^{n} \frac{dv_{i}(t)}{dt} T_{i,j} 
         % \frac{dv_{j}(t)}{dt}$
 
-%         sumVcol = sum(dV);
-%         sumVrow = sum(dV,2);
-%         sumV = sum(sumVcol);
-
         TdV = T*dV;
-%         weightMatrixTimesVvectorized(net, dV, ...
-%             sumVrow, sumVcol, sumV);
 
         S2 = -sum(sum(dV .* TdV));
 
@@ -214,8 +170,8 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
             dt = min(dt,S1./S2);
             sw_optimal = true;
         end
-        if iter < net.setting.R_ITER && ~sw_optimal
-            dt = net.setting.q * dt; % Integration step reduction
+        if iter < net.Setting.R_Iter && ~sw_optimal
+            dt = net.Setting.Q * dt; % Integration step reduction
         end
 
         % State update
@@ -227,10 +183,9 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 
         % vi(t) is border Value. vi(t+1) might stay or leave the
         % border.
-%                 borderV = (V < stopC1) | (V > 1-stopC1);
         borderV = (U <= u_e) | (U >= -u_e);
         U(borderV) = U(borderV) + dU(borderV).*dt;
-        V(borderV) = net.setting.transferFcn(U(borderV));
+        V(borderV) = net.Setting.TransferFcn(U(borderV));
         U(borderV & U <= u_e) = u_e; V(borderV & U <= u_e) = 0; % Stays in the border
         U(borderV & U >=-u_e) =-u_e; V(borderV & U >=-u_e) = 1; % Stays in the border
 
@@ -252,24 +207,20 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 
         maxDiffV = max(max(abs(Vprev-V)));
 
-%         sumVcol = sum(V);
-%         sumVrow = sum(V,2);
-%         sumV = sum(sumVcol);
-% 
         %%%
         % $E(t + \Delta t) = E(t) - S_{1}\Delta t + \frac{1}{2}S_{2}\Delta t^{2}$
-        if strcmp(net.setting.hwResources,'GPU')
+        if strcmp(net.Setting.ExecutionEnvironment,'GPU')
             S1 = gather(S1);
             S2 = gather(S2);
             dt = gather(dt);
         end
-        net.results.energy(iter+1) = net.results.energy(iter) - ...
+        net.Results.Energy(iter+1) = net.Results.Energy(iter) - ...
             S1.*dt + 0.5.*S2.*dt.^2;
-        net.results.time(iter+1) = net.results.time(iter) + dt;
+        net.Results.Time(iter+1) = net.Results.Time(iter) + dt;
         iter = iter + 1;
     end
 
-    if strcmp(net.setting.hwResources,'GPU') && nargout > 1
+    if strcmp(net.Setting.ExecutionEnvironment,'GPU') && nargout > 1
         V = gather(V);
         U = gather(U);
         iter = gather(iter);
@@ -278,24 +229,24 @@ end
 
 function net = computeSolution(net,V,iter)
 
-    V(V > 1 - power(10, -1 * net.setting.e)) = 1; %FIXME to be removed?
-    V(V < power(10, -1 * net.setting.e)) = 0;
+    V(V > 1 - power(10, -1 * net.Setting.E)) = 1; %FIXME to be removed?
+    V(V < power(10, -1 * net.Setting.E)) = 0;
 
-    if isequal(net.problemParameters.R*V,net.problemParameters.b)
-        net.results.validSolution = true;
-        net.results.exitFlag = 1;
+    if isequal(net.ProblemParameters.R*V,net.ProblemParameters.b)
+        net.Results.ValidSolution = true;
+        net.Results.ExitFlag = 1;
     else
         % Error produced during simulation
-        if iter > net.setting.maxIter % Max iterations reached
-            net.results.exitFlag = 0;
+        if iter > net.Setting.MaxIter % Max iterations reached
+            net.Results.ExitFlag = 0;
         else
-            net.results.exitFlag = -1;
+            net.Results.ExitFlag = -1;
         end
-        net.results.validSolution = false;
+        net.Results.ValidSolution = false;
     end
-    net.results.x = V;
-	net.results.fval = 0.5*net.results.x'*net.problemParameters.P*net.results.x + net.problemParameters.q'*net.results.x;
+    net.Results.x = V;
+	net.Results.fval = 0.5*net.Results.x'*net.ProblemParameters.P*net.Results.x + net.ProblemParameters.q'*net.Results.x;
 
-    net.results.itersReached = iter;
+    net.Results.ItersReached = iter;
 
 end

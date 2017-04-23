@@ -1,8 +1,8 @@
 function S = saddle(net, method)
 
-	simFcn = net.simFcn;
+	simFcn = net.SimFcn;
     if ~strcmp(simFcn,'talavan-yanez')
-        net.simFcn = 'talavan-yanez';
+        net.SimFcn = 'talavan-yanez';
     end    
 
     if nargin < 2 
@@ -10,32 +10,32 @@ function S = saddle(net, method)
     end
 
     if strcmp(method, 'numeric')
-        V = ones(net.trainParam.N,net.trainParam.N-net.trainParam.K)/(net.trainParam.N-net.trainParam.K);
-        U = net.setting.invTransferFcn(V);
-        if ~isfield(net.trainParam, 'Np')
+        V = ones(net.TrainParam.N,net.TrainParam.N-net.TrainParam.K)/(net.TrainParam.N-net.TrainParam.K);
+        U = net.Setting.InvTransferFcn(V);
+        if ~isfield(net.TrainParam, 'Np')
             net = train(net);
         end
         S = sim(net,V,U);
         reinit(net);
         
     elseif strcmp(method, 'numeric2') %#TODO Make this the default method
-        if ~isfield(net.trainParam, 'Np')
+        if ~isfield(net.TrainParam, 'Np')
             net = train(net);
         end        
-        vxi_col = (((net.trainParam.N + 1)*net.trainParam.C + 3) * ...
-            ones(net.trainParam.N) + ((net.trainParam.N-2)*(net.trainParam.C + 3) ...
-            -(net.trainParam.N-1)*net.trainParam.rho) * eye(net.trainParam.N) + ...
-            2*net.trainParam.D*net.cities.d) \ ones(net.trainParam.N,1) * net.trainParam.C * net.trainParam.Np;
-        S = repmat(vxi_col,1,net.trainParam.N);
+        vxi_col = (((net.TrainParam.N + 1)*net.TrainParam.C + 3) * ...
+            ones(net.TrainParam.N) + ((net.TrainParam.N-2)*(net.TrainParam.C + 3) ...
+            -(net.TrainParam.N-1)*net.TrainParam.rho) * eye(net.TrainParam.N) + ...
+            2*net.TrainParam.D*net.cities.d) \ ones(net.TrainParam.N,1) * net.TrainParam.C * net.TrainParam.Np;
+        S = repmat(vxi_col,1,net.TrainParam.N);
               
     elseif strcmp(method, 'analytic')
 
-        A = net.trainParam.A;
-        B = net.trainParam.B;
-        C = net.trainParam.C;
-        D = net.trainParam.D;
-        N = net.trainParam.N;
-        Np = net.trainParam.Np;
+        A = net.TrainParam.A;
+        B = net.TrainParam.B;
+        C = net.TrainParam.C;
+        D = net.TrainParam.D;
+        N = net.TrainParam.N;
+        Np = net.TrainParam.Np;
         d = net.cities.d;
 
         T = repmat({zeros(N)},N,N);
@@ -76,6 +76,6 @@ function S = saddle(net, method)
     end
     
     if ~strcmp(simFcn,'talavan-yanez')
-        net.simFcn = simFcn;
+        net.SimFcn = simFcn;
     end
 end

@@ -1,9 +1,9 @@
 function returningValue = getResults(net,field)
-    if nargin == 1;
-        returningValue = net.results;
+    if nargin == 1
+        returningValue = net.Results;
     else
-        if isfield(net.results,field)
-            returningValue = net.results.(field);
+        if isfield(net.Results,field)
+            returningValue = net.Results.(field);
         else
             error('hopfieldNetwork:unvalidSetting',['Unvalid setting: ', field]);
         end

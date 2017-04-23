@@ -23,8 +23,8 @@ coords = [0.4000 0.4439;...
           0.6195 0.2634];
 
 %%      
-% Providing cities to the network through the structure of options      
-options = tsphopfieldnet.createOptions('coords',coords);
+% Providing cities to the network through the |HopfieldNetworkTSPOptions| class
+options = tsphopfieldnetOptions('Coordinates',coords);
 
 %%
 % Number of cities:

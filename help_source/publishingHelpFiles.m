@@ -33,7 +33,7 @@ publish(fullfile(helpSourceFilesLocation,'chn_users_guide_improveHybrid'),option
 publish(fullfile(helpFolder,'Example_tspDivideConquer'));
 publish(fullfile(helpSourceFilesLocation,'chn_TSP_APP'),optionsPublish);
 
-builddocsearchdb(fullfile(helpFolder,'html'));
+builddocsearchdb(fullfile(pwd,helpFolder,'html'));
 
 rmpath(genpath(fullfile(helpSourceFilesLocation)))
 
