@@ -1,43 +1,59 @@
-classdef hopfieldnetwork < handle
-    %HOFIELDNETWORK Continuous Hopfield Network (CHN)
+classdef HopfieldNetwork < handle
+    %HopfieldNetwork Continuous Hopfield Network (CHN)
+    %
+    %   This class defines abstract methods and properties for Hopfield 
+    %   Networks. Therefore it can only be instantiated from within a child 
+    %   class.
+    %
+    %   Input arguments properties:
+    %       Setting                    - Settings used in the Simulation of
+    %                                    the Hopfield Network.
+    %       SimFcn                     - Simulation Function.
+    %       TrainFcn                   - Training Function.
+    %       TrainingParam              - Training Parameters.
+    %       Results                    - Simulation Results.
+    %
+    %   See also options.HopfieldNetworkOptions, hopfieldnet, tsphopfieldnet.
     
     properties (GetAccess = protected, SetAccess = protected)
-        trainFcn;
-        trainParam;
-        setting;
-        simFcn;
-        results;
+        Setting;
+        SimFcn;
+        TrainFcn;
+        TrainParam;
+        Results;
     end
     
     methods (Sealed = true)
-        function net = hopfieldnetwork(networkSize, options)
+        function net = HopfieldNetwork(networkSize, opts)
             
             % Input checking
             if nargin < 1 || nargin > 2
-                error('hopfieldnetwork:IncorrectInputArguments','Please provide proper input arguments to hopfieldnetwork: networkSize (and options)');
+                error('HopfieldNetwork:IncorrectInputArguments','Please provide proper input arguments to HopfieldNetwork: networkSize (and options)');
             else
-                assert(isa(networkSize,'double'), 'hopfieldnetwork:invalid_datatype', [networkSize, ' must be double.']);
-                assert(all(networkSize >= 1), 'hopfieldnetwork:invalid_value', '''networkSize'' must be greater or equal to 1.');
+                assert(isreal(networkSize) && isnumeric(networkSize) && isscalar(networkSize) && all(mod(networkSize,1)==0) && networkSize >= 1,...
+                    'HopfieldNetwork:invalid_value', [num2str(networkSize), ' must be a scalar integer greater or equal than 1.']);
                 if nargin == 2
-                    assert(isstruct(options), 'hopfieldnetwork:invalid_datatype', 'options must be a structure created using createOptions.');
+                    assert(isa(opts,'options.HopfieldNetworkOptions') || isa(opts,'options.HopfieldNetworkGQKPOptions') || isa(opts,'options.HopfieldNetworkTSPOptions'),...
+                        'HopfieldNetwork:invalid_datatype', 'options must be an object from the class HopfieldNetworkOptions, HopfieldNetworkGQKPOptions or HopfieldNetworkTSPOptions.');
                 end
             end
-
+            
+            if ~isa(networkSize,'float')
+                networkSize = double(networkSize);
+            end
+                
             % Setting network attributes
-            net.trainParam.N = networkSize;
+            net.TrainParam.N = networkSize;
 
             % Setting default options if not provided
             if nargin < 2 
-                options = hopfieldnetwork.createOptions();
-                net = addDefaultOptionValues(net, options);
+                opts = options.HopfieldNetworkOptions();               
+            end      
 
             % Setting desired options available in options structure
-            else    
-                net = setOptions(net, options);
-                net = addDefaultOptionValues(net, options);
-            end
+            net = setOptions(net, opts);
             
-            net.setting = orderfields(net.setting);
+            net.Setting = orderfields(net.Setting);
 
         end
     end
@@ -52,10 +68,11 @@ classdef hopfieldnetwork < handle
         % --- Set methods --- %
         setTrainFcn(net,trainFcn);
         setSimFcn(net,simFcn);
+        setTrainParam(net,property,value);        
     end
         
 	methods (Hidden = true, Access = private)
-        net = addDefaultOptionValues(net, options);
+        %net = addDefaultOptionValues(net, options);
         net = setOptions(net, options);
     end
 
@@ -63,12 +80,11 @@ classdef hopfieldnetwork < handle
         net = init(net);
     end
     
-    methods (Static = true, Access = public)
-        options = createOptions(varargin);
-    end
+%     methods (Static = true, Access = public)
+%         options = createOptions(varargin);
+%     end
     
     methods (Static = true, Access = protected)
-        isValidSetting(property,value);
         y = satlin(x,u0);
         y = invsatlin(x,u0);        
     end 
@@ -80,7 +96,6 @@ classdef hopfieldnetwork < handle
         simFcn = getSimFcn(net);
         results = getResults(net,field);
         setSetting(net,property,value);
-        setTrainParam(net,property,value);
         setResults(net,property,value);        
     end
 end

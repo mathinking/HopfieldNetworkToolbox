@@ -1,38 +1,52 @@
-classdef tsplib < handle
+classdef TSPLIB < handle
+    %tsplib Define a TSPLIB problem
+    %
+    %   This class allows to define a TSPLIB problem.
+    %
+    %   tsplib properties:
+    %       Name                       - Name of the TSPLIB problem.
+    %       NumberOfCities             - Number of cities.
+    %       Coordinates                - TSP problem coordinates
+    %       DistanceType               - Type of distance defined for the 
+    %                                    TSP problem.
+    %       DistanceMatrix             - Distance matrix for the TSP
+    %                                    problem.
+    %
+    %   See also tsphopfieldnetOptions, tsphopfieldnet.
     
     properties (GetAccess = public, SetAccess = private)
-        name;
-        nCities
-        coords;
-        type;
-        d;
+        Name;
+        NumberOfCities
+        Coordinates;
+        DistanceType;
+        DistanceMatrix;
     end
     
     methods %(Sealed = true)       
-    	function problem = tsplib(name)
+    	function problem = TSPLIB(name)
             if nargin ~= 0 
-                problem(length(name),1) = tsplib;
+                problem(length(name),1) = utils.TSPLIB;
                 for i = 1:length(name)
 
-                    problem(i).name = name{i}; %#ok<*AGROW>
+                    problem(i).Name = name{i}; %#ok<*AGROW>
 
-                    fid = fopen([problem(i).name,'.tsp'],'rt');
+                    fid = fopen([problem(i).Name,'.tsp'],'rt');
 
                     positioned = false;
 
                     while ~positioned
                         str = fgetl(fid);
                         if strncmp(str,'DIMENSION', 9)
-                            problem(i).nCities = str2double(regexprep(...
+                            problem(i).NumberOfCities = str2double(regexprep(...
                                 str(length('DIMENSION')+1:end),...
                                 {':',' '},''));
                         end
                         if strncmp(str, 'EDGE_WEIGHT_TYPE',16)
-                            problem(i).type = regexprep(...
+                            problem(i).DistanceType = regexprep(...
                                 str(length('EDGE_WEIGHT_TYPE')+1:end),...
                                 {':',' '},'');
                         end
-                        if strcmp(problem(i).type,'EXPLICIT')
+                        if strcmp(problem(i).DistanceType,'EXPLICIT')
                             if strncmp(str,'EDGE_WEIGHT_FORMAT', 18)
                                 matrixType = regexprep(...
                                     str(length('EDGE_WEIGHT_FORMAT')+1:end),...
@@ -49,46 +63,46 @@ classdef tsplib < handle
                         end
                     end
 
-                    if ~strcmp(problem(i).type,'EXPLICIT')
-                        problem(i).coords = textscan(fid, '%*u%f%f%*[^\n]');
-                        problem(i).coords = [problem(i).coords{:}];
+                    if ~strcmp(problem(i).DistanceType,'EXPLICIT')
+                        problem(i).Coordinates = textscan(fid, '%*u%f%f%*[^\n]');
+                        problem(i).Coordinates = [problem(i).Coordinates{:}];
                     else
                         dataCoords = textscan(fid, '%f');
                         dataCoords = [dataCoords{:}]; 
 
                         if strcmp(matrixType, 'LOWER_DIAG_ROW')
-                            problem(i).d = ones(problem(i).nCities);
-                            problem(i).d(logical(tril(problem(i).d))') = dataCoords;
-                            problem(i).d = problem(i).d-tril(problem(i).d)+triu(problem(i).d)';
+                            problem(i).DistanceMatrix = ones(problem(i).NumberOfCities);
+                            problem(i).DistanceMatrix(logical(tril(problem(i).DistanceType))') = dataCoords;
+                            problem(i).DistanceMatrix = problem(i).DistanceMatrix-tril(problem(i).DistanceMatrix)+triu(problem(i).DistanceMatrix)';
                         elseif strcmp(matrixType, 'UPPER_ROW')    
-                            problem(i).d = ones(problem(i).nCities);
-                            problem(i).d(logical(triu(problem(i).d,1))') = dataCoords;
-                            problem(i).d = problem(i).d + triu(problem(i).d',1) - ...
-                                triu(ones(problem(i).nCities));
+                            problem(i).DistanceMatrix = ones(problem(i).NumberOfCities);
+                            problem(i).DistanceMatrix(logical(triu(problem(i).DistanceMatrix,1))') = dataCoords;
+                            problem(i).DistanceMatrix = problem(i).DistanceMatrix + triu(problem(i).DistanceMatrix',1) - ...
+                                triu(ones(problem(i).NumberOfCities));
                         elseif strcmp(matrixType, 'FULL_MATRIX')
-                            problem(i).d = reshape(dataCoords,...
-                                problem(i).nCities,problem(i).nCities);
+                            problem(i).DistanceMatrix = reshape(dataCoords,...
+                                problem(i).NumberOfCities,problem(i).NumberOfCities);
                         elseif strcmp(matrixType, 'UPPER_DIAG_ROW')
-                            problem(i).d = ones(problem(i).nCities);
-                            problem(i).d(logical(tril(problem(i).d))) = dataCoords;
-                            problem(i).d = problem(i).d - triu(problem(i).d);
-                            problem(i).d = problem(i).d + problem(i).d';
+                            problem(i).DistanceMatrix = ones(problem(i).NumberOfCities);
+                            problem(i).DistanceMatrix(logical(tril(problem(i).DistanceMatrix))) = dataCoords;
+                            problem(i).DistanceMatrix = problem(i).DistanceMatrix - triu(problem(i).DistanceMatrix);
+                            problem(i).DistanceMatrix = problem(i).DistanceMatrix + problem(i).DistanceMatrix';
                         end
                     end
 
                     fid = fclose(fid);      %#ok<NASGU>
 
-                    if strcmp(problem(i).type,'GEO')
-                        problem(i).coords = tsplib.convert2LatLon(problem(i).coords); %#TODO Should it be in the object instantation?
-                        problem(i).d = tsphopfieldnet.computeDistance(problem(i).coords,problem(i).type);
-                    elseif strcmp(problem(i).type,'EUC_2D')   
-                        problem(i).d = tsphopfieldnet.computeDistance(problem(i).coords,problem(i).type);
-                    elseif strcmp(problem(i).type,'CEIL_2D')
-                        problem(i).d = tsphopfieldnet.computeDistance(problem(i).coords,problem(i).type);
-                    elseif strcmp(problem(i).type,'ATT')   
-                        problem(i).d = tsphopfieldnet.computeDistance(problem(i).coords,problem(i).type);
-                    elseif strcmp(problem(i).type,'EUC') 
-                        problem(i).d = tsphopfieldnet.computeDistance(problem(i).coords,problem(i).type);
+                    if strcmp(problem(i).DistanceType,'GEO')
+                        problem(i).Coordinates = tsplib.convert2LatLon(problem(i).Coordinates); %#TODO Should it be in the object instantation?
+                        problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
+                    elseif strcmp(problem(i).DistanceType,'EUC_2D')   
+                        problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
+                    elseif strcmp(problem(i).DistanceType,'CEIL_2D')
+                        problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
+                    elseif strcmp(problem(i).DistanceType,'ATT')   
+                        problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
+                    elseif strcmp(problem(i).DistanceType,'EUC') 
+                        problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
                     end
                 end
             end
