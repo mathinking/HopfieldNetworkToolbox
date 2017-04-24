@@ -12,6 +12,16 @@ classdef TSPLIB < handle
     %       DistanceMatrix             - Distance matrix for the TSP
     %                                    problem.
     %
+    %   Example:
+    %       Create a TSPLIB class for the 'berlin52' TSPLIB problem:
+    % 
+    %       problem = tsplib({'berlin52'});
+    %
+    %   Example:
+    %       Obtain a list of TSPLIB problems with a solution:
+    % 
+    %       problems = utils.TSPLIB.problemNames(true,false);
+    %
     %   See also tsphopfieldnetOptions, tsphopfieldnet.
     
     properties (GetAccess = public, SetAccess = private)
@@ -93,7 +103,7 @@ classdef TSPLIB < handle
                     fid = fclose(fid);      %#ok<NASGU>
 
                     if strcmp(problem(i).DistanceType,'GEO')
-                        problem(i).Coordinates = tsplib.convert2LatLon(problem(i).Coordinates); %#TODO Should it be in the object instantation?
+                        problem(i).Coordinates = utils.TSPLIB.convert2LatLon(problem(i).Coordinates); %#TODO Should it be in the object instantation?
                         problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
                     elseif strcmp(problem(i).DistanceType,'EUC_2D')   
                         problem(i).DistanceMatrix = network.HopfieldNetworkTSP.computeDistance(problem(i).Coordinates,problem(i).DistanceType);
