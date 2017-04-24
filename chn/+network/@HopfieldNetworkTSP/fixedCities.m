@@ -34,7 +34,7 @@ function [net,V,U] = fixedCities(net)
         % Starting point V is automatically modified to take into
         % account all connections that have been fixed.
         for c = 1:length(tourOrder)
-            V(tourOrder(c),tsphopfieldnet.modulo(net.Cities.SubtoursPositions(f) + c-1,net.TrainParam.N)) = 1;
+            V(tourOrder(c),net.modulo(net.Cities.SubtoursPositions(f) + c-1,net.TrainParam.N)) = 1;
         end
     end
     % Neurons whose cities and positions have not been fixed are

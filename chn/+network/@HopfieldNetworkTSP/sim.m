@@ -20,11 +20,11 @@ function V = sim(net,V,U)
     net = reinit(net);
     
     if ~isfield(net.TrainParam,'Np')
-        error('tsphopfieldnet:NotTrained', 'Training has not taken place yet. Use train(net).');
+        error('HopfieldNetworkTSP:NotTrained', 'Training has not taken place yet. Use train(net).');
     end
        
     if ~isempty(net.Cities.Subtours)
-        tsphopfieldnet.verifyIfValidSubtours(net.Cities.Subtours, net.Cities.SubtoursPositions, net.Cities.Names)
+        net.verifyIfValidSubtours(net.Cities.Subtours, net.Cities.SubtoursPositions, net.Cities.Names)
         aux_d = net.Cities.DistanceMatrix;
         [net,V,U] = fixedCities(net); %Review fixedCities
     end
@@ -51,7 +51,7 @@ function V = sim(net,V,U)
         end
         
     else
-        error('tsphopfieldnet:UnknownsimFcn', 'Unknown training algorithm');
+        error('HopfieldNetworkTSP:UnknownsimFcn', 'Unknown training algorithm');
     end
     
     if ~isempty(net.Cities.Subtours)
@@ -116,7 +116,7 @@ function [net,V,U,iter] = simEuler(net, V, U)
 
     if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
         if ~isempty(net.Setting.CheckpointPath) 
-            tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath, ...
+            net.loggingV(fullfile(net.Setting.CheckpointPath, ...
                 net.Results.CheckpointFilename),...
                 net.Setting.MaxIter,iter,N);
         end
@@ -170,7 +170,7 @@ function [net,V,U,iter] = simEuler(net, V, U)
         iter = iter + 1;
         if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
             if ~isempty(net.Setting.CheckpointPath) 
-                tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath,...
+                net.loggingV(fullfile(net.Setting.CheckpointPath,...
                     net.Results.CheckpointFilename),...
                     net.Setting.MaxIter,iter,[],V,dU);
             end
@@ -225,7 +225,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
     if ~any(strcmp({ST.name},'saddle'))
         if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
             if ~isempty(net.Setting.CheckpointPath) 
-                tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath, ...
+                net.loggingV(fullfile(net.Setting.CheckpointPath, ...
                     net.Results.CheckpointFilename),...
                     net.Setting.MaxIter,iter,N-K);
             end
@@ -368,9 +368,9 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
         if ~any(strcmp({ST.name},'saddle'))
             if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
                 if ~isempty(net.Setting.CheckpointPath) 
-                    tsphopfieldnet.loggingV(fullfile(net.Setting.CheckpointPath,...
+                    net.loggingV(fullfile(net.Setting.CheckpointPath,...
                         net.Results.CheckpointFilename),...
-                        net.Setting.maxIter,iter,[],V,dU);
+                        net.Setting.MaxIter,iter,[],V,dU);
                 end
                 if net.Setting.SimulationPlot
                     fV = viewConvergence(iter,V,net,fV);
@@ -669,7 +669,7 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
             newCoordinates = [];
         end
         
-        newOptions = tsphopfieldnetOptions(...
+        newOptions = options.HopfieldNetworkTSPOptions(...
             'R_Iter'              , net.Setting.R_Iter                            ,...
             'Dt'                  , net.Setting.Dt                                ,...
             'E'                   , net.Setting.E                                 ,...
@@ -687,7 +687,7 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
 
 
         
-        netPhase2 = tsphopfieldnet(length(newCities),net.TrainParam.C,newOptions);
+        netPhase2 = network.HopfieldNetworkTSP(length(newCities),net.TrainParam.C,newOptions);
         netPhase2.Setting.transferFcn = net.Setting.TransferFcn;
         netPhase2.Setting.InvTransferFcn = net.Setting.InvTransferFcn;
         
