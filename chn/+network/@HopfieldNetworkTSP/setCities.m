@@ -17,7 +17,7 @@ function setCities(net,property,value)
                     net.Cities.DistanceType = value;
                 end
             case 'DistanceMatrix'
-                options = tsphopfieldnetOptions('DistanceMatrix',value);
+                options = tsphopfieldnetOptions('DistanceMatrix',value,'DistanceType','explicit');
                 assert(size(value,1) == net.TrainParam.N, 'tsphopfieldnet:invalid_value', ...
                     ['''DistanceMatrix'' must have ', num2str(net.TrainParam.N), ' rows and columns']);
                 net.Cities.DistanceMatrix = options.Cities.DistanceMatrix;
