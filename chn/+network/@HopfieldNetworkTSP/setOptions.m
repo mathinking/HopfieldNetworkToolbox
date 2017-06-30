@@ -1,5 +1,6 @@
 function net = setOptions(net,opts)
     
+    net.Scheme   = opts.Scheme;
     net.SimFcn   = opts.SimFcn;
 	net.TrainFcn = opts.TrainFcn;
  

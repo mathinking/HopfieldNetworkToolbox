@@ -37,10 +37,16 @@ classdef HopfieldNetworkOptions < handle
         Setting
     end
     properties (SetAccess = private, Abstract = true)
-        % SimFcn   Simulation Function .
+        % Scheme   Network scheme
+        %   The Scheme determines the network pipeline used in the
+        %   simulation of the Continuous Hopfield Network
+        Scheme
+        
+        % SimFcn   Simulation Function.
         %   The Simulation Function determines how simulation takes place
-        %   in the Hopfield Network. This property is implemented in its
-        %   deriving class: hopfieldnetOptions or tsphopfieldnetOptions.
+        %   in the Hopfield Network. This property is used in the sim 
+        %   function of its deriving class: hopfieldnetOptions or 
+        %   tsphopfieldnetOptions.
         SimFcn
         
         % TrainFcn   Training Function.

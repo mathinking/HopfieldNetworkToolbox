@@ -82,7 +82,7 @@ classdef TSPLIB < handle
 
                         if strcmp(matrixType, 'LOWER_DIAG_ROW')
                             problem(i).DistanceMatrix = ones(problem(i).NumberOfCities);
-                            problem(i).DistanceMatrix(logical(tril(problem(i).DistanceType))') = dataCoords;
+                            problem(i).DistanceMatrix(logical(tril(problem(i).DistanceMatrix))') = dataCoords;
                             problem(i).DistanceMatrix = problem(i).DistanceMatrix-tril(problem(i).DistanceMatrix)+triu(problem(i).DistanceMatrix)';
                         elseif strcmp(matrixType, 'UPPER_ROW')    
                             problem(i).DistanceMatrix = ones(problem(i).NumberOfCities);

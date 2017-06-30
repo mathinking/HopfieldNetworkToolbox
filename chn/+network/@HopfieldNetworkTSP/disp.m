@@ -15,6 +15,8 @@ function disp(net)
         '</a>',' with properties',': ','\n\n']);
     printsection('TrainFcn',net);
 	fprintf('\n');
+    printsection('Scheme',net)
+    fprintf('\n');
     printsection('SimFcn',net)
     fprintf('\n');
     printsection('TrainParam')

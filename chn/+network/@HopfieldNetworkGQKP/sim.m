@@ -1,19 +1,45 @@
-function V = sim(net,V,U)
+function V = sim(net,V,U,isSaddle)
+    
+    if nargin == 1 % Start in the center of the Hypercube. Replace for saddle?
+        U = rand(net.TrainParam.N,1)-.5; 
+        V = 0.5 + 1e-7*U; 
+    elseif nargin == 2
+        U = net.Setting.InvTransferFcn(V);
+    end
+    
+    % Send data to GPU
+    if strcmp(net.Setting.ExecutionEnvironment,'gpu')
+        U = gpuArray(U);
+        V = gpuArray(V);
+    end
+    
+    if nargin < 4
+        isSaddle = false;
+    end
 
-    timeID = tic;
-    net = reinit(net);
-    if strcmp(net.SimFcn,'euler')
-        if nargin < 2
-            [net,V,~,iter] = simEuler(net);
+    if ~isSaddle % Logging time and Checkpoint
+        timeID = tic;
+
+        if ~isempty(net.Setting.CheckpointPath) 
+            net.Results.CheckpointFilename = ...
+                utils.checkpoint.createFilename(net.Setting.CheckpointPath,net.SimFcn);
         else
-            [net,V,~,iter] = simEuler(net,V,U);
-        end  
-    elseif strcmp(net.SimFcn,'talavan-yanez') 
-        if nargin < 2
-            [net,V,~,iter] = simTalavanYanez(net);
-        else
-            [net,V,~,iter] = simTalavanYanez(net,V,U);
+            net.Results.CheckpointFilename = '';
         end
+    end
+    
+    net = reinit(net);
+
+    if ~isfield(net.TrainParam,'T')
+        error('HopfieldNetworkGQKP:NotTrained', 'Training has not taken place yet. Use train(net).');
+    end
+    
+    % Classic Scheme support only
+    if strcmp(net.SimFcn,'euler')
+        [net,V,~,iter] = simEuler(net,V,U,isSaddle);
+
+    elseif strcmp(net.SimFcn,'talavan-yanez') 
+        [net,V,~,iter] = simTalavanYanez(net,V,U,isSaddle);
     end
     net = computeSolution(net,V,iter);
 
@@ -22,8 +48,7 @@ end
 
 
 % Euler Algorithm
-
-function [net,V,U,iter] = simEuler(net,V)
+function [net,V,U,iter] = simEuler(net,V,U,isSaddle)
 
     % Stopping criteria
     stopC1 = power(10, -1   * net.Setting.E);
@@ -38,17 +63,25 @@ function [net,V,U,iter] = simEuler(net,V)
     % Memory allocation
     dU = zeros(N,1);
 
-    if nargin == 1
-        U = rand(N,1)-.5;   % TODO Different from Pedro's algorithm
-        V = 0.5 + 1e-7*U; % TODO Different from Pedro's algorithm
-    end
-
     iter = 1;
 % Showing Network parameters in the command window
 %             if net.Setting.Verbose
 %                 hopfield.tsp.display.printWhenStarting(net);
 %             end
 
+    if ~isSaddle % Logging Checkpoint and plotting Simulation process
+        if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+            if ~isempty(net.Setting.CheckpointPath) 
+                utils.checkpoint.loggingData(fullfile(net.Setting.CheckpointPath, ...
+                    net.Results.CheckpointFilename),...
+                    net.Setting.MaxIter,iter,V,zeros(size(V)));
+            end
+            if net.Setting.SimulationPlot
+                fV = viewConvergence(iter,V,net);
+            end
+        end
+    end
+    
     dt = net.Setting.Dt;
     net.Results.Time(iter) = dt;
     maxDiffV = 1;
@@ -66,34 +99,60 @@ function [net,V,U,iter] = simEuler(net,V)
         V = net.Setting.TransferFcn(U);
 
         maxDiffV = max(abs(Vprev-V));
-        iter = iter + 1;            
+        iter = iter + 1;
+        
+        if ~isSaddle % Logging Checkpoint and plotting Simulation process
+            if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+                if ~isempty(net.Setting.CheckpointPath) 
+                    utils.checkpoint.loggingData(fullfile(net.Setting.CheckpointPath,...
+                        net.Results.CheckpointFilename),...
+                        net.Setting.MaxIter,iter,V,dU);
+                end
+                if net.Setting.SimulationPlot
+                    fV = viewConvergence(iter,V,net,fV);
+                end
+            end
+        end        
     end
+    
+    if strcmp(net.Setting.ExecutionEnvironment,'gpu') && nargout > 1
+        V = gather(V);
+        U = gather(U);
+    end
+
+    if ~isSaddle % Logging Checkpoint 
+        if ~isempty(net.Setting.CheckpointPath)
+            utils.checkpoint.trimToSimulatedData(net.Setting.CheckpointPath, ...
+                net.Results.CheckpointFilename, iter)
+        end
+    end
+    
     net.Results.x = V;
 end
 
 % Talaván-Yáñez Algorithm
 
-function [net,V,U,iter] = simTalavanYanez(net,V,U)
+function [net,V,U,iter] = simTalavanYanez(net,V,U,isSaddle)
 
-
-    N = net.ProblemParameters.networkSize(1);
     T = net.TrainParam.T;
     ib = net.TrainParam.ib;
-    
-    if nargin == 1
-        U = rand(N,1)-.5; % TODO Different from Pedro's algorithm
-        V = 0.5 + 1e-7*U; % TODO Different from Pedro's algorithm
-    end
-    if strcmp(net.Setting.ExecutionEnvironment,'GPU')
-        U = gpuArray(U);
-        V = gpuArray(V);
-    end
+       
     % Stopping criteria
     stopC1 = power(10, -1   * net.Setting.E);
     stopC2 = power(10, -1.5 * net.Setting.E);
     maxDiffV = 1;
     unstable = false;
-
+    
+    trasferFcn2Str = func2str(net.Setting.TransferFcn);
+    if strcmp(trasferFcn2Str,'@(u)0.5*(1+tanh(u./net.Setting.U0))')
+        trasferFcn2Str = 'tanh';
+    elseif strcmp(trasferFcn2Str,'@(u)net.satlin(u,net.Setting.U0)')
+        trasferFcn2Str = 'satlin';
+    else
+        error('HopfieldNetworkTSP:sim:notDefinedTransferFcn', ...
+            ['TransferFcn derivative not defined for ',net.Setting.TransferFcn]);
+    end    
+    
     u_e = net.Setting.InvTransferFcn(stopC1); 
 
     iter = 1;
@@ -101,6 +160,19 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 %             if net.Setting.Verbose
 %                 hopfield.tsp.display.printWhenStarting(net);
 %             end
+
+    if ~isSaddle % Logging Checkpoint and plotting Simulation process
+        if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+            if ~isempty(net.Setting.CheckpointPath) 
+                utils.checkpoint.loggingData(fullfile(net.Setting.CheckpointPath, ...
+                    net.Results.CheckpointFilename),...
+                    net.Setting.MaxIter,iter,V,zeros(size(V)));
+            end
+            if net.Setting.SimulationPlot
+                fV = viewConvergence(iter,V,net);
+            end
+        end
+    end
 
     while iter < net.Setting.MaxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
@@ -113,8 +185,12 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 
         dU = T*V + ib;
 
-        dV = 2./net.Setting.U0 .* V .* (1-V) .*dU;
-
+        if strcmp(trasferFcn2Str,'tanh')
+            dV = 2./net.Setting.U0 .* V .* (1-V) .*dU;
+        elseif strcmp(trasferFcn2Str,'satlin')
+            dV = 2./net.Setting.U0 .* dU;
+        end
+        
         interiorV = U > u_e & U < -u_e;
 
         % Computation of dt             
@@ -209,7 +285,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
 
         %%%
         % $E(t + \Delta t) = E(t) - S_{1}\Delta t + \frac{1}{2}S_{2}\Delta t^{2}$
-        if strcmp(net.Setting.ExecutionEnvironment,'GPU')
+        if strcmp(net.Setting.ExecutionEnvironment,'gpu')
             S1 = gather(S1);
             S2 = gather(S2);
             dt = gather(dt);
@@ -218,18 +294,38 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U)
             S1.*dt + 0.5.*S2.*dt.^2;
         net.Results.Time(iter+1) = net.Results.Time(iter) + dt;
         iter = iter + 1;
+        
+        if ~isSaddle % Logging Checkpoint and plotting Simulation process
+            if ~isempty(net.Setting.CheckpointPath) || net.Setting.SimulationPlot
+                if ~isempty(net.Setting.CheckpointPath) 
+                    utils.checkpoint.loggingData(fullfile(net.Setting.CheckpointPath,...
+                        net.Results.CheckpointFilename),...
+                        net.Setting.MaxIter,iter,V,dU);
+                end
+                if net.Setting.SimulationPlot
+                    fV = viewConvergence(iter,V,net,fV);
+                end
+            end
+        end
     end
 
-    if strcmp(net.Setting.ExecutionEnvironment,'GPU') && nargout > 1
+    if strcmp(net.Setting.ExecutionEnvironment,'gpu') && nargout > 1
         V = gather(V);
         U = gather(U);
-        iter = gather(iter);
     end
+
+    if ~isSaddle % Logging Checkpoint 
+        if ~isempty(net.Setting.CheckpointPath)
+            utils.checkpoint.trimToSimulatedData(net.Setting.CheckpointPath, ...
+                net.Results.CheckpointFilename, iter);
+        end
+    end   
+    
 end
 
 function net = computeSolution(net,V,iter)
 
-    V(V > 1 - power(10, -1 * net.Setting.E)) = 1; %FIXME to be removed?
+    V(V > 1 - power(10, -1 * net.Setting.E)) = 1; 
     V(V < power(10, -1 * net.Setting.E)) = 0;
 
     if isequal(net.ProblemParameters.R*V,net.ProblemParameters.b)

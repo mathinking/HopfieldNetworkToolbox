@@ -24,6 +24,7 @@ classdef HopfieldNetworkTSP < network.HopfieldNetwork
     properties (GetAccess = private, SetAccess = private)
         Name = 'HopfieldNetworkTSP';
         Cities;
+        Scheme;
     end
     
     methods (Sealed = true)
@@ -97,5 +98,6 @@ classdef HopfieldNetworkTSP < network.HopfieldNetwork
         name = getName(net);
         cities = getCities(net,field);
         setCities(net,property,value); 
+        setScheme(net,scheme);        
     end
 end

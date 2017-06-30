@@ -6,6 +6,16 @@
 % <mathworks.com/products/matlab MATLAB®> and <http://www.mathworks.com/products/statistics/
 % Statistics and Machine Learning Toolbox™>
 % 
+%% Version 1.2, 30-Jun-2017
+% Interface redesign to include schemes. Minor bugs and enhancements
+%
+% List of <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av1.2+is%3Aclosed+label%3Abug
+% Bugs> fixed and <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av1.2+is%3Aclosed+label%3Aenhancement
+% Enhancements> in this release.
+% 
+% <https://github.com/mathinking/HopfieldNetworkToolbox/releases/tag/v1.2
+% Version 1.2 on GitHub> 
+
 %% Version 1.1.2, 09-Apr-2017
 % Minor Bugs
 %

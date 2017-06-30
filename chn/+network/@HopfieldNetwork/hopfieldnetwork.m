@@ -64,6 +64,8 @@ classdef HopfieldNetwork < handle
         net = sim(net);
         disp(net);
         plot(net, varargin);
+        saddle(net, method);
+        viewConvergence(iter,V,net);
         
         % --- Set methods --- %
         setTrainFcn(net,trainFcn);
@@ -72,7 +74,6 @@ classdef HopfieldNetwork < handle
     end
         
 	methods (Hidden = true, Access = private)
-        %net = addDefaultOptionValues(net, options);
         net = setOptions(net, options);
     end
 
@@ -80,21 +81,19 @@ classdef HopfieldNetwork < handle
         net = init(net);
     end
     
-%     methods (Static = true, Access = public)
-%         options = createOptions(varargin);
-%     end
-    
     methods (Static = true, Access = protected)
         y = satlin(x,u0);
         y = invsatlin(x,u0);        
     end 
     
-    methods(Access = public) % --- Get-Set methods --- %
+    % --- Get-Set methods --- %
+    methods(Access = public) 
         trainFcn = getTrainFcn(net);
         trainParam = getTrainParam(net,field);
         setting = getSetting(net,field);
         simFcn = getSimFcn(net);
         results = getResults(net,field);
+        scheme = getScheme(net);
         setSetting(net,property,value);
         setResults(net,property,value);        
     end

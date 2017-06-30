@@ -120,18 +120,12 @@ classdef HopfieldNetworkGQKP < network.HopfieldNetwork
     
     % --- Methods definitions --- %
 	methods (Hidden = true, Access = private)
-        %net = addDefaultOptionValues(net, options);
         net = setOptions(net,options);        
     end
     
-% 	methods (Static = true, Hidden = true, Access = protected)
-% %         isValidSetting(property,value);        
-%     end
-%     
-%     methods (Static = true, Hidden = false, Access = public)
-% %         options = createOptions(varargin);
-%     end
-    
+	methods (Static = true, Hidden = true, Access = private)
+
+    end
 	methods (Hidden = false, Access = protected)
         net = init(net);
     end

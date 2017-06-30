@@ -5,14 +5,22 @@ function net = train(net)
     end
     
     if strcmp(net.TrainFcn,'trainty')
-        net.TrainParam.dU = max(net.Cities.DistanceMatrix(triu(net.Cities.DistanceMatrix~= 0))); %max(net.Cities.DistanceMatrix(triu(true(net.TrainParam.N),1)));
         
-        if strcmp(net.SimFcn,'talavan-yanez')
+        distancesToIgnore = ~eye(net.TrainParam.N);
+        if net.TrainParam.K > 0 && net.TrainParam.N >=3 
+            for i = 1:net.TrainParam.K
+                distancesToIgnore(2*i-1:2*i,2*i-1:2*i) = false(2);
+            end
+        end
+        
+        net.TrainParam.dU = max(net.Cities.DistanceMatrix(distancesToIgnore)); 
+        
+        if contains(net.Scheme,'classic')
             net.Cities.DistanceMatrix = net.Cities.DistanceMatrix / net.TrainParam.dU;
             net.TrainParam.dUaux = net.TrainParam.dU;
             net.TrainParam.dU = 1;
         end
-        net.TrainParam.dL = min(net.Cities.DistanceMatrix(triu(net.Cities.DistanceMatrix~= 0))); %min(net.Cities.DistanceMatrix(triu(true(net.TrainParam.N),1)));
+        net.TrainParam.dL = min(net.Cities.DistanceMatrix(distancesToIgnore)); 
 
         net.TrainParam.D = 1/net.TrainParam.dU;
         net.TrainParam.rho = net.TrainParam.dL/net.TrainParam.dU;

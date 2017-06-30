@@ -26,7 +26,12 @@ classdef HopfieldNetworkGQKPOptions < options.HopfieldNetworkOptions
     %   See also hopfieldnet, options.HopfieldNetworkOptions.
     
     properties (SetAccess = private)
-        % SimFcn   Simulation Function .
+        % Scheme   Network scheme
+        %   The Scheme determines the network pipeline used in the
+        %   simulation of the Continuous Hopfield Network
+        Scheme = 'classic'
+        
+        % SimFcn   Simulation Function.
         %   The Simulation Function determines how simulation takes place
         %   in the Hopfield Network. Possible values: 
         %
@@ -55,8 +60,8 @@ classdef HopfieldNetworkGQKPOptions < options.HopfieldNetworkOptions
             defaultTrainFcn = 'traingty';
             defaultSimFcn   = 'talavan-yanez'; 
 
-            parser.addParameter('TrainFcn', defaultTrainFcn, @HopfieldNetworkGQKPOptions.iIsChar);
-            parser.addParameter('SimFcn', defaultSimFcn, @HopfieldNetworkGQKPOptions.iIsChar);
+            parser.addParameter('TrainFcn', defaultTrainFcn, @opts.iIsChar);
+            parser.addParameter('SimFcn', defaultSimFcn, @opts.iIsChar);
             
             parser.parse(opts.Unmatched);
             
@@ -77,7 +82,7 @@ classdef HopfieldNetworkGQKPOptions < options.HopfieldNetworkOptions
             chosenTrainFcn = validatestring(inputTrainFcn, validTrainFcn, 'HopfieldNetworkGQKPOptions', 'TrainFcn');
         end
         function chosenSimFcn = iMatchWithValidSimFcn(inputSimFcn)
-            validSimFcn = {'euler','talavan-yanez'};
+            validSimFcn = {'euler','runge-kutta','talavan-yanez'};
             chosenSimFcn = validatestring(inputSimFcn, validSimFcn, 'HopfieldNetworkGQKPOptions', 'SimFcn');
         end          
     end

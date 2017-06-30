@@ -9,6 +9,7 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
     %       Cities                     - Defition of the TSP problem.
     %       Setting                    - Settings used in the Simulation of
     %                                    the Hopfield.
+    %       Scheme                     - Continuous Hopfield Network Scheme
     %       SimFcn                     - Simulation Function.
     %       TrainFcn                   - Training Function.
     %       TrainingParam              - Training Parameters.
@@ -46,7 +47,15 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
         %   The Simulation Function determines how simulation takes place
         %   in the Hopfield Network. Possible values: 
         %
-        %      'euler', 'talavan-yanez' (default) and 'divide-conquer'
+        %      'classic' (default), divide-conquer', 'classic&2opt',
+        %      'divide-conquer&2opt'
+        Scheme
+
+        % SimFcn   Simulation Function.
+        %   The Simulation Function determines how simulation takes place
+        %   in the Hopfield Network. Possible values: 
+        %
+        %      'euler', 'runge-kutta' or 'talavan-yanez' (default)
         SimFcn
         
         % TrainFcn   Training Function.
@@ -70,8 +79,9 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             parser = inputParser;
             
             defaultTrainFcn = 'trainty';
-            defaultSimFcn   = 'talavan-yanez'; 
-            
+            defaultScheme = 'classic';
+            defaultSimFcn = 'talavan-yanez'; 
+
             defaultTrainParamK = 0;
             
             defaultCitiesNames = '';
@@ -84,6 +94,7 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             
             parser.addParameter('TrainFcn', defaultTrainFcn, @opts.iIsChar);
             parser.addParameter('SimFcn', defaultSimFcn, @opts.iIsChar);
+            parser.addParameter('Scheme', defaultScheme, @opts.iIsChar);
             parser.addParameter('K', defaultTrainParamK, @opts.iIsIntegerScalarGreaterOrEqualThanZero);
             parser.addParameter('Names', defaultCitiesNames, @opts.iIsCellStr)
             parser.addParameter('DistanceType', defaultCitiesDistanceType, @opts.iIsChar)
@@ -101,6 +112,7 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             opts.Unmatched = [];
             
             opts.TrainFcn = opts.iMatchWithValidTrainFcn(parser.Results.TrainFcn);
+            opts.Scheme   = opts.iMatchWithValidScheme(parser.Results.Scheme);
             opts.SimFcn   = opts.iMatchWithValidSimFcn(parser.Results.SimFcn);
             opts.TrainParam.K = parser.Results.K;
             opts.Cities.Names = parser.Results.Names;
@@ -142,9 +154,14 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             chosenTrainFcn = validatestring(inputTrainFcn, validTrainFcn, 'HopfieldNetworkTSPOptions', 'TrainFcn');
         end
         function chosenSimFcn = iMatchWithValidSimFcn(inputSimFcn)
-            validSimFcn = {'euler','talavan-yanez','divide-conquer'};
+            validSimFcn = {'euler','runge-kutta','talavan-yanez'};
             chosenSimFcn = validatestring(inputSimFcn, validSimFcn, 'HopfieldNetworkTSPOptions', 'SimFcn');
         end         
+
+        function chosenScheme = iMatchWithValidScheme(inputSimFcn)
+            validScheme= {'classic', 'divide-conquer', 'classic&2opt','divide-conquer&2opt','2opt'};
+            chosenScheme = validatestring(inputSimFcn, validScheme, 'HopfieldNetworkTSPOptions', 'SimFcn');
+        end                 
         function chosenType = iMatchWithValidDistanceType(inputType)
             validType = {'geo','euc_2d','euc','att','ceil_2d','explicit'};
             chosenType = validatestring(inputType, validType, 'HopfieldNetworkTSPOptions', 'DistanceType');
