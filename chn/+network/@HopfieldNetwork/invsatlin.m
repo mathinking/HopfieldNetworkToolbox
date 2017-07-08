@@ -1,5 +1,10 @@
 function y = invsatlin(x,u0)
-    y = zeros(size(x));
+
+    if isa(x,'gpuArray')
+        y = zeros(size(x), 'gpuArray');
+    else
+        y = zeros(size(x));
+    end
     
     y(x <= 0) = -u0;
     y(x >= 1) = u0;

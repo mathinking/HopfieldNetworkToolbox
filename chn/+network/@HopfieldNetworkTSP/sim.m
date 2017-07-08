@@ -80,6 +80,7 @@ function V = sim(net,V,U,isSaddle)
     if ~isSaddle
         V = incorporateResults(net,V,iter,timeID);
     end
+    
      
 end
 
@@ -565,7 +566,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U,isSaddle)
         sumV = sum(sumVcol);
 
         % $E(t + \Delta t) = E(t) - S_{1}\Delta t + \frac{1}{2}S_{2}\Delta t^{2}$
-        if strcmp(net.Setting.ExecutionEnvironment,'GPU')
+        if strcmp(net.Setting.ExecutionEnvironment,'gpu')
             S1 = gather(S1);
             S2 = gather(S2);
             dt = gather(dt);
@@ -589,7 +590,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U,isSaddle)
         end
     end
 
-    if strcmp(net.Setting.ExecutionEnvironment,'GPU') && nargout > 1
+    if strcmp(net.Setting.ExecutionEnvironment,'gpu') && nargout > 1
         V = gather(V);
         U = gather(U);
         iter = gather(iter);
