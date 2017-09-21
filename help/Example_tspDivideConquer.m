@@ -1,5 +1,5 @@
-%% Improving Hopfield Network performance using a Divide-and-Conquer scheme
-% In order to imprthe performance of this heuristic technique, a 
+%% Improving Hopfield Networks performance using a Divide-and-Conquer scheme
+% In order to improve the performance of this heuristic technique, a 
 % Divide-and-Conquer strategy based on two phases is proposed. The first
 % phase involves linking cities with the most neighbors to define a set of
 % chains of cities and, secondly, to join these with isolated cities to 
@@ -7,7 +7,7 @@
 % onto their respective CHNs.
 
 %% TSPLIB problem and network parameters
-rng(6); % For reproducibility
+rng(3); % For reproducibility
 
 %%
 % TSPLIB Problem:
@@ -19,7 +19,7 @@ N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
-C = 0.00001;
+C = 1e-5;
 
 %% Creating the |HopfieldNetworkTSP| object using the Divide-and-Conquer simulation method
 % Providing problem coordinates cities and distance matrix to the
@@ -27,8 +27,8 @@ C = 0.00001;
 % object of options
 options = tsphopfieldnetOptions('Coordinates',problem.Coordinates,...
                                 'DistanceMatrix',problem.DistanceMatrix,...
-                                'DistanceType',problem.DistanceType,...
-                                'SimFcn','divide-conquer',...
+                                'DistanceType',problem.DistanceType,...                               
+                                'Scheme','divide-conquer',...
                                 'Tau',2);
 net = tsphopfieldnet(N,C,options);
 
@@ -37,7 +37,7 @@ net = tsphopfieldnet(N,C,options);
 train(net);
 
 %% Simulating the network
-% The simulation is using the algorithm is |divide-conquer|
+% The simulation is using the algorithm is |talavan-yanez|
 sim(net);
 
 %% Visualizing results

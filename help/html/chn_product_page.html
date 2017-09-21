@@ -6,7 +6,7 @@
    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Hopfield Network Toolbox</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="chn_product_page.m"><style type="text/css">
+      --><title>Hopfield Network Toolbox</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="chn_product_page.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,18 +66,19 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Hopfield Network Toolbox</h1><p>The <b>Hopfield Network Toolbox</b> can solve combinatorial optimization problems by using Hopfield Neural Networks. The Hopfield Network Toolbox is focused in Continuous Hopfield Networks.</p><p>If you are interested in using Discrete Hopfield Networks, see the documentation for <tt><a href="http://www.mathworks.com/help/nnet/ug/hopfield-neural-network.html">newhop</a></tt> in <a href="http://www.mathworks.com/products/neural-network/">Neural Network Toolbox&#8482;</a>.</p><p>The Continuous Hopfield Network (CHN) is a recurrent neural network with an associated differential equation, whose state evolves from an initial condition to an equilibrium point by minimizing a Lyapunov function. As the Lyapunov function is associated with an objective function of the optimization problem (i.e. the mapping process), the equilibrium, or stable point, helps identify a local optimum for the optimization problem.</p><p>You can find more information about Continuous Hopfield Networks in the <a href="chn_concepts.html">Concepts</a> Section of the documentation.</p><p><b>Available Documentation</b></p><div><ul><li><a href="chn_about.html">About Hopfield Network Toolbox</a></li><li><a href="chn_concepts.html">Concepts</a></li><li><a href="chn_users_guide.html">User's Guide</a></li><li><a href="chn_TSP_App.html">TSP App</a></li><li><a href="chn_release_notes.html">Release Notes</a></li></ul></div><p>See also the GitHub repository <a href="https://github.com/mathinking/HopfieldNetworkToolbox/releases/latest">Hopfield Network Toolbox</a> for the latest release of the software.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>Hopfield Network Toolbox</h1><p>The <b>Hopfield Network Toolbox</b> can solve combinatorial optimization problems by using Hopfield Neural Networks. The Hopfield Network Toolbox is mainly focused in solving Continuous Hopfield Networks.</p><p>If you are interested in using Discrete Hopfield Networks, see the documentation for <tt><a href="http://www.mathworks.com/help/nnet/ug/hopfield-neural-network.html">newhop</a></tt> in <a href="http://www.mathworks.com/products/neural-network/">Neural Network Toolbox&#8482;</a> or look into the Simulink-related examples in the toolbox.</p><p>The Continuous Hopfield Network (CHN) is a recurrent neural network with an associated differential equation, whose state evolves from an initial condition to an equilibrium point by minimizing a Lyapunov function. As the Lyapunov function is associated with an objective function of the optimization problem (i.e. the mapping process), the equilibrium, or stable point, helps identify a local optimum for the optimization problem.</p><p>You can find more information about Continuous Hopfield Networks in the <a href="chn_concepts.html">Concepts</a> Section of the documentation.</p><p><b>Available Documentation</b></p><div><ul><li><a href="chn_about.html">About Hopfield Network Toolbox</a></li><li><a href="chn_concepts.html">Concepts</a></li><li><a href="chn_users_guide.html">User's Guide</a></li><li><a href="chn_TSP_App.html">TSP App</a></li><li><a href="chn_release_notes.html">Release Notes</a></li></ul></div><p>See also the GitHub repository <a href="https://github.com/mathinking/HopfieldNetworkToolbox/releases/latest">Hopfield Network Toolbox</a> for the latest release of the software.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Hopfield Network Toolbox
 % The *Hopfield Network Toolbox* can solve combinatorial optimization
 % problems by using Hopfield Neural Networks. The Hopfield Network Toolbox 
-% is focused in Continuous Hopfield Networks. 
+% is mainly focused in solving Continuous Hopfield Networks. 
 %
 % If you are interested in using Discrete Hopfield Networks, see the
 % documentation for 
 % |<http://www.mathworks.com/help/nnet/ug/hopfield-neural-network.html 
 % newhop>| in <http://www.mathworks.com/products/neural-network/ Neural 
-% Network Toolbox™>.
+% Network Toolbox™> or look into the Simulink-related examples in the
+% toolbox.
 %
 % The Continuous Hopfield Network (CHN) is a recurrent neural network with 
 % an associated differential equation, whose state evolves from an initial 

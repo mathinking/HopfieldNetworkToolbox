@@ -1,6 +1,6 @@
 function V = sim(net,V,U,isSaddle)
 
-    if nargin == 1 % Start in the center of the Hypercube. Replace for saddle?
+    if nargin == 1 % Start in the center of the Hypercube. Replace for saddle in a future release
         U = rand(net.TrainParam.N,net.TrainParam.N-net.TrainParam.K)-.5; 
         V = 0.5 + 1e-7*U; 
     elseif nargin == 2
@@ -22,7 +22,7 @@ function V = sim(net,V,U,isSaddle)
 
         if ~isempty(net.Setting.CheckpointPath)
             net.Results.CheckpointFilename = ...
-                utils.checkpoint.createFilename(net.Setting.CheckpointPath,net.SimFcn);
+                utils.checkpoint.createFilename(net.Setting.CheckpointPath,net.Scheme,net.SimFcn);
             
         else
             net.Results.CheckpointFilename = '';
@@ -98,23 +98,22 @@ function [net,V,U,iter] = schemeClassic(net,V,U,isSaddle)
     
         otherwise % Shouldn't be reached by users
             error('HopfieldNetworkTSP:InvalidSimFcn', ...
-                'Make sure you provide a valid SimFcn function by using ''tsphopfieldnet'' or ''options.HopfieldNetworkOptionsTSP''.');
+                'Make sure you provide a valid SimFcn function by using ''tsphopfieldnet'' or ''options.HopfieldNetworkTSPOptions''.');
     end        
 end
 
 function [net,V,U,iter] = schemeDivideConquer(net,V,U)
     % Determine weather to plot the two phases of the problem. Consider
     % bringing this to createOptions
-    plotPhases = false;
     myPlot.myCitiesColorP1 = [0.8,0.8,0.8];
     myPlot.myCitiesTextColor = [0,0,0];
     myPlot.myInsideColorP1 = [0,0,0.8];
-    myPlot.myTitleP1 = 'Divide and Conquer. Phase 1 problem (TSP_1^{\tau})';    
+    myPlot.myTitleP1 = 'Divide and Conquer. Phase 1 problem $(TSP_1^{\tau})$';    
     myPlot.myCitiesColorP2 = [1,0,0];
     myPlot.myInsideColorP2 = [0.8,0.8,0.8];
     myPlot.myCitiesTextColor = [0,0,0];
-    myPlot.myTitleP2 = 'Divide and Conquer. Phase 2 problem (TSP_2^{*})';
-    myPlot.myTitle = 'Divide and Conquer. TSP_1^{\tau} + TSP_2^{*}';
+    myPlot.myTitleP2 = 'Divide and Conquer. Phase 2 problem $(TSP_2^{k})$';
+    myPlot.myTitle = 'Divide and Conquer. $TSP_1^{\tau} + TSP_2^{k}$';
 
     % The Phase 1 problem. TSP^tau_1
     % 2 possible methods:
@@ -126,16 +125,16 @@ function [net,V,U,iter] = schemeDivideConquer(net,V,U)
             V = saddle(net) + (rand(net.TrainParam.N) - 0.5) * 1e-5;
             U = net.Setting.InvTransferFcn(V);
         end
-        [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot);
+        [chains,V] = simDivideConquerPhase1(net,V,U,myPlot);
         
         % Reached max number of iterations        
         if net.Results.ExitFlag == 0
             mkdir('Phase1_InsuficientIterations');
             save(fullfile(pwd,'Phase1_InsuficientIterations',regexprep(datestr(datetime),{':',' ','-'},'_')))
             while net.Results.ExitFlag <= 0
-                V = V + (rand(net.TrainParam.N) - 0.5) * 1e-5;
+                V = max(0,V + (rand(net.TrainParam.N) - 0.5) * 1e-5);
                 U = net.Setting.InvTransferFcn(V);
-                [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot);
+                [chains,V] = simDivideConquerPhase1(net,V,U,myPlot);
             end
             
         % Possible saddle point reached
@@ -143,9 +142,9 @@ function [net,V,U,iter] = schemeDivideConquer(net,V,U)
             mkdir('Phase1_PossibleSaddlePoint');
             save(fullfile(pwd,'Phase1_PossibleSaddlePoint',regexprep(datestr(datetime),{':',' ','-'},'_')))            
             while net.Results.ExitFlag <= 0
-                V = V + (rand(net.TrainParam.N) - 0.5) * 1e-5;
+                V = max(0,V + (rand(net.TrainParam.N) - 0.5) * 1e-5);
                 U = net.Setting.InvTransferFcn(V);
-                [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot);
+                [chains,V] = simDivideConquerPhase1(net,V,U,myPlot);
             end
         end
         % TODO Add correct number of iterations
@@ -163,7 +162,7 @@ function [net,V,U,iter] = schemeDivideConquer(net,V,U)
         % a. fixing cities
         % b. using new distance
         % c. connecting subtours with greedy
-        [netPhase2,V2] = simDivideConquerPhase2(net,chains,plotPhases,myPlot);
+        [netPhase2,V2] = simDivideConquerPhase2(net,chains,myPlot);
         % Building final V
         V = zeros(net.TrainParam.N);
         iNew = 1;
@@ -172,9 +171,9 @@ function [net,V,U,iter] = schemeDivideConquer(net,V,U)
         % Reached max number of iterations        
         if netPhase2.Results.ExitFlag == 0
             mkdir('Phase2_InsuficientIterations');
-            save(fullfile(pwd,'Phase2_InsuficientIterations',regexprep(datestr(datetime),{':',' ','-'},'_')))
+            save(fullfile(pwd,'Phase2_InsuficientIterations',['tau_',num2str(net.Cities.Tau),'_',regexprep(datestr(datetime),{':',' ','-'},'_'),'_rand',num2str(randi(net.TrainParam.N))]))
             while netPhase2.Results.ExitFlag <= 0
-                V2 = V2 + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-5;
+                V2 = max(0,V2 + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-5);
                 U = netPhase2.Setting.InvTransferFcn(V2);
                 V2 = sim(netPhase2, V2, U);
             end
@@ -182,10 +181,10 @@ function [net,V,U,iter] = schemeDivideConquer(net,V,U)
         % Possible saddle point reached
         elseif netPhase2.Results.ExitFlag == -1 
             mkdir('Phase2_PossibleSaddlePoint');
-            save(fullfile(pwd,'Phase2_PossibleSaddlePoint',regexprep(datestr(datetime),{':',' ','-'},'_')))            
+            save(fullfile(pwd,'Phase2_PossibleSaddlePoint',['tau_',num2str(net.Cities.Tau),'_',regexprep(datestr(datetime),{':',' ','-'},'_'),'_rand',num2str(randi(net.TrainParam.N))]))
             % Stuck in a saddle point. Perturbation required.
             while netPhase2.Results.ExitFlag <= 0
-                V2 = V2 + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-5;
+                V2 = max(0,V2 + (rand(netPhase2.TrainParam.N,netPhase2.TrainParam.N-netPhase2.TrainParam.K) - 0.5) * 1e-5);
                 U = netPhase2.Setting.InvTransferFcn(V2);
                 V2 = sim(netPhase2, V2, U);
             end
@@ -222,7 +221,7 @@ function [net,V,U,iter] = schemeDivideConquer(net,V,U)
         U = net.Setting.InvTransferFcn(V);
         iter = net.Results.ItersReached + netPhase2.Results.ItersReached - 1;
 
-        if plotPhases
+        if net.Cities.PlotPhases
             if isempty(net.Results.TourLength) %#ok<UNRCH>
                 init(net);
                 net = computeTour(net,V,iter); % Needed for plot phase1 + phase2 to output correctly
@@ -272,6 +271,26 @@ end
 % Euler Simulation Algorithm
 function [net,V,U,iter] = simEuler(net, V, U, isSaddle) 
     [net,V,U,iter] = simODE(net,V,U,isSaddle);
+end
+
+% Runge-Kutta Simulation Algorithm
+function [net,V,U,iter] = simRungeKutta(net,V,U,isSaddle)
+    [net,V,U,iter] = simODE(net,V,U,isSaddle);
+
+%     U = U(:);
+%     [t,U]=ode45(@(t,u)func(t,U,net.TrainParam.C*net.TrainParam.Np),[0,0.1],U);      
+%     V = net.Setting.TransferFcn(U(end,:));
+%     V = reshape(V,net.TrainParam.N,net.TrainParam.N-net.TrainParam.K);
+%     function dU = func(t,U,ib)
+%         V = net.Setting.TransferFcn(U);
+%         V = reshape(V,net.TrainParam.N,net.TrainParam.N-net.TrainParam.K);
+%         sumVcol = sum(V);
+%         sumVrow = sum(V,2);
+%         sumV = sum(sumVcol);
+%         dU = weightMatrixTimesVvectorized(net, V, sumVrow, sumVcol, sumV) + ib;  
+%         dU = dU(:);
+%     end
+
 end
 
 % ODE Simulation Algorithm (used by Euler and Runge-Kutta)
@@ -328,7 +347,7 @@ function [net,V,U,iter] = simODE(net,V,U,isSaddle)
             dU = 1/6*S1 + 1/3*S2 + 1/3*S3 + 1/6*S4;
         
         else
-            error('HopfieldNetTSP:sim:simODE:UnknownSimFcn',...
+            error('HopfieldNetworkTSP:sim:simODE:UnknownSimFcn',...
                 'Unknown simulation method')
         end
 
@@ -347,7 +366,11 @@ function [net,V,U,iter] = simODE(net,V,U,isSaddle)
         sumV = sum(sumVcol);       
 
         % Energy update
-        net.Results.Energy(iter+1) = -0.5 * sum(sum(V.*TV)) - sum(sum((V*ib)));
+        if strcmp(net.Setting.ExecutionEnvironment,'gpu')
+            net.Results.Energy(iter+1) = gather(-0.5 * sum(sum(V.*TV)) - sum(sum((V*ib))));
+        else
+            net.Results.Energy(iter+1) = -0.5 * sum(sum(V.*TV)) - sum(sum((V*ib)));
+        end
         net.Results.Time(iter+1) = net.Results.Time(iter) + ...
             net.Setting.Dt;
         iter = iter + 1;
@@ -380,25 +403,6 @@ function [net,V,U,iter] = simODE(net,V,U,isSaddle)
 
 end
 
-% Runge-Kutta Simulation Algorithm
-function [net,V,U,iter] = simRungeKutta(net,V,U,isSaddle)
-    [net,V,U,iter] = simODE(net,V,U,isSaddle);
-
-%     U = U(:);
-%     [t,U]=ode45(@(t,u)func(t,U,net.TrainParam.C*net.TrainParam.Np),[0,0.1],U);      
-%     V = net.Setting.TransferFcn(U(end,:));
-%     V = reshape(V,net.TrainParam.N,net.TrainParam.N-net.TrainParam.K);
-%     function dU = func(t,U,ib)
-%         V = net.Setting.TransferFcn(U);
-%         V = reshape(V,net.TrainParam.N,net.TrainParam.N-net.TrainParam.K);
-%         sumVcol = sum(V);
-%         sumVrow = sum(V,2);
-%         sumV = sum(sumVcol);
-%         dU = weightMatrixTimesVvectorized(net, V, sumVrow, sumVcol, sumV) + ib;  
-%         dU = dU(:);
-%     end
-
-end
 % Talaván-Yáñez Simulation Algorithm
 function [net,V,U,iter] = simTalavanYanez(net,V,U,isSaddle)
 
@@ -605,7 +609,7 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U,isSaddle)
 end
 
 % Divide and Conquer algorithm
-function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
+function [chains,V] = simDivideConquerPhase1(net,V,U,myPlot)
 
     p_or_tau = net.Cities.Tau;
 	% Backing up distances
@@ -691,8 +695,8 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
     end
     
     if ~isempty(chains)
-        if plotPhases
-            h = plot(net);
+        if net.Cities.PlotPhases
+            plot(net);
             hold on;
         end
         if length(chains) == 1 && length(chains{1}) > net.TrainParam.N
@@ -708,13 +712,13 @@ function [chains,V] = simDivideConquerPhase1(net,V,U,plotPhases,myPlot)
         % Consider case with unique chain and all cities included    
 
         % Visualize Chains
-        if plotPhases
+        if net.Cities.PlotPhases
             plot(net,'phase1',chains,[],myPlot.myCitiesColorP1,myPlot.myCitiesTextColor,myPlot.myInsideColorP1,myPlot.myTitleP1);
         end
     end
 end
 
-function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
+function [netPhase2,V] = simDivideConquerPhase2(net,chains,myPlot)
 
     noChains = length(chains);   
     method = 'phase2';
@@ -777,7 +781,7 @@ function [netPhase2,V] = simDivideConquerPhase2(net,chains,plotPhases,myPlot)
             return;
         end
         
-        if plotPhases
+        if net.Cities.PlotPhases
             fixedChainsFromPhase1 = cell(size(chains));
             for i = 1:length(fixedChainsFromPhase1)
             	fixedChainsFromPhase1{i} = [2*i-1,2*i];

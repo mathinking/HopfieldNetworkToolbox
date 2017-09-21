@@ -95,7 +95,8 @@ function net = setOptions(net,opts)
     if isempty(opts.Cities.Tau) && ~strcmp(opts.SimFcn,'divide-conquer')
         net.Cities.Tau = net.TrainParam.N - 1;
     end
-
+    net.Cities.PlotPhases = opts.Cities.PlotPhases;
+    
     net.Cities = orderfields(net.Cities);
  
 end

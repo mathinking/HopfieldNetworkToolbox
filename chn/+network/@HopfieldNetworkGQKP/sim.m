@@ -22,7 +22,7 @@ function V = sim(net,V,U,isSaddle)
 
         if ~isempty(net.Setting.CheckpointPath) 
             net.Results.CheckpointFilename = ...
-                utils.checkpoint.createFilename(net.Setting.CheckpointPath,net.SimFcn);
+                utils.checkpoint.createFilename(net.Setting.CheckpointPath,net.Scheme,net.SimFcn);
         else
             net.Results.CheckpointFilename = '';
         end
@@ -35,20 +35,35 @@ function V = sim(net,V,U,isSaddle)
     end
     
     % Classic Scheme support only
-    if strcmp(net.SimFcn,'euler')
-        [net,V,~,iter] = simEuler(net,V,U,isSaddle);
-
-    elseif strcmp(net.SimFcn,'talavan-yanez') 
-        [net,V,~,iter] = simTalavanYanez(net,V,U,isSaddle);
+    switch net.SimFcn
+        case 'euler'
+            [net,V,~,iter] = simEuler(net,V,U,isSaddle);
+        case 'runge-kutta'
+            [net,V,~,iter] = simRungeKutta(net,V,U,isSaddle);
+        case 'talavan-yanez'
+            [net,V,~,iter] = simTalavanYanez(net,V,U,isSaddle);
+        otherwise % Shouldn't be reached by users
+            error('HopfieldNetworkGQKP:InvalidSimFcn', ...
+                'Make sure you provide a valid SimFcn function by using ''hopfieldnetOptions'' or ''options.HopfieldNetworkGQKPOptions''.');
     end
-    net = computeSolution(net,V,iter);
+
+    [net,V] = computeSolution(net,V,iter);
 
     net.Results.CompTime = toc(timeID);
 end
 
+% Euler Simulation Algorithm
+function [net,V,U,iter] = simEuler(net, V, U, isSaddle) 
+    [net,V,U,iter] = simODE(net,V,U,isSaddle);
+end
 
-% Euler Algorithm
-function [net,V,U,iter] = simEuler(net,V,U,isSaddle)
+% Runge-Kutta Simulation Algorithm
+function [net,V,U,iter] = simRungeKutta(net,V,U,isSaddle)
+    [net,V,U,iter] = simODE(net,V,U,isSaddle);
+end
+
+% ODE Simulation Algorithm (used by Euler and Runge-Kutta)
+function [net,V,U,iter] = simODE(net,V,U,isSaddle)
 
     % Stopping criteria
     stopC1 = power(10, -1   * net.Setting.E);
@@ -83,22 +98,42 @@ function [net,V,U,iter] = simEuler(net,V,U,isSaddle)
     end
     
     dt = net.Setting.Dt;
-    net.Results.Time(iter) = dt;
+    net.Results.Energy(iter) = NaN;
     maxDiffV = 1;
 
     while iter <= net.Setting.MaxIter && (maxDiffV > stopC1 || ...
             (maxDiffV > stopC2 && unstable))
 
         unstable = false;
-        net.Results.Energy(iter+1) = 0;
 
-        dU = T*V + ib;
+        if strcmp(net.SimFcn,'euler')
+            dU = (T*V + ib)*net.Setting.Dt;
+        elseif strcmp(net.SimFcn,'runge-kutta')
+            S1 = computeSi(V,T,ib,net.Setting.Dt); 
+            S2 = computeSi(net.Setting.TransferFcn(U + S1/2),T,ib,net.Setting.Dt/2);
+            S3 = computeSi(net.Setting.TransferFcn(U + S2/2),T,ib,net.Setting.Dt/2);
+            S4 = computeSi(net.Setting.TransferFcn(U + S3),T,ib,net.Setting.Dt);    
+            
+            dU = 1/6*S1 + 1/3*S2 + 1/3*S3 + 1/6*S4;
 
+        else
+            error('HopfieldNetworkGQKP:sim:simODE:UnknownSimFcn',...
+                'Unknown simulation method')
+        end     
+            
         Vprev = V;
-        U = U + dU * net.Setting.Dt;
+        U = U + dU; %Dt already included in dU 
         V = net.Setting.TransferFcn(U);
 
         maxDiffV = max(abs(Vprev-V));
+        % Energy update
+        if strcmp(net.Setting.ExecutionEnvironment,'gpu')
+            net.Results.Energy(iter+1) = gather(-0.5 * sum(sum(V'.*T*V)) - sum(sum((V'*ib))));
+        else
+            net.Results.Energy(iter+1) = -0.5 * sum(sum(V'.*T*V)) - sum(sum((V'*ib)));
+        end
+        net.Results.Time(iter+1) = net.Results.Time(iter) + ...
+            net.Setting.Dt;
         iter = iter + 1;
         
         if ~isSaddle % Logging Checkpoint and plotting Simulation process
@@ -323,11 +358,21 @@ function [net,V,U,iter] = simTalavanYanez(net,V,U,isSaddle)
     
 end
 
-function net = computeSolution(net,V,iter)
+% --- Auxiliar Functions for Simulation Algorithms --- %
+function Si = computeSi(S,T,ib,Dt)
+    Si = (T*S + ib) * Dt;
+end
+
+function [net,V] = computeSolution(net,V,iter)
 
     V(V > 1 - power(10, -1 * net.Setting.E)) = 1; 
     V(V < power(10, -1 * net.Setting.E)) = 0;
 
+    if strcmp(net.SimFcn,'euler') || strcmp(net.SimFcn,'runge-kutta')% More relaxed criteria
+        V(V > 0.99) = 1;
+        V(V < 0.01) = 0;
+    end
+    
     if isequal(net.ProblemParameters.R*V,net.ProblemParameters.b)
         net.Results.ValidSolution = true;
         net.Results.ExitFlag = 1;

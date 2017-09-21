@@ -63,7 +63,6 @@ classdef HopfieldNetworkTSP < network.HopfieldNetwork
 	methods (Hidden = true, Access = private)
         net = setOptions(net,options);
         [net,V,U] = fixedCities(net);
-        thisCity = city(net,cityPosition);
         [modifiedDistance,Ng] = neighbourDistance(net, tau_or_p);
     end
 
@@ -73,6 +72,7 @@ classdef HopfieldNetworkTSP < network.HopfieldNetwork
     
     methods (Hidden = true, Access = public)
         net = reinit(net);
+        thisCity = city(net,cityPosition);
     end        
        
 	methods (Static = true, Hidden = true, Access = private)

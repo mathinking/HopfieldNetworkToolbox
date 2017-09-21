@@ -30,7 +30,7 @@
 % The dynamics of the CHN is described by a *differential equation*:
 %%
 % 
-% $$\frac{du}{dt} = - \frac{u}{\Lambda} + T v + i^b$$
+% $$\frac{d\mathbf{u}}{dt} = - \frac{\mathbf{u}}{\lambda} + \mathbf{T} \mathbf{v} + \mathbf{i^b}$$
 % 
 % and the output function $v_i = g(u_i)$ is a hyperbolic tangent:
 %%
@@ -39,21 +39,21 @@
 % 
 %%
 % The existence of an equilibrium point ($u^e$ such that 
-% $u(t)=u^e \ \forall t \geq t_e$ for some $t_e \geq 0$) is guaranteed if a
+% $\mathbf{u}(t)=u^e \ \forall t \geq t_e$ for some $t_e \geq 0$) is guaranteed if a
 % Lyapunov or energy function exists. The idea is that the network's 
-% Lyapunov function, when $\Lambda \rightarrow{} \infty$, is associated 
+% Lyapunov function, when $\lambda \rightarrow{} \infty$, is associated 
 % with the cost function to be minimized in the combinatorial problem.
 %
 % The CHN will solve those combinatorial problems which can be expressed as
 % the constrained minimization of:
 %%
 %
-% $$E(v) = -  \frac{1}{2} v^t T v - (i^b)^t v$$
+% $$E(\mathbf{v}) = -  \frac{1}{2} \mathbf{v}^t \mathbf{T} \mathbf{v} - (\mathbf{i^b})^t \mathbf{v}$$
 %
 %
 %% The Traveling Salesman Problem
 % Let $N$ be the number of cities in the TSP, and let $d_{xy}$ be the 
-% distance between cities $x,y \in \{ 1,2,\ldots, N \}$.  Next, let $V$ be
+% distance between cities $x,y \in \{ 1,2,\ldots, N \}$.  Next, let $\mathbf{V}$ be
 % the $N \times N$ matrix of the state variable:
 %
 %%
@@ -61,7 +61,7 @@
 % $$v_{x,i} = \{ 1 \, \mbox{if the city} \, x \, \mbox{is visited in the 
 % order} \, i \mbox{,} \, 0 \, \mbox{otherwise} \} $$
 % 
-% $V$ identifies a valid tour for the $TSP$ if the following constraints 
+% $\mathbf{V}$ identifies a valid tour for the $TSP$ if the following constraints 
 % are satisfied:
 %
 %%
@@ -79,11 +79,11 @@
 %
 %% The Mapping Process
 % 
-% Given the state variable is $V\in [0,1]^{N\times N}$ for the TSP, the 
+% Given the state variable is $\mathbf{V}\in [0,1]^{N\times N}$ for the TSP, the 
 % energy function of the CHN is:
 %%
 %
-% $$ E(V) = \frac{A}{2} \sum_x^N \sum_i^{N} \sum_{j \neq i}^{N} v_{x,i} 
+% $$ E(\mathbf{v}) = \frac{A}{2} \sum_x^N \sum_i^{N} \sum_{j \neq i}^{N} v_{x,i} 
 % v_{x,j} + \frac{B}{2} \sum_i^{N} \sum_x^N \sum_{y \neq x}^N v_{x,i} 
 % v_{y,i} + \frac{C}{2} ( \sum_x^N \sum_i^N v_{x,i} - N )^2 + \frac{D}{2} 
 % \sum_x^N \sum_{y \neq x}^N \sum_i^N d_{x,y} v_{x,i} (v_{y,i-1} + 

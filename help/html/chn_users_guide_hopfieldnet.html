@@ -6,7 +6,7 @@
    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>What is hopfieldnet?</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="chn_users_guide_hopfieldnet.m"><style type="text/css">
+      --><title>What is a HopfieldNetwork?</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="chn_users_guide_hopfieldnet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,22 +66,25 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>What is hopfieldnet?</h1><p><tt>hopfieldnet</tt> is a MATLAB class that has been developed to solve the Continuous Hopfield Network using MATLAB.</p><p><tt>hopfieldnet</tt> has been programmed in a similiar way to other Artificial Neural Networks available in Neural Network Toolbox&#8482;, using <tt>classdef</tt> to create and design the class.</p><p><tt>hopfielnet</tt> is a generic class which can be used to solve any kind of combinatorial optimization problem.</p><p>A child class from <tt>hopfielnet</tt>, <tt>tsphopfieldnet</tt>, is specially focused in solving the Traveling Salesman Problem using Continuous Hopfield Networks. See the examples using <tt>tsphopfieldnet</tt> to learn more.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>What is a HopfieldNetwork?</h1><p><tt>HopfieldNetwork</tt> is a MATLAB class that has been developed to solve the Continuous Hopfield Network using MATLAB.</p><p><tt>HopfieldNetwork</tt> has been programmed in a similiar way to other Artificial Neural Networks available in Neural Network Toolbox&#8482;, using <tt>classdef</tt> to create and design the class.</p><p><tt>HopfieldNetwork</tt> is a generic class which can be used to solve any kind of combinatorial optimization problem.</p><p>The child classes <tt>HopfieldNetworkGQKP</tt> and <tt>HopfieldNetworkTSP</tt> derive from <tt>HopfieldNetwork</tt>, with special focus in solving the Generalized Quadratic Knapsack Problem and the Traveling Salesman Problem, using Continuous Hopfield Networks.</p><p>See the examples in the user's guide to learn more.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% What is hopfieldnet?
-% |hopfieldnet| is a MATLAB class that has been developed to solve the 
+%% What is a HopfieldNetwork?
+% |HopfieldNetwork| is a MATLAB class that has been developed to solve the 
 % Continuous Hopfield Network using MATLAB. 
 % 
-% |hopfieldnet| has been programmed in a similiar way to other Artificial 
+% |HopfieldNetwork| has been programmed in a similiar way to other Artificial 
 % Neural Networks available in Neural Network Toolbox™, using |classdef| 
 % to create and design the class.
 % 
-% |hopfielnet| is a generic class which can be used to solve any kind of
+% |HopfieldNetwork| is a generic class which can be used to solve any kind of
 % combinatorial optimization problem. 
 %
-% A child class from |hopfielnet|, |tsphopfieldnet|, is specially focused 
-% in solving the Traveling Salesman Problem using Continuous Hopfield
-% Networks. See the examples using |tsphopfieldnet| to learn more.
+% The child classes |HopfieldNetworkGQKP| and |HopfieldNetworkTSP| derive 
+% from |HopfieldNetwork|, with special focus in solving the Generalized 
+% Quadratic Knapsack Problem and the Traveling Salesman Problem, using 
+% Continuous Hopfield Networks. 
+%
+% See the examples in the user's guide to learn more.
 
 ##### SOURCE END #####
 --></body></html>

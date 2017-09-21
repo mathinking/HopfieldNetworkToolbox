@@ -1,13 +1,14 @@
 %% Hopfield Network Toolbox
 % The *Hopfield Network Toolbox* can solve combinatorial optimization
 % problems by using Hopfield Neural Networks. The Hopfield Network Toolbox 
-% is focused in Continuous Hopfield Networks. 
+% is mainly focused in solving Continuous Hopfield Networks. 
 %
 % If you are interested in using Discrete Hopfield Networks, see the
 % documentation for 
 % |<http://www.mathworks.com/help/nnet/ug/hopfield-neural-network.html 
 % newhop>| in <http://www.mathworks.com/products/neural-network/ Neural 
-% Network Toolbox™>.
+% Network Toolbox™> or look into the Simulink-related examples in the
+% toolbox.
 %
 % The Continuous Hopfield Network (CHN) is a recurrent neural network with 
 % an associated differential equation, whose state evolves from an initial 

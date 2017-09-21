@@ -5,13 +5,13 @@ The Continuous Hopfield Network (CHN) is a **recurrent neural network** with an 
 As the Lyapunov function is associated with an objective function of the optimization problem (i.e. the mapping process), the equilibrium, or stable point, helps identify a local optimum for the optimization problem.
 The dynamics of the CHN is described by a **differential equation**:
 
-![\frac{du}{dt} = - \frac{u}{\Lambda} + T v + i^b](http://mathurl.com/hzhnzj5.png) 
+![\frac{du}{dt} = - \frac{u}{\lambda} + T v + i^b](http://mathurl.com/ycfv6hhd.png) 
 
 and the output function is a hyperbolic tangent:
 
 ![v_i = g(u_i) = \frac{1}{2} \left( 1 + \tanh \left( \frac{u_i}{u_0} \right) \right), \qquad u_0 > 0](http://mathurl.com/zdeg52h.png)
 
-The existence of an equilibrium point is guaranteed if a Lyapunov or energy function exists. The idea is that the network's Lyapunov function, when ![\Lambda \rightarrow{} \infty](http://mathurl.com/hl2t4by.png), is associated with the cost function to be minimized in the combinatorial problem.
+The existence of an equilibrium point is guaranteed if a Lyapunov or energy function exists. The idea is that the network's Lyapunov function, when ![\lambda \rightarrow{} \infty](http://mathurl.com/ydye9fha.png), is associated with the cost function to be minimized in the combinatorial problem.
 
 The CHN will solve those combinatorial problems which can be expressed as the constrained minimization of: 
 
@@ -37,11 +37,12 @@ Want to contribute? Great! Feel free to fork the repository and contact us for i
 ## Questions?
 Open a new Issue and label it as a question. We will get back to you.
 
-## References
+## Major References
   - [“Neural” computation of decisions in optimization problems](http://www.ams.org/mathscinet-getitem?mr=824597)
   - [A continuous Hopfield network equilibrium points algorithm](http://www.sciencedirect.com/science/article/pii/S0305054804000243)
   - [Parameter setting of the Hopfield network applied to TSP](http://www.sciencedirect.com/science/article/pii/S0893608002000217)
   - [Improving the Hopfield model performance when applied to the traveling salesman problem: A divide-and-conquer scheme](http://link.springer.com/article/10.1007/s00500-016-2039-8)
+  - [Attractor basin analysis of the Hopfield model: The Generalized Quadratic Knapsack Problem. In International Work-Conference on Artificial Neural Networks (2017)](https://link.springer.com/chapter/10.1007%2F978-3-319-59153-7_37)
 
 ## Contact us
 Send us an [Email](mailto:lucasgarciarodriguez@ucm.es) with your comments/suggestions.

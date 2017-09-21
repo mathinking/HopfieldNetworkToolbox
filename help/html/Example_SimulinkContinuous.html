@@ -3,10 +3,10 @@
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--
+   <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>chn_users_guide_howToUse</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-20"><meta name="DC.source" content="chn_users_guide_howToUse.m"><style type="text/css">
+      --><title>Solving Continuous Hopfield Networks using Simulink</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="Example_SimulinkContinuous.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,8 +66,73 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>Solving Continuous Hopfield Networks using Simulink</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Opening the model</a></li><li><a href="#3">Setting-up the problem</a></li><li><a href="#4">Building the weight matrix and bias vector from the obtained parametrization</a></li><li><a href="#6">Simulating the network</a></li></ul></div><h2 id="1">Opening the model</h2><p>To open the Continuous Hopfield Model in Simulink simply type in MATLAB:</p><pre class="codeinput">open_system(<span class="string">'continuousHopfieldNetwork'</span>)
+</pre><img vspace="5" hspace="5" src="Example_SimulinkContinuous_01.png" alt=""> <p>The following example will solve the same GQKP proposed in a <a href="Example_GQKPusingCHN.html">previous example</a>.</p><h2 id="3">Setting-up the problem</h2><pre class="codeinput">P = [4,0;0,-2];
+q = [0;0];
+R = [1,1];
+b = 1;
+</pre><h2 id="4">Building the weight matrix and bias vector from the obtained parametrization</h2><p>Parametrization</p><pre class="codeinput">alpha = 1;
+Phi = 3;
+eps = 3*alpha/2 + Phi/2;
+beta = -alpha/2 - Phi;
+Gamma(1,1) = (2*alpha + Phi/2);
+Gamma(2,2) = Phi/2 - alpha;
+
+T = -(alpha * P + R'*Phi*R - 2*Gamma);
+ib = -(alpha * q + R'*beta + diag(Gamma));
+</pre><h2 id="6">Simulating the network</h2><pre class="codeinput">v0 = [0.6;0.2];
+lambda = 1e5;
+dt = 0.001;
+output = sim(<span class="string">'continuousHopfieldNetwork'</span>,<span class="string">'StopTime'</span>,<span class="string">'10'</span>);
+output.yout(end,:)'
+</pre><pre class="codeoutput">
+ans =
+
+     0
+     1
+
+</pre><p>The obtained solution is in fact the global optimum.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
+%% Solving Continuous Hopfield Networks using Simulink
+
+%% Opening the model
+% To open the Continuous Hopfield Model in Simulink simply type in MATLAB:
+
+open_system('continuousHopfieldNetwork')
+
+%%
+% The following example will solve the same GQKP proposed in a 
+% <Example_GQKPusingCHN.html previous example>.
+
+%% Setting-up the problem
+P = [4,0;0,-2];
+q = [0;0];
+R = [1,1];
+b = 1;
+
+%% Building the weight matrix and bias vector from the obtained parametrization
+
+%%
+% Parametrization
+alpha = 1;
+Phi = 3;
+eps = 3*alpha/2 + Phi/2;
+beta = -alpha/2 - Phi;
+Gamma(1,1) = (2*alpha + Phi/2);
+Gamma(2,2) = Phi/2 - alpha;
+
+T = -(alpha * P + R'*Phi*R - 2*Gamma);
+ib = -(alpha * q + R'*beta + diag(Gamma));
+
+%% Simulating the network
+v0 = [0.6;0.2];
+lambda = 1e5;
+dt = 0.001;
+output = sim('continuousHopfieldNetwork','StopTime','10');
+output.yout(end,:)'
+
+%%
+% The obtained solution is in fact the global optimum.
 
 ##### SOURCE END #####
 --></body></html>

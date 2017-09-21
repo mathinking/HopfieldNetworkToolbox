@@ -91,6 +91,7 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             defaultCitiesSubtours = '';
             defaultCitieSubtoursPositions = [];
             defaultCitiesTau = [];
+            defaultCitiesPlotPhases = false;
             
             parser.addParameter('TrainFcn', defaultTrainFcn, @opts.iIsChar);
             parser.addParameter('SimFcn', defaultSimFcn, @opts.iIsChar);
@@ -103,6 +104,7 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             parser.addParameter('Subtours', defaultCitiesSubtours, @opts.iIsCellStr)
             parser.addParameter('SubtoursPositions', defaultCitieSubtoursPositions, @opts.iIsInteger)
             parser.addParameter('Tau', defaultCitiesTau, @opts.iIsIntegerScalarGreaterOrEqualThanZero)
+            parser.addParameter('PlotPhases', defaultCitiesPlotPhases, @opts.iIsScalarAndLogicalOneOrZero);
             
             % Parsing remaining options
             parser.parse(opts.Unmatched);
@@ -122,7 +124,8 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
             opts.Cities.Subtours = parser.Results.Subtours;
             opts.Cities.SubtoursPositions = opts.iMatchWithSubtoursLength(parser.Results.SubtoursPositions, opts.Cities.Subtours);
             opts.Cities.Tau = parser.Results.Tau;
-
+            opts.Cities.PlotPhases = parser.Results.PlotPhases;
+            
             opts.Cities = orderfields(opts.Cities);            
         end
     end
@@ -148,6 +151,12 @@ classdef HopfieldNetworkTSPOptions < options.HopfieldNetworkOptions
         function tf = iIsRealNumericSquareMatrix(x)
             tf = options.HopfieldNetworkTSPOptions.iIsRealNumeric(x) && (size(x,1) == size(x,2));
         end
+        function tf = iIsScalarAndLogicalOneOrZero(x)
+            tf = isscalar(x) && options.HopfieldNetworkTSPOptions.iIsLogicalOneOrZero(x);
+        end
+        function tf =  iIsLogicalOneOrZero(x)
+            tf = islogical(x) || (x == 1) || (x == 0);
+        end        
 
         function chosenTrainFcn = iMatchWithValidTrainFcn(inputTrainFcn)
             validTrainFcn = {'trainty'};

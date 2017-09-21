@@ -6,8 +6,8 @@
 % solve the TSP using a Hopfield Network, as obtaining a feasible solution
 % is guaranteed. 
 % 
-% The Hopfield Network |tsphopfieldnet| can solve the following types of
-% problems:
+% The Hopfield Network |HopfieldNetworkTSP| can solve the following types 
+% of problems:
 %
 % * <Example_tspUsingRegularPolygons.html Using regular Polygons>
 % * <Example_tspUsingTSPLIB.html Using TSPLIB problems>

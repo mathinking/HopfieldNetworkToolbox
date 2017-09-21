@@ -1,21 +1,22 @@
 %% About Hopfield Network Toolbox
-%
+% This Toolbox is supporting material to the PhD Thesis by *Lucas García 
+% Rodríguez* titled _"Algunas cuestiones notables sobre el modelo de 
+% Hopfield en optimización"_.
+% 
 %% Acknowledgements
 %
-% The authors would like to thank:
+% The author would like to thank:
 %
-% * *Javier Yáñez* of Universidad Complutense de Madrid (Spain)
-% * *Pedro M. Talaván* of Instituto Nacional de Estadística (Spain)
+% * *Francisco Javier Yáñez Gestoso* of Universidad Complutense de Madrid (Spain)
+% * *Pedro Martínez Talaván* of Instituto Nacional de Estadística (Spain)
 %
 % for their sound contributions and recommendations.
 %
 %% What problems can Hopfield Network Toolbox solve?
 %
 % Hopfield Networks may solve any combinatorial optimization problem, given
-% it is properly mapped to the network. However, at this point, Hopfield
-% Network Toolbox is mainly designed to solve The Traveling Salesman
-% Problem. 
-% 
-% The Toolbox has been designed though to be easily expanded to solve any
-% combinatorial optimization problem.
+% it is properly mapped to the network. At this point, Hopfield
+% Network Toolbox major focus is to solve The Traveling Salesman Problem, 
+% though the Toolbox may also solve the Generalized Quadratic Knapsack 
+% Problem if an appropriate mapping is provided.
 %

@@ -7,7 +7,7 @@
     <website><a href="https://github.com/mathinking/HopfieldNetworkToolbox">GitHub Repository</a></website>
 
     <demosection>
-        <label>Solving the Traveling Salesman Problem using Hopfield Networks</label>
+        <label>Solving the Optimization problems using Hopfield Networks</label>
         <demoitem>
             <label>Solving the TSP with cities in Polygon Vertices</label>
             <type>M-file</type>
@@ -31,7 +31,13 @@
             <type>M-file</type>
             <source>Example_tspUsingDistance</source>
             <file>html/Example_tspUsingDistance.html</file>            
-        </demoitem>        
+        </demoitem>   
+        <demoitem>
+            <label>Solving a GQKP problem using a Hopfield Network</label>
+            <type>M-file</type>
+            <source>Example_GQKPusingCHN</source>
+            <file>html/Example_GQKPusingCHN.html</file>            
+        </demoitem>         
     </demosection>
 
     <demosection>
@@ -53,6 +59,27 @@
             <type>M-file</type>
             <source>Example_tspDivideConquer</source>
             <file>html/Example_tspDivideConquer.html</file>                                                
+        </demoitem>
+        <demoitem>
+            <label>CHN as a 2-opt Algorithm</label>
+            <type>M-file</type>
+            <source>Example_tsp2opt</source>
+            <file>html/Example_tsp2opt.html</file>                                                
+        </demoitem>        
+    </demosection>
+    <demosection>
+        <label>Solving Hopfield Networks using Simulink</label>
+        <demoitem>
+            <label>Solving Discrete Hopfield Networks using Simulink</label>
+            <type>M-file</type>
+            <source>Example_SimulinkDiscrete</source>
+            <file>html/Example_SimulinkDiscrete.html</file>                        
+        </demoitem>
+        <demoitem>
+            <label>Solving Continuous Hopfield Networks using Simulink</label>
+            <type>M-file</type>
+            <source>Example_SimulinkContinuous</source>
+            <file>html/Example_SimulinkContinuous.html</file>                        
         </demoitem>
     </demosection>
 </demos>

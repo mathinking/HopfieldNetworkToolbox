@@ -1,4 +1,4 @@
-function [tourLength,optimumTour] = findOptimumTour(problem)
+function [tourLength,optimumTour] = findOptimumTourLength(problem)
 
     fid = fopen([problem.Name,'.opt.tour'],'rt');
     if fid < 0

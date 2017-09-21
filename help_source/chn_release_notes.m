@@ -6,6 +6,17 @@
 % <mathworks.com/products/matlab MATLAB®> and <http://www.mathworks.com/products/statistics/
 % Statistics and Machine Learning Toolbox™>
 % 
+%% Version 2.0, 21-Sep-2017
+% New App, Simulink Models, Runge-Kutta simulation method for TSP and GQKP,
+% improved documentation, new examples, minor bugs and enhancements
+%
+% List of <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av2.0+is%3Aclosed+label%3Abug
+% Bugs> fixed and <https://github.com/mathinking/HopfieldNetworkToolbox/issues?q=milestone%3Av2.0+is%3Aclosed+label%3Aenhancement
+% Enhancements> in this release.
+% 
+% <https://github.com/mathinking/HopfieldNetworkToolbox/releases/tag/v2.0
+% Version 2.0 on GitHub> 
+
 %% Version 1.2, 30-Jun-2017
 % Interface redesign to include schemes. Minor bugs and enhancements
 %

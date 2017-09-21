@@ -1,5 +1,9 @@
 function problems = problemNames(hasOptimumTourFile, saveMATfile)
 
+if nargin < 2 
+    saveMATfile = false;
+end
+
 filedir = fileparts(fileparts(which('tsphopfieldnet.m')));
 TSPFilesDir = 'TSPFiles';
 TSPToursDir = 'TSPTours';

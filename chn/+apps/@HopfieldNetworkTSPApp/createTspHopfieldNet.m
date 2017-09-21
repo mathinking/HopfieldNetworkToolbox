@@ -43,7 +43,7 @@ function createTspHopfieldNet(app,varargin)
     end
     app.parameterNEdit.String = num2str(trainParams.N);
     app.parameterNpEdit.String = num2str(trainParams.Np);
-    app.cities_tauEdit.String = num2str(round(getTrainParam(app.net,'N')/10));
+    app.cities_tauEdit.String = num2str(getCities(app.net,'Tau'));
 
     plot(app.net,'empty',[],app.plot);
 

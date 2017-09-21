@@ -40,4 +40,8 @@ sim(net);
 
 %% Visualizing results
 getResults(net)
+
+%%
+% The obtained tour is:
+city(net, getResults(net,'VisitOrder'))
 plot(net);

@@ -78,7 +78,7 @@ classdef HopfieldNetworkOptions < handle
             defaultSettingU0 = 0.3;
             defaultSettingTransferFcn = 'tanh';
             defaultSettingVerbose = false;
-            defaultSettingVerboseFrequency = NaN;
+            defaultSettingVerboseFrequency = 25;
             defaultSettingExecutionEnvironment = 'CPU';
             defaultSettingMaxIter = 2000;
             defaultSettingE = 13;

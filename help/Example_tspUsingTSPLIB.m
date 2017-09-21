@@ -7,7 +7,7 @@
 % 
 
 %% TSPLIB problem and network parameters
-rng(6); % For reproducibility
+rng(3); % For reproducibility
 
 %%
 % TSPLIB Problem:
@@ -19,7 +19,7 @@ N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
-C = 0.00001;
+C = 1e-5;
  
 %% Creating the |HopfieldNetworkTSP| object
 % Providing problem cities' coordinates and distance matrix to the
@@ -42,8 +42,8 @@ train(net);
 getTrainParam(net)
 
 %% Simulating the network
-% The default simulation algorithm is |talavan-yanez|
-sim(net);
+% The default simulation algorithm is |talavan-yanez|. 
+V = sim(net);
 
 %% Visualizing results
 getResults(net)

@@ -26,7 +26,8 @@ classdef HopfieldNetworkTSPApp < handle
         tabOtherCoordinates;
         tabOtherDistance;
         
-        simulation;      
+        simulation; 
+        schemeMenu;
         simFcnMenu;
         
         ExecutionEnvironment;
@@ -83,7 +84,7 @@ classdef HopfieldNetworkTSPApp < handle
         function app = HopfieldNetworkTSPApp()
             createFigure(app);
             defaultSettings(app);
-            drawnow nocallbacks;
+%             drawnow;
             app.figure.Visible = 'on';
         end
     end
@@ -100,9 +101,13 @@ classdef HopfieldNetworkTSPApp < handle
         cb_parameterCEdit(app);
         cb_findTour(app);
         cb_simFcn(app);
+        cb_scheme(app);
         timeElapsed(app,obj,event);
         cleanState(app);
         createTspHopfieldNet(app,varargin);
         updateTspHopfieldNet(app,C);
+        problemIsSelected = verifyProblemIsSelected(app);
+        cb_closeApp(app);
     end
+    
 end

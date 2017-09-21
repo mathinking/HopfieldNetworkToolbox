@@ -33,7 +33,7 @@ function net = train(net,phi,alpha,beta,eps,gamma)
     % T  = -(alpha * P + R'*Phi*R - 2*diag(gamma));
     net.TrainParam.T  = -(net.TrainParam.alpha * net.ProblemParameters.P + net.ProblemParameters.R'*net.TrainParam.Phi*net.ProblemParameters.R - 2*net.TrainParam.gamma);
     
-    % ib = -(alpha * q + R'*beta + gamma);
+    % ib = -(alpha * q + R'*beta + diag(gamma));
     net.TrainParam.ib = -(net.TrainParam.alpha * net.ProblemParameters.q + net.ProblemParameters.R'*net.TrainParam.beta + diag(net.TrainParam.gamma));
 end
 

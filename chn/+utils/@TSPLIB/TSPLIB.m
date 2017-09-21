@@ -121,7 +121,7 @@ classdef TSPLIB < handle
     % --- Methods definitions --- %    
     methods (Hidden = false, Access = public)
         plot(problem);
-        [tourLength,optimumTour] = findOptimumTour(problem);
+        [tourLength,optimumTour] = findOptimumTourLength(problem);
     end
     
     methods (Static = true, Hidden = false, Access = public)

@@ -129,4 +129,8 @@ classdef HopfieldNetworkGQKP < network.HopfieldNetwork
 	methods (Hidden = false, Access = protected)
         net = init(net);
     end
+    methods (Hidden = false, Access = public)
+        energyplot(net,varargin)
+    end
+   
 end

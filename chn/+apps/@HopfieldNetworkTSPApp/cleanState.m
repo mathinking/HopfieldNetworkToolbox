@@ -8,6 +8,9 @@ function cleanState(app)
 
     defaultSettings(app);
 
+    app.simFcnMenu.Value = 1;
+    app.schemeMenu.Value = 1;
+    
     app.settings_u0Edit.Enable = 'off';
     app.settings_dtEdit.Enable = 'off';
     app.settings_maxIterEdit.Enable = 'off';

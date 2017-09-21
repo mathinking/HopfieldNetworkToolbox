@@ -1,0 +1,159 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>How to solve a GQKP problem using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="Example_GQKPusingCHN.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>How to solve a GQKP problem using a Hopfield Network</h1><!--introduction--><p>The following optimization problem is proposed:</p><p><img src="Example_GQKPusingCHN_eq06393315845928486594.png" alt="$$\min\{\frac{1}{2}(4v_1^2 - 2v_2^2)\}$$"></p><p>subject to:</p><p><img src="Example_GQKPusingCHN_eq15343366408291104280.png" alt="$$v_1 + v_2 = 1$$"></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Writing the problem in matrix form</a></li><li><a href="#2">The GQKP problem to solve</a></li><li><a href="#3">Creating the network object</a></li><li><a href="#5">Training the network</a></li><li><a href="#6">Simulating the Hopfield Network</a></li><li><a href="#8">Energy plot</a></li></ul></div><h2 id="1">Writing the problem in matrix form</h2><p>The optimization problem can be writen as:</p><p><img src="Example_GQKPusingCHN_eq07876467921963818138.png" alt="$$\min\{\frac{1}{2} \mathbf{v}^t \mathbf{P} \mathbf{v} + \mathbf{q}^t \mathbf{v}\}$$"></p><p>subject to</p><p><img src="Example_GQKPusingCHN_eq14361763071227683630.png" alt="$$\left\{\begin{array}{ll} \displaystyle \mathbf{R} \mathbf{v} = \mathbf{b} &amp; \\ v_i \in \{0,1\} &amp; \quad i = 1, \dots, n\\ v_{n+k} \in \big[0,1\big] &amp; \quad k = 1, \dots, m_{1} \end{array} \right\}$$"></p><p>Shall there be inequalities, slack variables can be introduced to turn them into equalities</p><h2 id="2">The GQKP problem to solve</h2><p>From the matrix representation above, the problem can be written as:</p><pre class="codeinput">P = [4,0;0,-2];
+q = [0;0];
+Aeq = [1,1];
+beq = [1];
+A = [];
+b = [];
+</pre><h2 id="3">Creating the network object</h2><p>A set of options can be defined with the <tt>HopfieldNetworkGQKPOptions</tt> class using the <tt>hopfieldnetOptions</tt> function:</p><pre class="codeinput">options = hopfieldnetOptions(<span class="string">'SimFcn'</span>,<span class="string">'talavan-yanez'</span>,<span class="string">'TransferFcn'</span>,<span class="string">'tanh'</span>);
+</pre><p>From here, the Hopfield network can be created</p><pre class="codeinput">net = hopfieldnet(P, q, A, b, Aeq, beq, options);
+</pre><h2 id="5">Training the network</h2><p>This process is automatic from the following parametrization (see paper 9 in the <a href="chn_references.html">references</a> section).</p><pre class="codeinput">alpha = 1;
+Phi = 2;
+eps = 3*alpha/2 + Phi/2;
+beta = -alpha/2 - Phi;
+Gamma(1,1) = (2*alpha + Phi/2);
+Gamma(2,2) = Phi/2 - alpha;
+net = train(net,Phi,alpha,beta,eps,Gamma);
+</pre><h2 id="6">Simulating the Hopfield Network</h2><p>Starting point</p><pre class="codeinput">V0 = [0.6;0.2];
+V = sim(net, V0)
+</pre><pre class="codeoutput">
+V =
+
+     0
+     1
+
+</pre><p>The obtained solution is in fact the global optimum.</p><h2 id="8">Energy plot</h2><pre class="codeinput">energyplot(net)
+</pre><img vspace="5" hspace="5" src="Example_GQKPusingCHN_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% How to solve a GQKP problem using a Hopfield Network
+% The following optimization problem is proposed:
+%
+% $$\min\{\frac{1}{2}(4v_1^2 - 2v_2^2)\}$$
+%
+% subject to: 
+%
+% $$v_1 + v_2 = 1$$
+
+%% Writing the problem in matrix form
+% The optimization problem can be writen as: 
+% 
+% $$\min\{\frac{1}{2} \mathbf{v}^t \mathbf{P} \mathbf{v} + \mathbf{q}^t \mathbf{v}\}$$
+% 
+% subject to 
+% 
+% $$\left\{\begin{array}{ll} \displaystyle \mathbf{R} \mathbf{v} = \mathbf{b} & \\ v_i \in \{0,1\} & \quad i = 1, \dots, n\\ v_{n+k} \in \big[0,1\big] & \quad k = 1, \dots, m_{1} \end{array} \right\}$$
+% 
+% Shall there be inequalities, slack variables can be introduced to turn
+% them into equalities
+
+%% The GQKP problem to solve
+% From the matrix representation above, the problem can be written as:
+
+P = [4,0;0,-2];
+q = [0;0];
+Aeq = [1,1];
+beq = [1];
+A = [];
+b = [];
+
+%% Creating the network object
+% A set of options can be defined with the |HopfieldNetworkGQKPOptions|
+% class using the |hopfieldnetOptions| function:
+% 
+options = hopfieldnetOptions('SimFcn','talavan-yanez','TransferFcn','tanh');
+
+%%
+% From here, the Hopfield network can be created
+net = hopfieldnet(P, q, A, b, Aeq, beq, options);
+
+%% Training the network
+% This process is automatic from the following parametrization (see paper 9 
+% in the <chn_references.html references> section).
+
+alpha = 1;
+Phi = 2;
+eps = 3*alpha/2 + Phi/2;
+beta = -alpha/2 - Phi;
+Gamma(1,1) = (2*alpha + Phi/2);
+Gamma(2,2) = Phi/2 - alpha;
+net = train(net,Phi,alpha,beta,eps,Gamma);
+
+%% Simulating the Hopfield Network
+% Starting point 
+V0 = [0.6;0.2];
+V = sim(net, V0)
+
+%%
+% The obtained solution is in fact the global optimum.
+
+%% Energy plot
+energyplot(net)
+##### SOURCE END #####
+--></body></html>

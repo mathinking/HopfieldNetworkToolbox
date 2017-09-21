@@ -97,13 +97,14 @@ function plot(net, type, chains, ax, varargin)
             error('tsphopfieldnet:UnvalidPath','Unvalid TSP Path');
         end
         if ~isempty(myTitle)
-            title(ax,['\bf', myTitle]);
+            title(ax, myTitle, 'Interpreter', 'latex');
         else
             title(ax,['\bf Tour length: ', num2str(net.Results.TourLength)]);
         end
         
     end
     adjustPlot(h,coords);
+    axis(ax,'equal');
 end
 
 function adjustPlot(h,coords)

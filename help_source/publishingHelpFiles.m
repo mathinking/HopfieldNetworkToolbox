@@ -2,7 +2,8 @@ mainFolder = fileparts(fileparts(which('hopfieldnetwork')));
 customXsl = fullfile(mainFolder,'help_source','mxdom2mathjax.xsl');
 
 addpath(mainFolder)
-addpath(genpath(fullfile(mainFolder,'TSPFiles')));
+addpath(fullfile(mainFolder,'chn'));
+addpath(genpath(fullfile(mainFolder,'data','TSPFiles')));
 
 helpFolder = fullfile(mainFolder,'help');
 helpSourceFilesLocation = fullfile(mainFolder,'help_source');
@@ -20,8 +21,11 @@ publish(fullfile(helpSourceFilesLocation,'chn_system_requirements'),optionsPubli
 publish(fullfile(helpSourceFilesLocation,'chn_users_guide'),optionsPublish);
 publish(fullfile(helpSourceFilesLocation,'chn_users_guide_hopfieldnet'),optionsPublish);
 publish(fullfile(helpSourceFilesLocation,'chn_users_guide_tsplib'),optionsPublish);
-publish(fullfile(helpSourceFilesLocation,'chn_users_guide_howToUseCreateOptions'),optionsPublish);
+publish(fullfile(helpSourceFilesLocation,'chn_users_guide_howToUseTsphopfieldnetOptions'),optionsPublish);
+publish(fullfile(helpSourceFilesLocation,'chn_users_guide_howToUsehopfieldnetOptions'),optionsPublish);
 publish(fullfile(helpSourceFilesLocation,'chn_users_guide_TSP'),optionsPublish);
+publish(fullfile(helpSourceFilesLocation,'chn_users_guide_SimulinkModels'),optionsPublish);
+publish(fullfile(helpSourceFilesLocation,'chn_references'),optionsPublish);
 publish(fullfile(helpFolder,'Example_tspUsingRegularPolygons'));
 publish(fullfile(helpFolder,'Example_tspUsingTSPLIB'));
 publish(fullfile(helpFolder,'Example_tspUsingCoords'));
@@ -31,10 +35,14 @@ publish(fullfile(helpFolder,'Example_tspReducingC'));
 publish(fullfile(helpFolder,'Example_tspSaddlePoint'));
 publish(fullfile(helpSourceFilesLocation,'chn_users_guide_improveHybrid'),optionsPublish);
 publish(fullfile(helpFolder,'Example_tspDivideConquer'));
+publish(fullfile(helpFolder,'Example_tsp2opt'));
 publish(fullfile(helpSourceFilesLocation,'chn_TSP_APP'),optionsPublish);
+publish(fullfile(helpFolder,'Example_GQKPusingCHN'));
+publish(fullfile(helpFolder,'Example_SimulinkDiscrete'));
+publish(fullfile(helpFolder,'Example_SimulinkContinuous'));
 
 builddocsearchdb(fullfile(pwd,helpFolder,'html'));
 
-rmpath(genpath(fullfile(helpSourceFilesLocation)))
+rmpath(fullfile(helpSourceFilesLocation))
 
 close all;

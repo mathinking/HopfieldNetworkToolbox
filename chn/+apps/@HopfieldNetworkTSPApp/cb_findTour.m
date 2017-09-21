@@ -18,15 +18,9 @@ elseif isequal(app.tabgroup.SelectedTab,app.tabOther)
     end
 end
 
-if app.simFcnMenu.Value == 1
-    msgbox('Please choose an algorithm for the Hopfield Network simulation', 'Error', 'error');
+if app.schemeMenu.Value == 1
+    msgbox('Please choose a scheme for the Hopfield Network simulation', 'Error', 'error');
 	return;
-else
-    algorithms = app.simFcnMenu.String;
-    setSimFcn(app.net,algorithms{app.simFcnMenu.Value});
-    if strcmp(algorithms{app.simFcnMenu.Value},'divide-conquer')
-        setCities(app.net,'Tau',max(3,round(getTrainParam(app.net,'N')/10))); %#TODO Bring to APP
-    end
 end
 
 u0 = str2double(app.settings_u0Edit.String);
@@ -35,6 +29,7 @@ R_ITER = str2double(app.settings_R_ITEREdit.String);
 dt = str2double(app.settings_dtEdit.String);
 e = str2double(app.settings_eEdit.String);
 q = str2double(app.settings_qEdit.String);
+tau = str2double(app.cities_tauEdit.String);
 
 try
     setSetting(app.net,'U0',u0)
@@ -43,6 +38,7 @@ try
     setSetting(app.net,'Dt',dt)
     setSetting(app.net,'E',e)
     setSetting(app.net,'Q',q)
+    setCities(app.net,'Tau',tau)
 catch me
 	msgbox(me.message)
     return;

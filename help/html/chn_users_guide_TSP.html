@@ -6,7 +6,7 @@
    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>How to solve the Traveling Salesman Problem using Hopfield Networks</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="chn_users_guide_TSP.m"><style type="text/css">
+      --><title>How to solve the Traveling Salesman Problem using Hopfield Networks</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="chn_users_guide_TSP.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>How to solve the Traveling Salesman Problem using Hopfield Networks</h1><p>The Continuous Hopfield Network has been extensively used to solve the Travelling Salesman Problem. However, only after Talav&aacute;n and Y&aacute;&ntilde;ez's approach with an appropriate problem parametrization, it is reasonable to solve the TSP using a Hopfield Network, as obtaining a feasible solution is guaranteed.</p><p>The Hopfield Network <tt>tsphopfieldnet</tt> can solve the following types of problems:</p><div><ul><li><a href="Example_tspUsingRegularPolygons.html">Using regular Polygons</a></li><li><a href="Example_tspUsingTSPLIB.html">Using TSPLIB problems</a></li><li><a href="Example_tspUsingCoords.html">Providing the problem's coordinates</a></li><li><a href="chn_users_guide_TSP_distance.html">Providing the problem's distance matrix</a></li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>How to solve the Traveling Salesman Problem using Hopfield Networks</h1><p>The Continuous Hopfield Network has been extensively used to solve the Travelling Salesman Problem. However, only after Talav&aacute;n and Y&aacute;&ntilde;ez's approach with an appropriate problem parametrization, it is reasonable to solve the TSP using a Hopfield Network, as obtaining a feasible solution is guaranteed.</p><p>The Hopfield Network <tt>HopfieldNetworkTSP</tt> can solve the following types of problems:</p><div><ul><li><a href="Example_tspUsingRegularPolygons.html">Using regular Polygons</a></li><li><a href="Example_tspUsingTSPLIB.html">Using TSPLIB problems</a></li><li><a href="Example_tspUsingCoords.html">Providing the problem's coordinates</a></li><li><a href="chn_users_guide_TSP_distance.html">Providing the problem's distance matrix</a></li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% How to solve the Traveling Salesman Problem using Hopfield Networks 
 %
@@ -76,8 +76,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % solve the TSP using a Hopfield Network, as obtaining a feasible solution
 % is guaranteed. 
 % 
-% The Hopfield Network |tsphopfieldnet| can solve the following types of
-% problems:
+% The Hopfield Network |HopfieldNetworkTSP| can solve the following types 
+% of problems:
 %
 % * <Example_tspUsingRegularPolygons.html Using regular Polygons>
 % * <Example_tspUsingTSPLIB.html Using TSPLIB problems>

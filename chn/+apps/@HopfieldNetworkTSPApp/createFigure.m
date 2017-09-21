@@ -1,7 +1,9 @@
 function createFigure(app)
     
-    app.figure                  = figure;
-    app.figure.Visible          = 'off';
+    warning('off','tsphopfieldnet:NotSimulated');
+    warning('off','MATLAB:MKDIR:DirectoryExists');
+    
+    app.figure                  = figure('Visible','off');
     app.figure.ToolBar          = 'None';
     app.figure.MenuBar          = 'None';
     app.figure.Units            = 'normalized';
@@ -11,6 +13,7 @@ function createFigure(app)
     app.figure.Resize           = 'on';
     app.figure.HandleVisibility	= 'off';
     app.figure.Name             = 'Hopfield Net TSP solver App';
+    app.figure.CloseRequestFcn  = @(src,evt)cb_closeApp(app);
     
     problems = utils.TSPLIB.problemNames(true,false);
     
@@ -131,7 +134,7 @@ function createFigure(app)
 	app.tabOtherChooseFromWs.FontUnits = 'normalized';
     app.tabOtherChooseFromWs.FontSize = 0.15;    
     app.tabOtherChooseFromWs.Callback = @(~,~) cb_tabOtherChooseFromWs(app);
-    app.tabOtherChooseFromWs.String = 'Choose from workspace'; 
+    app.tabOtherChooseFromWs.String = {'Choose from workspace'}; 
 
     % ---- Simulation ---- %
     app.simulation = uibuttongroup(app.figure);
@@ -142,14 +145,23 @@ function createFigure(app)
     app.simulation.FontAngle = 'italic';
     app.simulation.FontWeight = 'bold';
 
+    app.schemeMenu = uicontrol(app.simulation,'Style','popupmenu');
+    app.schemeMenu.Units = 'normalized';
+    app.schemeMenu.Position = [0.1,0.85,0.45,0.1];
+    app.schemeMenu.FontSize = 8;
+    app.schemeMenu.FontUnits = 'normalized';
+    app.schemeMenu.String = ' ';
+    app.schemeMenu.Callback = @(~,~)cb_scheme(app);
+    app.schemeMenu.String = {'Scheme';'classic';'classic&2opt';'divide-conquer';'divide-conquer&2opt'};
+    
     app.simFcnMenu = uicontrol(app.simulation,'Style','popupmenu');
     app.simFcnMenu.Units = 'normalized';
-    app.simFcnMenu.Position = [0.1,0.85,0.8,0.1];
-    app.simFcnMenu.FontSize = 9;
+    app.simFcnMenu.Position = [0.575,0.85,0.325,0.1];
+    app.simFcnMenu.FontSize = 8;
     app.simFcnMenu.FontUnits = 'normalized';
     app.simFcnMenu.String = ' ';
     app.simFcnMenu.Callback = @(~,~)cb_simFcn(app);
-    app.simFcnMenu.String = {'Algorithm';'euler';'talavan-yanez';'divide-conquer'};
+    app.simFcnMenu.String = {'Algorithm';'euler';'runge-kutta';'talavan-yanez'};
     
     app.ExecutionEnvironment = uibuttongroup(app.simulation);
     app.ExecutionEnvironment.Units = 'normalized';   
@@ -228,7 +240,7 @@ function createFigure(app)
     app.settings_maxIter.Units = 'normalized';
     app.settings_maxIter.Position = [0.05,0.52,0.25,0.15];
     app.settings_maxIter.FontUnits = 'normalized';
-    app.settings_maxIter.String = 'maxIter';
+    app.settings_maxIter.String = 'MaxIter';
     app.settings_maxIter.HorizontalAlignment = 'right';
     
 	app.settings_maxIterEdit = uicontrol(app.settings,'Style','edit');

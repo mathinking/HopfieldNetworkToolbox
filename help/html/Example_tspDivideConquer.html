@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Improving Hopfield Network performance using a Divide-and-Conquer scheme</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="Example_tspDivideConquer.m"><style type="text/css">
+      --><title>Improving Hopfield Networks performance using a Divide-and-Conquer scheme</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="Example_tspDivideConquer.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,18 +66,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Improving Hopfield Network performance using a Divide-and-Conquer scheme</h1><!--introduction--><p>In order to imprthe performance of this heuristic technique, a Divide-and-Conquer strategy based on two phases is proposed. The first phase involves linking cities with the most neighbors to define a set of chains of cities and, secondly, to join these with isolated cities to define the final tour. Both problems are solved by mapping the two TSPs onto their respective CHNs.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>HopfieldNetworkTSP</tt> object using the Divide-and-Conquer simulation method</a></li><li><a href="#6">Training the network</a></li><li><a href="#7">Simulating the network</a></li><li><a href="#8">Visualizing results</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">rng(6); <span class="comment">% For reproducibility</span>
+  </style></head><body><div class="content"><h1>Improving Hopfield Networks performance using a Divide-and-Conquer scheme</h1><!--introduction--><p>In order to improve the performance of this heuristic technique, a Divide-and-Conquer strategy based on two phases is proposed. The first phase involves linking cities with the most neighbors to define a set of chains of cities and, secondly, to join these with isolated cities to define the final tour. Both problems are solved by mapping the two TSPs onto their respective CHNs.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>HopfieldNetworkTSP</tt> object using the Divide-and-Conquer simulation method</a></li><li><a href="#6">Training the network</a></li><li><a href="#7">Simulating the network</a></li><li><a href="#8">Visualizing results</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">rng(3); <span class="comment">% For reproducibility</span>
 </pre><p>TSPLIB Problem:</p><pre class="codeinput">problem = tsplib({<span class="string">'berlin52'</span>});
 </pre><p>Number of cities:</p><pre class="codeinput">N = problem.NumberOfCities;
-</pre><p>Free parameter C:</p><pre class="codeinput">C = 0.00001;
+</pre><p>Free parameter C:</p><pre class="codeinput">C = 1e-5;
 </pre><h2 id="5">Creating the <tt>HopfieldNetworkTSP</tt> object using the Divide-and-Conquer simulation method</h2><p>Providing problem coordinates cities and distance matrix to the <tt>HopfieldNetworkTSP</tt> network by creating a <tt>HopfieldNetworkTSPObject</tt> object of options</p><pre class="codeinput">options = tsphopfieldnetOptions(<span class="string">'Coordinates'</span>,problem.Coordinates,<span class="keyword">...</span>
                                 <span class="string">'DistanceMatrix'</span>,problem.DistanceMatrix,<span class="keyword">...</span>
                                 <span class="string">'DistanceType'</span>,problem.DistanceType,<span class="keyword">...</span>
-                                <span class="string">'SimFcn'</span>,<span class="string">'divide-conquer'</span>,<span class="keyword">...</span>
+                                <span class="string">'Scheme'</span>,<span class="string">'divide-conquer'</span>,<span class="keyword">...</span>
                                 <span class="string">'Tau'</span>,2);
 net = tsphopfieldnet(N,C,options);
 </pre><h2 id="6">Training the network</h2><p>The default training algorithm is <tt>trainty</tt></p><pre class="codeinput">train(net);
-</pre><h2 id="7">Simulating the network</h2><p>The simulation is using the algorithm is <tt>divide-conquer</tt></p><pre class="codeinput">sim(net);
+</pre><h2 id="7">Simulating the network</h2><p>The simulation is using the algorithm is <tt>talavan-yanez</tt></p><pre class="codeinput">sim(net);
 </pre><h2 id="8">Visualizing results</h2><pre class="codeinput">getResults(net)
 plot(net);
 </pre><pre class="codeoutput">
@@ -86,19 +86,19 @@ ans =
   struct with fields:
 
     CheckpointFilename: ''
-              CompTime: 0.5670
-                Energy: [1&times;590 double]
+              CompTime: 0.5058
+                Energy: [1&times;571 double]
               ExitFlag: 1
-          ItersReached: 590
-                  Time: [1&times;590 double]
-            TourLength: 11393
+          ItersReached: 571
+                  Time: [1&times;571 double]
+            TourLength: 12462
              ValidPath: 1
             VisitOrder: [1&times;52 double]
 
 </pre><img vspace="5" hspace="5" src="Example_tspDivideConquer_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% Improving Hopfield Network performance using a Divide-and-Conquer scheme
-% In order to imprthe performance of this heuristic technique, a 
+%% Improving Hopfield Networks performance using a Divide-and-Conquer scheme
+% In order to improve the performance of this heuristic technique, a 
 % Divide-and-Conquer strategy based on two phases is proposed. The first
 % phase involves linking cities with the most neighbors to define a set of
 % chains of cities and, secondly, to join these with isolated cities to 
@@ -106,7 +106,7 @@ ans =
 % onto their respective CHNs.
 
 %% TSPLIB problem and network parameters
-rng(6); % For reproducibility
+rng(3); % For reproducibility
 
 %%
 % TSPLIB Problem:
@@ -118,7 +118,7 @@ N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
-C = 0.00001;
+C = 1e-5;
 
 %% Creating the |HopfieldNetworkTSP| object using the Divide-and-Conquer simulation method
 % Providing problem coordinates cities and distance matrix to the
@@ -126,8 +126,8 @@ C = 0.00001;
 % object of options
 options = tsphopfieldnetOptions('Coordinates',problem.Coordinates,...
                                 'DistanceMatrix',problem.DistanceMatrix,...
-                                'DistanceType',problem.DistanceType,...
-                                'SimFcn','divide-conquer',...
+                                'DistanceType',problem.DistanceType,...                               
+                                'Scheme','divide-conquer',...
                                 'Tau',2);
 net = tsphopfieldnet(N,C,options);
 
@@ -136,7 +136,7 @@ net = tsphopfieldnet(N,C,options);
 train(net);
 
 %% Simulating the network
-% The simulation is using the algorithm is |divide-conquer|
+% The simulation is using the algorithm is |talavan-yanez|
 sim(net);
 
 %% Visualizing results

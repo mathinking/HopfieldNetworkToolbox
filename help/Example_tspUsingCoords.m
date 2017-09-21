@@ -7,7 +7,7 @@ rng(22); % For reproducibility
 
 %%
 % Free parameter C:
-C = 0.00001;
+C = 1e-5;
  
 %% Creating the |tsphopfieldnetwork| object
 % Providing problem coordinates

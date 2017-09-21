@@ -22,7 +22,7 @@ function S = saddle(net, method)
         for i = 1:net.TrainParam.K
             JK(2*i-1:2*i,2*i-1:2*i) = ones(2) - eye(2);
         end
-        DK = net.Cities.DistanceMatrix * JK;
+        DK = JK * net.Cities.DistanceMatrix;
         DK(logical(I)) = 0;
 
         IK = (net.TrainParam.K > 0) * JK + I;

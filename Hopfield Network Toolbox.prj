@@ -5,20 +5,23 @@
     <param.email>lucasgarciarodriguez@ucm.es</param.email>
     <param.company>mathinking.github.com</param.company>
     <param.summary>A Hopfield Network Toolbox for MATLAB</param.summary>
-    <param.description>The Hopfield Network Toolbox can solve combinatorial optimization problems by using Hopfield Neural Networks. The Hopfield Network Toolbox is focused in Continuous Hopfield Networks.</param.description>
+    <param.description>The Hopfield Network Toolbox can solve combinatorial optimization problems by using Hopfield Neural Networks. The Hopfield Network Toolbox is mainly focused in Continuous Hopfield Networks.</param.description>
     <param.screenshot>${PROJECT_ROOT}\help\html\hopfieldnet.png</param.screenshot>
-    <param.version>1.1.2</param.version>
+    <param.version>2.0</param.version>
     <param.output>${PROJECT_ROOT}\Hopfield Network Toolbox.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
+      <item>Simulink</item>
       <item>Statistics and Machine Learning Toolbox</item>
     </param.products.name>
     <param.products.id>
       <item>1</item>
+      <item>2</item>
       <item>19</item>
     </param.products.id>
     <param.products.version>
       <item>9.2</item>
+      <item>8.9</item>
       <item>11.1</item>
     </param.products.version>
     <param.platforms />
@@ -48,10 +51,16 @@ help_source/
 Hopfield Net TSP solver_resources/
 README.md
 setup_hopfieldNetwork.m
-BuildInstructions.m</param.exclude.filters>
+BuildInstructions.m
+automateTests.m
+slprj
+tau
+Simulations
+runMultipleTSPLIBproblems.m
+script_runMultipleTSPLIBproblems.m</param.exclude.filters>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples&gt;
-   &lt;exampleCategory name="Solving the Traveling Salesman Problem using Hopfield Networks"&gt;
+   &lt;exampleCategory name="Solving the Optimization problems using Hopfield Networks"&gt;
       &lt;example name="Solving the TSP with cities in Polygon Vertices" type="html"&gt;
          &lt;file type="source"&gt;/help/html/Example_tspUsingRegularPolygons.html&lt;/file&gt;
          &lt;file type="main"&gt;/help/Example_tspUsingRegularPolygons.m&lt;/file&gt;
@@ -78,6 +87,27 @@ BuildInstructions.m</param.exclude.filters>
          &lt;file type="main"&gt;/help/Example_tspUsingDistance.m&lt;/file&gt;
          &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
+      &lt;example name="Solving a GQKP problem using a Hopfield Network" type="html"&gt;
+         &lt;file type="source"&gt;/help/html/Example_GQKPusingCHN.html&lt;/file&gt;
+         &lt;file type="main"&gt;/help/Example_GQKPusingCHN.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/help/html/Example_GQKPusingCHN.png&lt;/file&gt;
+         &lt;file type="image"&gt;/help/html/Example_GQKPusingCHN_01.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+   &lt;exampleCategory name="Solving Hopfield Networks using Simulink"&gt;
+      &lt;example name="Solving Discrete Hopfield Networks using Simulink" type="html"&gt;
+         &lt;file type="source"&gt;/help/html/Example_SimulinkDiscrete.html&lt;/file&gt;
+         &lt;file type="main"&gt;/help/Example_SimulinkDiscrete.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/help/html/Example_SimulinkDiscrete.png&lt;/file&gt;
+         &lt;file type="image"&gt;/help/html/Example_SimulinkDiscrete_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/help/html/Example_SimulinkDiscrete_02.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="Solving Continuous Hopfield Networks using Simulink" type="html"&gt;
+         &lt;file type="source"&gt;/help/html/Example_SimulinkContinuous.html&lt;/file&gt;
+         &lt;file type="main"&gt;/help/Example_SimulinkContinuous.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/help/html/Example_SimulinkContinuous.png&lt;/file&gt;
+         &lt;file type="image"&gt;/help/html/Example_SimulinkContinuous_01.png&lt;/file&gt;
+      &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="Improving Hopfield Network performance when applied to the TSP"&gt;
       &lt;example name="Reduce the free parameter C" type="html"&gt;
@@ -99,6 +129,12 @@ BuildInstructions.m</param.exclude.filters>
          &lt;file type="thumbnail"&gt;/help/html/Example_tspDivideConquer.png&lt;/file&gt;
          &lt;file type="image"&gt;/help/html/Example_tspDivideConquer_01.png&lt;/file&gt;
       &lt;/example&gt;
+      &lt;example name="CHN as a 2-opt Algorithm" type="html"&gt;
+         &lt;file type="source"&gt;/help/html/Example_tsp2opt.html&lt;/file&gt;
+         &lt;file type="main"&gt;/help/Example_tsp2opt.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/help/html/Example_tsp2opt.png&lt;/file&gt;
+         &lt;file type="image"&gt;/help/html/Example_tsp2opt_01.png&lt;/file&gt;
+      &lt;/example&gt;
    &lt;/exampleCategory&gt;
 &lt;/examples&gt;</param.examples>
     <param.demosxml />
@@ -119,16 +155,12 @@ BuildInstructions.m</param.exclude.filters>
       <file>E:\Users\Lucas\Documents\GitHub\HopfieldNetworkToolbox</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}\@hopfieldnet</file>
-      <file>${PROJECT_ROOT}\@hopfieldnetwork</file>
-      <file>${PROJECT_ROOT}\@tsphopfieldnet</file>
-      <file>${PROJECT_ROOT}\@tsphopfieldnetApp</file>
-      <file>${PROJECT_ROOT}\@tsplib</file>
+      <file>${PROJECT_ROOT}\chn</file>
+      <file>${PROJECT_ROOT}\data</file>
       <file>${PROJECT_ROOT}\help</file>
       <file>${PROJECT_ROOT}\Hopfield Net TSP solver.mlappinstall</file>
       <file>${PROJECT_ROOT}\LICENSE</file>
       <file>${PROJECT_ROOT}\setup_TSPLIB.m</file>
-      <file>${PROJECT_ROOT}\TSPFiles</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded />

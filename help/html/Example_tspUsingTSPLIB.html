@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Solving the TSP with TSPLIB cities using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-23"><meta name="DC.source" content="Example_tspUsingTSPLIB.m"><style type="text/css">
+      --><title>Solving the TSP with TSPLIB cities using a Hopfield Network</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-09-21"><meta name="DC.source" content="Example_tspUsingTSPLIB.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,10 +66,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Solving the TSP with TSPLIB cities using a Hopfield Network</h1><!--introduction--><p>TSPLIB is an extensive set of problems frequently used for solving the TSP (and related problems) and used as a powerful reference for benchmarking different algorithms. In this section, <tt>tsphopfieldnet</tt> is used for solving the TSP when the problem coordinates are given by one of the library problems from TSPLIB.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>HopfieldNetworkTSP</tt> object</a></li><li><a href="#7">Training the network</a></li><li><a href="#9">Simulating the network</a></li><li><a href="#10">Visualizing results</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">rng(6); <span class="comment">% For reproducibility</span>
+  </style></head><body><div class="content"><h1>Solving the TSP with TSPLIB cities using a Hopfield Network</h1><!--introduction--><p>TSPLIB is an extensive set of problems frequently used for solving the TSP (and related problems) and used as a powerful reference for benchmarking different algorithms. In this section, <tt>tsphopfieldnet</tt> is used for solving the TSP when the problem coordinates are given by one of the library problems from TSPLIB.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">TSPLIB problem and network parameters</a></li><li><a href="#5">Creating the <tt>HopfieldNetworkTSP</tt> object</a></li><li><a href="#7">Training the network</a></li><li><a href="#9">Simulating the network</a></li><li><a href="#10">Visualizing results</a></li></ul></div><h2 id="1">TSPLIB problem and network parameters</h2><pre class="codeinput">rng(3); <span class="comment">% For reproducibility</span>
 </pre><p>TSPLIB Problem:</p><pre class="codeinput">problem = tsplib({<span class="string">'berlin52'</span>});
 </pre><p>Number of cities:</p><pre class="codeinput">N = problem.NumberOfCities;
-</pre><p>Free parameter C:</p><pre class="codeinput">C = 0.00001;
+</pre><p>Free parameter C:</p><pre class="codeinput">C = 1e-5;
 </pre><h2 id="5">Creating the <tt>HopfieldNetworkTSP</tt> object</h2><p>Providing problem cities' coordinates and distance matrix to the <tt>HopfieldNetworkTSP</tt> network by creating a <tt>HopfieldNetworkTSPOptions</tt> object of options</p><pre class="codeinput">options = tsphopfieldnetOptions(<span class="string">'Coordinates'</span>,problem.Coordinates,<span class="keyword">...</span>
                                 <span class="string">'DistanceMatrix'</span>,problem.DistanceMatrix,<span class="keyword">...</span>
                                 <span class="string">'DistanceType'</span>,problem.DistanceType);
@@ -96,7 +96,7 @@ ans =
     dUaux: 1716
       rho: 0.0087
 
-</pre><h2 id="9">Simulating the network</h2><p>The default simulation algorithm is <tt>talavan-yanez</tt></p><pre class="codeinput">sim(net);
+</pre><h2 id="9">Simulating the network</h2><p>The default simulation algorithm is <tt>talavan-yanez</tt>.</p><pre class="codeinput">V = sim(net);
 </pre><h2 id="10">Visualizing results</h2><pre class="codeinput">getResults(net)
 plot(net);
 </pre><pre class="codeoutput">
@@ -105,12 +105,12 @@ ans =
   struct with fields:
 
     CheckpointFilename: ''
-              CompTime: 0.1781
-                Energy: [1&times;216 double]
+              CompTime: 0.2247
+                Energy: [1&times;247 double]
               ExitFlag: 1
-          ItersReached: 216
-                  Time: [1&times;216 double]
-            TourLength: 12583
+          ItersReached: 247
+                  Time: [1&times;247 double]
+            TourLength: 14852
              ValidPath: 1
             VisitOrder: [1&times;52 double]
 
@@ -125,7 +125,7 @@ ans =
 % 
 
 %% TSPLIB problem and network parameters
-rng(6); % For reproducibility
+rng(3); % For reproducibility
 
 %%
 % TSPLIB Problem:
@@ -137,7 +137,7 @@ N = problem.NumberOfCities;
 
 %%
 % Free parameter C:
-C = 0.00001;
+C = 1e-5;
  
 %% Creating the |HopfieldNetworkTSP| object
 % Providing problem cities' coordinates and distance matrix to the
@@ -160,8 +160,8 @@ train(net);
 getTrainParam(net)
 
 %% Simulating the network
-% The default simulation algorithm is |talavan-yanez|
-sim(net);
+% The default simulation algorithm is |talavan-yanez|. 
+V = sim(net);
 
 %% Visualizing results
 getResults(net)

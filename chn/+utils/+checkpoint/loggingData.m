@@ -5,8 +5,8 @@ function loggingData(checkpointFilename,maxIter,iter,V,dU)
         Vlog  = nan([N,maxIter]); %#ok<NASGU>
         dUlog = nan([N,maxIter]); %#ok<NASGU>
         save(checkpointFilename,'Vlog','dUlog','-v7.3');
-        V  = zeros(N);
-        dU = zeros(N);
+%         V  = zeros(N);
+%         dU = zeros(N);
     end
     data = matfile(checkpointFilename,'Writable',true);
     if isa(V,'gpuArray')

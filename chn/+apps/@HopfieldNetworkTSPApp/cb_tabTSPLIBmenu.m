@@ -3,6 +3,10 @@ function cb_tabTSPLIBmenu(app)
 problems = app.tabTSPLIBmenu.String;
 problemSelected = app.tabTSPLIBmenu.Value;
 
+app.schemeMenu.Value = 1;
+app.simFcnMenu.Value = 1;
+app.cities_tauEdit.Enable = 'off';
+
 % Useful for problems that take longer to compute tsplib
 % and training
 app.tabTSPLIBnCitiesEdit.String = '- - - ';
