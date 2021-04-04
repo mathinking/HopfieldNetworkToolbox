@@ -2,8 +2,8 @@
 % automatically downloaded from 
 % http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/
 
-webFile = 'http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp/ALL_tsp.tar.gz';
-filesPath = fullfile(fileparts(fileparts(which('tsphopfieldnet.m'))),'data1');
+webFile = 'http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz';
+filesPath = fullfile(fileparts(fileparts(which('tsphopfieldnet.m'))),'data');
 fprintf(1,'\nDownloading TSPLIB library...\n');
 
 tempFile = 'ALL_tsp.tar.gz';
